@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="PelisUNED:war">
-    <output-path>$PROJECT_DIR$/target</output-path>
-    <root id="archive" name="PelisUNED.war">
-      <element id="artifact" artifact-name="PelisUNED:war exploded" />
-    </root>
-  </artifact>
-</component>
