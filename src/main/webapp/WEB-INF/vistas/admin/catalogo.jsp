@@ -99,7 +99,7 @@
                     <p>${film.year} - ${film.duration} min
                     </p>
                     <a href="${path}/admin/pelicula/editar/${film.id}" class="secondary-content edit-film" title="Editar"><i class="material-icons white-text">mode_edit</i></a>
-                    <a href="${path}/admin/pelicula/borrar/${film.id}" class="secondary-content" title="Borrar"><i class="material-icons white-text">delete</i></a>
+                    <a href="#confirm-delete" class="secondary-content borrar-film" data-id="${film.id}" data-title="${film.title}" title="Borrar"><i class="material-icons white-text">delete</i></a>
                 </li>
             </c:forEach>
         </ul>
@@ -113,6 +113,23 @@
 
 </div>
 </c:if>
+<!-- Modal confirmación de borrado -->
+<div id="confirm-delete" class="modal grey darken-2">
+    <div class="modal-content">
+        <div class="row grey darken-2">
+            <div class="col s12">
+                <h5>Confirmación</h5>
+                <p>¿Realmente deseas borrar la película <span class="film-title yellow-text"></span>?</p>
+                <p class="yellow-text center-align">¡No se puede deshacer!</p>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer grey darken-2">
+        <a href="#" class="modal-action modal-close waves-effect btn-flat yellow-text">Cancelar</a>
+        <a href="#" class="confirm-delete waves-effect btn-flat white-text">Borrar</a>
+    </div>
+</div><!-- /Modal confirmación de borrado -->
+
 <div id="materialbox-overlay" class="filter-overlay"></div>
 
 <%@ include file="../_js.jsp"%>
@@ -146,6 +163,22 @@
             var url = '${path}/admin/catalogo${url_params}pagina=0&ver=' + $(this).text() + '&sort=${order}';
             if (url != '')
                 window.location = url;
+        });
+    });
+
+    /* Modal de confirmación de borrado de película */
+    $(document).ready(function(){
+        $('.modal').modal({
+            inDuration: 150,
+            outDuration: 150,
+            startingTop: '4%',
+            endingTop: '30%'
+        });
+        // Al hacer click en el botón de borrar actualizamos la ventana modal con la
+        // información de la película
+        $('.borrar-film').on('click', function () {
+            $('span.film-title').text($(this).data('title'));
+            $('a.confirm-delete').attr("href", '${path}/admin/pelicula/borrar/' + $(this).data('id'));
         });
     });
 </script>

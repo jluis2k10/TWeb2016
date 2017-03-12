@@ -279,9 +279,10 @@ div.tabs-vertical {
 
 #materialbox-overlay.filter-overlay {
     display: none;
-    opacity: .7;
-    filter: alpha(opacity=70);
-    -moz-opacity: .7;
+    background-color: #000;
+    opacity: .5;
+    filter: alpha(opacity=50);
+    -moz-opacity: .5;
 }
 
 #admin-search {
@@ -298,6 +299,11 @@ div.tabs-vertical {
 }
 #admin-search .input-field label {
     top: 0.4rem;
+}
+
+span.film-title {
+    font-weight: bold;
+    font-style: italic;
 }
 
 @font-face {

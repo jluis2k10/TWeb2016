@@ -144,6 +144,25 @@ public class AdminController extends MainController implements ServletContextAwa
         return("redirect:/admin/catalogo");
     }
 
+    @Transactional
+    @RequestMapping(value = "/pelicula/borrar/{id}", method = RequestMethod.GET)
+    public String removeFilm(@PathVariable("id") Long id, Model model,
+                             RedirectAttributes redirectAttributes) {
+        String title = "";
+        Film film = filmRepo.findOne(id);
+        if (film != null) {
+            title = film.getTitle();
+            filmRepo.delete(id);
+            redirectAttributes.addFlashAttribute("infoMsg",
+                    "Película eliminada con éxito: <strong>" + title + "</strong>.");
+        }
+        else {
+            redirectAttributes.addFlashAttribute("infoMsg",
+                    "No se ha podido borrar la película con ID = " + id + ".");
+        }
+        return("redirect:/admin/catalogo");
+    }
+
     @RequestMapping(value = "directoresJSON", method = RequestMethod.GET)
     @ResponseBody
     public String directorsInJSON() {
