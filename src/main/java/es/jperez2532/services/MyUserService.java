@@ -1,0 +1,125 @@
+package es.jperez2532.services;
+
+import es.jperez2532.components.ChangePassword;
+import es.jperez2532.entities.Account;
+import es.jperez2532.entities.AccountRole;
+import es.jperez2532.repositories.AccountRepo;
+import es.jperez2532.repositories.RoleRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+
+/**
+ * Created by Jose Luis on 20/02/2017.
+ */
+public class MyUserService implements  UserService {
+
+    @Autowired private AccountRepo accountRepo;
+    @Autowired private RoleRepo roleRepo;
+    @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Override
+    public void save(Account account) {
+        // Si el password está vacío viene de update() (sin modificar) y debemos mantener el anterior
+        if (account.getPassword().isEmpty())
+            account.setPassword(accountRepo.findOne(account.getId()).getPassword());
+        else
+            account.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
+        account.setActive(true);
+        if (account.getAccountRoles().isEmpty())
+            account.setAccountRoles(new HashSet<AccountRole>(roleRepo.findByRole("USER")));
+        accountRepo.save(account);
+    }
+
+    @Transactional(readOnly = true)
+    public String getPrincipal() {
+        String userName = null;
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            userName = ((UserDetails) principal).getUsername();
+        }
+        else {
+            userName = principal.toString();
+        }
+        return userName;
+    }
+
+    public void update(Account account, ChangePassword changePassword) {
+        // Sólo si el nuevo password no está vacío
+        if (!changePassword.getNewPassword().isEmpty())
+            account.setPassword(changePassword.getNewPassword());
+        if(account.getAccountRoles().isEmpty())
+            account.setAccountRoles(accountRepo.findOne(account.getId()).getAccountRoles());
+        this.save(account);
+    }
+
+    public LinkedList<String> getProvincias() {
+        LinkedList<String> provincias = new LinkedList<String>();
+        provincias.add("Álava");
+        provincias.add("Albacete");
+        provincias.add("Alicante");
+        provincias.add("Almería");
+        provincias.add("Asturias");
+        provincias.add("Ávila");
+        provincias.add("Badajoz");
+        provincias.add("Barcelona");
+        provincias.add("Burgos");
+        provincias.add("Cáceres");
+        provincias.add("Cádiz");
+        provincias.add("Cantabria");
+        provincias.add("Castellón");
+        provincias.add("Ciudad Real");
+        provincias.add("Córdoba");
+        provincias.add("La Coruña");
+        provincias.add("Cuenca");
+        provincias.add("Gerona");
+        provincias.add("Granada");
+        provincias.add("Guadalajara");
+        provincias.add("Guipúzcoa");
+        provincias.add("Huelva");
+        provincias.add("Huesca");
+        provincias.add("Baleares");
+        provincias.add("Jaén");
+        provincias.add("León");
+        provincias.add("Lérida");
+        provincias.add("Lugo");
+        provincias.add("Comunidad de Madrid");
+        provincias.add("Málaga");
+        provincias.add("Región de Murcia");
+        provincias.add("Navarra");
+        provincias.add("Orense");
+        provincias.add("Palencia");
+        provincias.add("Las Palmas");
+        provincias.add("Pontevedra");
+        provincias.add("La Rioja");
+        provincias.add("Salamanca");
+        provincias.add("Segovia");
+        provincias.add("Sevilla");
+        provincias.add("Soria");
+        provincias.add("Tarragona");
+        provincias.add("Santa Cruz de Tenerife");
+        provincias.add("Teruel");
+        provincias.add("Toledo");
+        provincias.add("Valencia");
+        provincias.add("Valladolid");
+        provincias.add("Vizcaya");
+        provincias.add("Zamora");
+        provincias.add("Zaragoza");
+        provincias.add("Ceuta");
+        provincias.add("Melilla");
+        return provincias;
+    }
+
+    // TODO: ¿es necesario? ya tenemos findByUserName en accountRepo...
+    @Override
+    public Account findByUserName(String userName) {
+        return accountRepo.findByUserName(userName);
+    }
+
+}

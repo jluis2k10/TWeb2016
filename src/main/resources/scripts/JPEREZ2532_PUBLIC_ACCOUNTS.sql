@@ -1,0 +1,2 @@
+INSERT INTO PUBLIC.ACCOUNTS (USER_NAME, EMAIL, ACTIVE, PASSWORD, PROVINCIA) VALUES ('usuario', 'usuario@uned.es', true, '$2a$10$tH66ER6iETjU0xLDfuh4ie/vef7erOXql8FYrjEsuhGASixAhGNIy', 'Baleares');
+INSERT INTO PUBLIC.ACCOUNTS (USER_NAME, EMAIL, ACTIVE, PASSWORD, PROVINCIA) VALUES ('admin', 'admin@uned.es', true, '$2a$10$E1RIu3WFFeezHMjXFrasduaDD6FpdUU91k3DDU0YOqr/ihpg5DAlm', 'Baleares');

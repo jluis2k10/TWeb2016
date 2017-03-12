@@ -1,0 +1,57 @@
+package es.jperez2532.config;
+
+import es.jperez2532.services.MyUserService;
+import es.jperez2532.services.UserService;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+/**
+ * Created by Jose Luis on 18/02/2017.
+ */
+@Configuration
+@ComponentScan(value = "es.jperez2532.*")
+public class ApplicationContextConfig {
+
+    // Subir archivos
+    @Bean
+    public MultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
+    }
+
+    @Bean(name = "viewResolver")
+    public InternalResourceViewResolver getViewResolver() {
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setPrefix("/WEB-INF/vistas/");
+        viewResolver.setSuffix(".jsp");
+        return viewResolver;
+    }
+
+    @Bean(name = "messageSource")
+    public ResourceBundleMessageSource getMessageSource() {
+        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        messageSource.setBasename("validation"); // resources/validation.properties
+        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setUseCodeAsDefaultMessage(true);
+        return messageSource;
+    }
+
+    // Configuración upload multipart
+    /*@Bean(name="multipartResolver")
+    public CommonsMultipartResolver multipartResolver(){
+        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+        resolver.setMaxUploadSizePerFile(1 * 1024 * 1024); // 1 Mb
+        resolver.setDefaultEncoding("UTF-8");
+        resolver.setResolveLazily(true);
+        return resolver;
+    }*/
+
+    @Bean
+    public UserService userService() {
+        return new MyUserService();
+    }
+}
