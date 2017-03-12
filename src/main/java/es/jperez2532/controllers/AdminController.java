@@ -42,7 +42,7 @@ public class AdminController extends MainController implements ServletContextAwa
     @Autowired private FilmValidator filmValidator;
     @Autowired private UploadPosterValidator uploadPosterValidator;
     @Autowired private GenreValidator genreValidator;
-
+    /* Necesario para pasarle el path del servidor al método que sube el archivo del poster */
     private ServletContext servletContext;
 
     @Transactional
@@ -148,51 +148,35 @@ public class AdminController extends MainController implements ServletContextAwa
     @ResponseBody
     public String directorsInJSON() {
         List<Director> directorsList = directorRepo.findAll();
-        String resp = "{ \"autocompleteData\": {";
-
-        Iterator<Director> it = directorsList.iterator();
-        while (it.hasNext()) {
-            resp += "\"" + it.next().getName() + "\": null";
-            if (it.hasNext())
-                resp += ", ";
-        }
-        resp += "}}";
-
-        return resp;
+        Iterator it = directorsList.iterator();
+        return doJSON(it);
     }
 
     @RequestMapping(value = "actoresJSON", method = RequestMethod.GET)
     @ResponseBody
     public String actorsInJSON() {
         List<Actor> actorsList = actorRepo.findAll();
-        String resp = "{ \"autocompleteData\": {";
-
-        Iterator<Actor> it = actorsList.iterator();
-        while (it.hasNext()) {
-            resp += "\"" + it.next().getName() + "\": null";
-            if (it.hasNext())
-                resp += ", ";
-        }
-        resp += "}}";
-
-        return resp;
+        Iterator it = actorsList.iterator();
+        return doJSON(it);
     }
 
     @RequestMapping(value = "paisesJSON", method = RequestMethod.GET)
     @ResponseBody
     public String countriesInJSON() {
         List<Country> countriesList = countryRepo.findAll();
-        String resp = "{ \"autocompleteData\": {";
+        Iterator it = countriesList.iterator();
+        return doJSON(it);
+    }
 
-        Iterator<Country> it = countriesList.iterator();
+    private String doJSON(Iterator<AbstractEntity> it) {
+        String jsonString = "{ \"autocompleteData\": {";
         while (it.hasNext()) {
-            resp += "\"" + it.next().getName() + "\": null";
+            jsonString += "\"" + it.next().getName() + "\": null";
             if (it.hasNext())
-                resp += ", ";
+                jsonString += ", ";
         }
-        resp += "}}";
-
-        return resp;
+        jsonString += "}}";
+        return jsonString;
     }
 
     @Override

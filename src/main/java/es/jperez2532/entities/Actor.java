@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "Actors")
-public class Actor {
+public class Actor extends AbstractEntity  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
