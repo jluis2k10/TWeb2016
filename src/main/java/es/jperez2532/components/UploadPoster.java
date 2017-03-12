@@ -44,4 +44,14 @@ public class UploadPoster {
         }
         return fileName + ext;
     }
+
+    public void delete(String fileName, ServletContext servletContext) throws RuntimeException {
+        try {
+            Path path = Paths.get(servletContext.getRealPath("/") +
+                    "/WEB-INF/resources/img/posters/" + fileName);
+            Files.delete(path);
+        } catch (IOException e) {
+            throw new RuntimeException("DeletionError.FilmForm.poster");
+        }
+    }
 }

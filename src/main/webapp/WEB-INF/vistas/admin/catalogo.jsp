@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="pagination" uri="/WEB-INF/mytaglibs/MyPaginationLib.tld" %>
+<%@ taglib prefix="mytags" uri="/WEB-INF/mytaglibs/MyTagsLib.tld" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
@@ -106,7 +106,7 @@
     </div>
 </div> <!-- /Resultados -->
 <div class="row">
-    <pagination:paginate url="${path}/admin/catalogo${url_params}" page="${page}"
+    <mytags:paginate url="${path}/admin/catalogo${url_params}" page="${page}"
                          next="<i class=\"material-icons\">chevron_right</i>"
                          prev="<i class=\"material-icons\">chevron_left</i>"
                          listItemsCssClass="waves-effect z-depth-2"/>

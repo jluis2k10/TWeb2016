@@ -54,7 +54,6 @@ public class AdminController extends MainController implements ServletContextAwa
         return("admin/index");
     }
 
-    @Transactional
     @RequestMapping("/catalogo")
     public String catalogo(Model model, Pageable pageable,
                            @RequestParam(value = "buscar", required = false) String buscar) {
@@ -86,14 +85,15 @@ public class AdminController extends MainController implements ServletContextAwa
 
     @RequestMapping(value = "/catalogo/nueva", method = RequestMethod.GET)
     public String nuevaPelicula(Model model) {
-        model.addAttribute("nuevaPeliculaForm", new Film());
         model.addAttribute("genres", genreRepo.findAllByOrderByNameAsc());
+        model.addAttribute("peliculaForm", new Film());
+        model.addAttribute("formActionUrl", "catalogo/nueva");
         model.addAttribute("title", "PelisUNED - Nueva Película");
-        return("admin/nuevaPelicula");
+        return("admin/formPelicula");
     }
 
     @RequestMapping(value = "/catalogo/nueva", method = RequestMethod.POST)
-    public String nuevaPelicula(@ModelAttribute("nuevaPeliculaForm") Film filmForm,
+    public String nuevaPelicula(@ModelAttribute("peliculaForm") Film filmForm,
                                 BindingResult bindingResultPelicula,
                                 @Valid UploadPoster uploadPoster,
                                 Model model, RedirectAttributes redirectAttributes) throws IOException {
@@ -110,13 +110,67 @@ public class AdminController extends MainController implements ServletContextAwa
 
         if (bindingResultPelicula.hasErrors()) {
             model.addAttribute("genres", genreRepo.findAllByOrderByNameAsc());
+            model.addAttribute("formActionUrl", "catalogo/nueva");
             model.addAttribute("title", "PelisUNED - Nueva Película");
-            return ("admin/nuevaPelicula");
+            return ("admin/formPelicula");
         }
 
         filmService.save(filmForm);
         redirectAttributes.addFlashAttribute("infoMsg",
                 "Nueva película añadida con éxito: <strong>" + filmForm.getTitle() + "</strong>.");
+        return("redirect:/admin/catalogo");
+    }
+
+    @RequestMapping(value = "/pelicula/editar/{id}", method = RequestMethod.GET)
+    public String editFilm(@PathVariable("id") Long id, Model model,
+                           RedirectAttributes redirectAttributes) {
+        Film film = filmRepo.findOne(id);
+        if (film == null) {
+            redirectAttributes.addFlashAttribute("infoMsg",
+                    "No se encuentra la película con ID = " + id.toString() + ".");
+            return ("redirect:/admin/catalogo");
+        }
+        model.addAttribute("genres", genreRepo.findAllByOrderByNameAsc());
+        model.addAttribute("peliculaForm", film);
+        model.addAttribute("formActionUrl", "pelicula/editar/" + id.toString());
+        model.addAttribute("title", "PelisUNED - Editando Película");
+        return ("admin/formPelicula");
+    }
+
+    @RequestMapping(value = "/pelicula/editar/{id}", method = RequestMethod.POST)
+    public String editarFilm(@PathVariable("id") Long id,
+                             @ModelAttribute("peliculaForm") Film filmForm,
+                             BindingResult bindingResultPelicula,
+                             @Valid UploadPoster uploadPoster,
+                             Model model, RedirectAttributes redirectAttributes) throws IOException {
+        filmValidator.validateUpdate(filmForm, bindingResultPelicula);
+        // Recuperamos el nombre de la imagen original
+        // TODO: no me gusta hacer una query sólo para esto, mirar cómo meterlo en el form
+        filmForm.setPoster(filmRepo.findOne(id).getPoster());
+
+        if (!uploadPoster.getPosterFile().isEmpty()) {
+            uploadPosterValidator.validate(uploadPoster, bindingResultPelicula);
+            if (!bindingResultPelicula.hasErrors()) {
+                try {
+                    // Primero borramos la imagen original
+                    uploadPoster.delete(filmForm.getPoster(), servletContext);
+                    filmForm.setPoster(uploadPoster.upload(Integer.toString(filmForm.hashCode()), servletContext));
+                } catch (RuntimeException e) {
+                    bindingResultPelicula.rejectValue("poster", e.getMessage());
+                }
+            }
+        }
+
+        if (bindingResultPelicula.hasErrors()) {
+            model.addAttribute("genres", genreRepo.findAllByOrderByNameAsc());
+            model.addAttribute("formActionUrl", "pelicula/editar/" + id.toString());
+            model.addAttribute("title", "PelisUNED - Editando Película");
+            return ("admin/formPelicula");
+        }
+
+        filmService.save(filmForm);
+        redirectAttributes.addFlashAttribute("infoMsg",
+                "Nueva película editada con éxito: <strong>" + filmForm.getTitle() + "</strong>.");
         return("redirect:/admin/catalogo");
     }
 
@@ -148,25 +202,22 @@ public class AdminController extends MainController implements ServletContextAwa
     @RequestMapping(value = "/pelicula/borrar/{id}", method = RequestMethod.GET)
     public String removeFilm(@PathVariable("id") Long id, Model model,
                              RedirectAttributes redirectAttributes) {
-        String title = "";
         Film film = filmRepo.findOne(id);
         if (film != null) {
-            title = film.getTitle();
             filmRepo.delete(id);
             redirectAttributes.addFlashAttribute("infoMsg",
-                    "Película eliminada con éxito: <strong>" + title + "</strong>.");
+                    "Película eliminada con éxito: <strong>" + film.getTitle() + "</strong>.");
         }
-        else {
+        else
             redirectAttributes.addFlashAttribute("infoMsg",
                     "No se ha podido borrar la película con ID = " + id + ".");
-        }
         return("redirect:/admin/catalogo");
     }
 
     @RequestMapping(value = "directoresJSON", method = RequestMethod.GET)
     @ResponseBody
     public String directorsInJSON() {
-        List<Director> directorsList = directorRepo.findAll();
+        List<Director> directorsList = directorRepo.findAllByOrderByNameAsc();
         Iterator it = directorsList.iterator();
         return doJSON(it);
     }
@@ -174,7 +225,7 @@ public class AdminController extends MainController implements ServletContextAwa
     @RequestMapping(value = "actoresJSON", method = RequestMethod.GET)
     @ResponseBody
     public String actorsInJSON() {
-        List<Actor> actorsList = actorRepo.findAll();
+        List<Actor> actorsList = actorRepo.findAllByOrderByNameAsc();
         Iterator it = actorsList.iterator();
         return doJSON(it);
     }
@@ -182,7 +233,7 @@ public class AdminController extends MainController implements ServletContextAwa
     @RequestMapping(value = "paisesJSON", method = RequestMethod.GET)
     @ResponseBody
     public String countriesInJSON() {
-        List<Country> countriesList = countryRepo.findAll();
+        List<Country> countriesList = countryRepo.findAllByOrderByNameAsc();
         Iterator it = countriesList.iterator();
         return doJSON(it);
     }

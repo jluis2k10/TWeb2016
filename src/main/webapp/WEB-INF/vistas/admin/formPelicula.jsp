@@ -3,6 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="from" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="mytags" uri="/WEB-INF/mytaglibs/MyTagsLib.tld" %>
 
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
@@ -10,12 +11,17 @@
 
 <div class="section row">
     <div class="col s12">
-        <h5>Nueva película</h5>
+        <h5>Editando película</h5>
     </div>
+    <c:if test="${not empty peliculaForm.poster}">
+        <div class="col s12">
+            <img src="${path}/img/posters/${peliculaForm.poster}" width="150px"/>
+        </div>
+    </c:if>
 </div>
-<form action="${path}/admin/catalogo/nueva" method="post" enctype="multipart/form-data" id="new-film">
+<form action="${path}/admin/${formActionUrl}" method="post" enctype="multipart/form-data" id="new-film">
     <%-- Para acceder a los errores fuera de las etiquetas del formulario --%>
-    <spring:hasBindErrors name="nuevaPeliculaForm">
+    <spring:hasBindErrors name="peliculaForm">
         <c:if test="${errors.hasFieldErrors('filmDirectors')}">
             <c:set var="errorDirectors" value="1" />
         </c:if>
@@ -31,31 +37,31 @@
     </spring:hasBindErrors>
     <div class="row">
         <div class="col s12 input-field">
-            <spring:bind path="nuevaPeliculaForm.title">
-                <form:input path="nuevaPeliculaForm.title" type="text" cssErrorClass="invalid"></form:input>
-                <form:label path="nuevaPeliculaForm.title">Título</form:label>
-                <form:errors path="nuevaPeliculaForm.title" cssClass="red-text form-error"></form:errors>
+            <spring:bind path="peliculaForm.title">
+                <form:input path="peliculaForm.title" type="text" cssErrorClass="invalid"></form:input>
+                <form:label path="peliculaForm.title">Título</form:label>
+                <form:errors path="peliculaForm.title" cssClass="red-text form-error"></form:errors>
             </spring:bind>
         </div>
     </div>
     <div class="row">
         <div class="col s4 input-field">
-            <spring:bind path="nuevaPeliculaForm.year">
-                <form:input path="nuevaPeliculaForm.year" type="text" cssErrorClass="invalid"></form:input>
-                <form:label path="nuevaPeliculaForm.year">Año</form:label>
-                <form:errors path="nuevaPeliculaForm.year" cssClass="red-text form-error"></form:errors>
+            <spring:bind path="peliculaForm.year">
+                <form:input path="peliculaForm.year" type="text" cssErrorClass="invalid"></form:input>
+                <form:label path="peliculaForm.year">Año</form:label>
+                <form:errors path="peliculaForm.year" cssClass="red-text form-error"></form:errors>
             </spring:bind>
         </div>
         <div class="col s4 input-field">
-            <spring:bind path="nuevaPeliculaForm.duration">
-                <form:input path="nuevaPeliculaForm.duration" type="text" cssErrorClass="invalid"></form:input>
-                <form:label path="nuevaPeliculaForm.duration">Duración (min)</form:label>
-                <form:errors path="nuevaPeliculaForm.duration" cssClass="red-text form-error"></form:errors>
+            <spring:bind path="peliculaForm.duration">
+                <form:input path="peliculaForm.duration" type="text" cssErrorClass="invalid"></form:input>
+                <form:label path="peliculaForm.duration">Duración (min)</form:label>
+                <form:errors path="peliculaForm.duration" cssClass="red-text form-error"></form:errors>
             </spring:bind>
         </div>
         <div class="col s4 input-field">
-            <spring:bind path="nuevaPeliculaForm.rating">
-                <form:select path="nuevaPeliculaForm.rating" cssErrorClass="invalid">
+            <spring:bind path="peliculaForm.rating">
+                <form:select path="peliculaForm.rating" cssErrorClass="invalid">
                     <form:option value="TP">TP</form:option>
                     <form:option value="7+">7+</form:option>
                     <form:option value="12+">12+</form:option>
@@ -63,28 +69,28 @@
                     <form:option value="18+">18+</form:option>
                     <form:option value="X">X</form:option>
                 </form:select>
-                <form:label path="nuevaPeliculaForm.rating">Edades</form:label>
-                <form:errors path="nuevaPeliculaForm.rating" cssClass="red-text form-error"></form:errors>
+                <form:label path="peliculaForm.rating">Edades</form:label>
+                <form:errors path="peliculaForm.rating" cssClass="red-text form-error"></form:errors>
             </spring:bind>
         </div>
     </div>
     <div class="row">
         <div class="col s12 input-field">
-            <spring:bind path="nuevaPeliculaForm.description">
-                <form:textarea path="nuevaPeliculaForm.description" cssClass="materialize-textarea" cssErrorClass="materialize-textarea invalid"></form:textarea>
-                <form:label path="nuevaPeliculaForm.description">Sinopsis</form:label>
-                <form:errors path="nuevaPeliculaForm.description" cssClass="red-text form-error"></form:errors>
+            <spring:bind path="peliculaForm.description">
+                <form:textarea path="peliculaForm.description" cssClass="materialize-textarea" cssErrorClass="materialize-textarea invalid"></form:textarea>
+                <form:label path="peliculaForm.description">Sinopsis</form:label>
+                <form:errors path="peliculaForm.description" cssClass="red-text form-error"></form:errors>
             </spring:bind>
         </div>
     </div>
     <div class="row">
         <div class="col s6 input-field" id="genresContainer">
-            <spring:bind path="nuevaPeliculaForm.filmGenres">
-                <form:select path="nuevaPeliculaForm.filmGenres" cssErrorClass="invalid" multiple="true">
+            <spring:bind path="peliculaForm.filmGenres">
+                <form:select path="peliculaForm.filmGenres" cssErrorClass="invalid" multiple="true">
                     <form:options items="${genres}" itemValue="name" itemLabel="name"/>
                 </form:select>
-                <form:label path="nuevaPeliculaForm.filmGenres" cssClass="active">Géneros</form:label>
-                <form:errors path="nuevaPeliculaForm.filmGenres" cssClass="red-text form-error"></form:errors>
+                <form:label path="peliculaForm.filmGenres" cssClass="active">Géneros</form:label>
+                <form:errors path="peliculaForm.filmGenres" cssClass="red-text form-error"></form:errors>
             </spring:bind>
         </div>
         <div class="col s6">
@@ -93,59 +99,59 @@
     </div>
     <div class="row">
         <div class="col s12 input-field">
-            <spring:bind path="nuevaPeliculaForm.filmDirectors">
-                <c:forEach items="${nuevaPeliculaForm.filmDirectors}" var="director" varStatus="loopStatus">
+            <spring:bind path="peliculaForm.filmDirectors">
+                <c:forEach items="${peliculaForm.filmDirectors}" var="director" varStatus="loopStatus">
                     <c:set var="directors" value="${loopStatus.first ? '' : directors}${director.name}${loopStatus.last ? '' : ', '}"></c:set>
                 </c:forEach>
                 <input type="text" id="filmDirectors" name="filmDirectors" value="${directors}" class="hidden"/>
-                <form:label path="nuevaPeliculaForm.filmDirectors">Directores</form:label>
+                <form:label path="peliculaForm.filmDirectors">Directores</form:label>
                 <div class="chips ${errorDirectors == 1 ? "invalid" : ""}" id="chips-directors"></div>
-                <form:errors path="nuevaPeliculaForm.filmDirectors" cssClass="red-text form-error"></form:errors>
+                <form:errors path="peliculaForm.filmDirectors" cssClass="red-text form-error"></form:errors>
             </spring:bind>
         </div>
     </div>
     <div class="row">
         <div class="col s12 input-field">
-            <spring:bind path="nuevaPeliculaForm.filmStars">
-                <c:forEach items="${nuevaPeliculaForm.filmStars}" var="star" varStatus="loopStatus">
+            <spring:bind path="peliculaForm.filmStars">
+                <c:forEach items="${peliculaForm.filmStars}" var="star" varStatus="loopStatus">
                     <c:set var="stars" value="${loopStatus.first ? '' : stars}${star.name}${loopStatus.last ? '' : ', '}"></c:set>
                 </c:forEach>
                 <input type="text" id="filmStars" name="filmStars" value="${stars}" class="hidden"/>
-                <form:label path="nuevaPeliculaForm.filmStars">Actores Principales</form:label>
+                <form:label path="peliculaForm.filmStars">Actores Principales</form:label>
                 <div class="chips ${errorStars == 1 ? "invalid" : ""}" id="chips-stars"></div>
-                <form:errors path="nuevaPeliculaForm.filmStars" cssClass="red-text form-error"></form:errors>
+                <form:errors path="peliculaForm.filmStars" cssClass="red-text form-error"></form:errors>
             </spring:bind>
         </div>
     </div>
     <div class="row">
         <div class="col s12 input-field">
-            <spring:bind path="nuevaPeliculaForm.filmSupportings">
-                <c:forEach items="${nuevaPeliculaForm.filmSupportings}" var="supporting" varStatus="loopStatus">
+            <spring:bind path="peliculaForm.filmSupportings">
+                <c:forEach items="${peliculaForm.filmSupportings}" var="supporting" varStatus="loopStatus">
                     <c:set var="supportings" value="${loopStatus.first ? '' : supportings}${supporting.name}${loopStatus.last ? '' : ', '}"></c:set>
                 </c:forEach>
                 <input type="text" id="filmSupportings" name="filmSupportings" value="${supportings}" class="hidden"/>
-                <form:label path="nuevaPeliculaForm.filmSupportings">Actores Secundarios</form:label>
+                <form:label path="peliculaForm.filmSupportings">Actores Secundarios</form:label>
                 <div class="chips" id="chips-supportings"></div>
             </spring:bind>
         </div>
     </div>
     <div class="row">
         <div class="col s4 input-field">
-            <spring:bind path="nuevaPeliculaForm.filmCountries">
-                <c:forEach items="${nuevaPeliculaForm.filmCountries}" var="country" varStatus="loopStatus">
+            <spring:bind path="peliculaForm.filmCountries">
+                <c:forEach items="${peliculaForm.filmCountries}" var="country" varStatus="loopStatus">
                     <c:set var="countries" value="${loopStatus.first ? '' : countries}${country.name}${loopStatus.last ? '' : ', '}"></c:set>
                 </c:forEach>
                 <input type="text" id="filmCountries" name="filmCountries" value="${countries}" class="hidden"/>
-                <form:label path="nuevaPeliculaForm.filmCountries">País/es</form:label>
+                <form:label path="peliculaForm.filmCountries">País/es</form:label>
                 <div class="chips ${errorCountries == 1 ? "invalid" : ""}" id="chips-countries"></div>
-                <form:errors path="nuevaPeliculaForm.filmCountries" cssClass="red-text form-error"></form:errors>
+                <form:errors path="peliculaForm.filmCountries" cssClass="red-text form-error"></form:errors>
             </spring:bind>
         </div>
         <div class="col s4 input-field">
-            <spring:bind path="nuevaPeliculaForm.trailer">
-                <form:input path="nuevaPeliculaForm.trailer" type="text" cssErrorClass="invalid"></form:input>
-                <form:label path="nuevaPeliculaForm.trailer">Tráiler (ID de Youtube)</form:label>
-                <form:errors path="nuevaPeliculaForm.trailer" cssClass="red-text form-error"></form:errors>
+            <spring:bind path="peliculaForm.trailer">
+                <form:input path="peliculaForm.trailer" type="text" cssErrorClass="invalid"></form:input>
+                <form:label path="peliculaForm.trailer">Tráiler (ID de Youtube)</form:label>
+                <form:errors path="peliculaForm.trailer" cssClass="red-text form-error"></form:errors>
             </spring:bind>
         </div>
         <div class="col s4 file-field input-field">
@@ -154,9 +160,9 @@
                 <input type="file" name="posterFile" id="posterFile">
             </div>
             <div class="file-path-wrapper">
-                <spring:bind path="nuevaPeliculaForm.poster">
+                <spring:bind path="peliculaForm.poster">
                     <input class="file-path ${errorPoster == 1 ? "invalid" : ""}" type="text" placeholder="Máximo 1 MB">
-                    <form:errors path="nuevaPeliculaForm.poster" cssClass="red-text form-error"></form:errors>
+                    <form:errors path="peliculaForm.poster" cssClass="red-text form-error"></form:errors>
                 </spring:bind>
             </div>
         </div>
@@ -180,13 +186,13 @@
         */
         $('.chips').material_chip();
 
-        var directors = '${directors}';
+        var directors = '${mytags:escapeJS(directors)}';
         var directorsInit = textToInitChip(directors);
-        var stars = '${stars}';
+        var stars = '${mytags:escapeJS(stars)}';
         var starsInit = textToInitChip(stars);
-        var supportings = '${supportings}';
+        var supportings = '${mytags:escapeJS(supportings)}';
         var supportingsInit = textToInitChip(supportings);
-        var countries = '${countries}';
+        var countries = '${mytags:escapeJS(countries)}';
         var countriesInit = textToInitChip(countries);
         /* Se recupera mediante JSON una lista con todos los directores que hay en la BBDD para
            el autocompletado. Se añade esta lista al objeto que inicializa los chips */

@@ -6,8 +6,8 @@
         version="2.1">
 
     <tlib-version>1.0</tlib-version>
-    <short-name>MyPagination</short-name>
-    <uri>/WEB-INF/mytaglibs/MyPaginationLib.tld</uri>
+    <short-name>MyTagsLib</short-name>
+    <uri>/WEB-INF/mytaglibs/MyTagsLib.tld</uri>
 
     <tag>
         <name>paginate</name>
@@ -45,5 +45,11 @@
             <type>java.lang.String</type>
         </attribute>
     </tag>
+    
+    <function>
+        <name>escapeJS</name>
+        <function-class>org.apache.commons.lang.StringEscapeUtils</function-class>
+        <function-signature>java.lang.String escapeJavaScript(java.lang.String)</function-signature>
+    </function>
 
 </taglib>
