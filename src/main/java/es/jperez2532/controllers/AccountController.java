@@ -4,7 +4,7 @@ import es.jperez2532.components.ChangePassword;
 import es.jperez2532.entities.Account;
 import es.jperez2532.repositories.AccountRepo;
 import es.jperez2532.services.UserService;
-import es.jperez2532.validator.EditAccountValidator;
+import es.jperez2532.validator.AccountValidator;
 import es.jperez2532.validator.EditPasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @EnableWebMvc
@@ -28,7 +29,7 @@ public class AccountController extends MainController {
     @Autowired private AccountRepo accountRepo;
     @Autowired private UserService userService;
     @Autowired private UserDetailsService userDetailsService;
-    @Autowired private EditAccountValidator editAccountValidator;
+    @Autowired private AccountValidator accountValidator;
     @Autowired private EditPasswordValidator editPasswordValidator;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -48,10 +49,10 @@ public class AccountController extends MainController {
                          BindingResult bindingResultCuenta,
                          @ModelAttribute("changePasswordForm") ChangePassword changePassword,
                          BindingResult bindingResultPassword,
-                         Model model) {
+                         RedirectAttributes redirectAttributes, Model model) {
 
         editPasswordValidator.validate(changePassword, bindingResultPassword);
-        editAccountValidator.validate(accountForm, bindingResultCuenta);
+        accountValidator.validateUpdated(accountForm, bindingResultCuenta);
         if(bindingResultCuenta.hasErrors() || bindingResultPassword.hasErrors()) {
             model.addAttribute("provincias", userService.getProvincias());
             model.addAttribute("title", "PelisUNED - Registro");
@@ -63,6 +64,7 @@ public class AccountController extends MainController {
         UserDetails userDetails = userDetailsService.loadUserByUsername(accountForm.getUserName());
         Authentication auth = new PreAuthenticatedAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
+        redirectAttributes.addFlashAttribute("infoMsg", "Cuenta actualizada correctamente.");
         return("redirect:/");
     }
 

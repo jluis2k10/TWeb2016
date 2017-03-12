@@ -17,7 +17,6 @@ import org.springframework.validation.Validator;
 @Component
 public class EditPasswordValidator implements Validator {
 
-    @Autowired private AccountValidations accountValidations;
     @Autowired private UserService userService;
     @Autowired private AccountRepo accountRepo;
     @Autowired private BCryptPasswordEncoder encoder;

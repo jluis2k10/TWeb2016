@@ -2,7 +2,7 @@ package es.jperez2532.controllers;
 
 import es.jperez2532.entities.Account;
 import es.jperez2532.services.UserService;
-import es.jperez2532.validator.NewAccountValidator;
+import es.jperez2532.validator.AccountValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 public class HomeController extends MainController {
 
     @Autowired private UserService userService;
-    @Autowired private NewAccountValidator newAccountValidator;
+    @Autowired private AccountValidator accountValidator;
 
     @RequestMapping("/")
     public String home(Model model) {
@@ -51,7 +51,7 @@ public class HomeController extends MainController {
     public String registro(@ModelAttribute("registroForm") Account accountForm,
                            BindingResult bindingResult, RedirectAttributes redirectAttributes,
                            Model model) {
-        newAccountValidator.validate(accountForm, bindingResult);
+        accountValidator.validate(accountForm, bindingResult);
         if (bindingResult.hasErrors()) {
             model.addAttribute("provincias", userService.getProvincias());
             model.addAttribute("title", "PelisUNED - Registro");

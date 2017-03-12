@@ -26,7 +26,7 @@ public class MyUserService implements  UserService {
     @Override
     public void save(Account account) {
         // Si el password está vacío viene de update() (sin modificar) y debemos mantener el anterior
-        if (account.getPassword().isEmpty())
+        if (account.getPassword() == null)
             account.setPassword(accountRepo.findOne(account.getId()).getPassword());
         else
             account.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
@@ -52,7 +52,7 @@ public class MyUserService implements  UserService {
 
     public void update(Account account, ChangePassword changePassword) {
         // Sólo si el nuevo password no está vacío
-        if (!changePassword.getNewPassword().isEmpty())
+        if (changePassword.getNewPassword() != "")
             account.setPassword(changePassword.getNewPassword());
         if(account.getAccountRoles().isEmpty())
             account.setAccountRoles(accountRepo.findOne(account.getId()).getAccountRoles());

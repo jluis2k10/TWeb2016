@@ -138,7 +138,7 @@ public class AdminController extends MainController implements ServletContextAwa
     }
 
     @RequestMapping(value = "/pelicula/editar/{id}", method = RequestMethod.POST)
-    public String editarFilm(@PathVariable("id") Long id,
+    public String editFilm(@PathVariable("id") Long id,
                              @ModelAttribute("peliculaForm") Film filmForm,
                              BindingResult bindingResultPelicula,
                              @Valid UploadPoster uploadPoster,
