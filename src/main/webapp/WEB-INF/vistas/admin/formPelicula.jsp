@@ -174,6 +174,9 @@
             </button>
         </div>
     </div>
+    <form:hidden path="peliculaForm.score"/>
+    <form:hidden path="peliculaForm.nvotes"/>
+    <form:hidden path="peliculaForm.views"/>
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
 

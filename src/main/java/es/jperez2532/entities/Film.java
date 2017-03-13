@@ -1,6 +1,7 @@
 package es.jperez2532.entities;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,15 @@ public class Film {
     @Column(name = "trailer", length = 11)
     private String trailer;
 
+    @Column(name = "score", precision = 3, scale = 2)
+    private BigDecimal score;
+
+    @Column(name = "nvotes")
+    private int nvotes;
+
+    @Column(name = "views")
+    private int views;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Films_to_Genres",
                 joinColumns = {@JoinColumn(name = "film_id")},
@@ -62,6 +72,15 @@ public class Film {
             joinColumns = {@JoinColumn(name = "film_id")},
             inverseJoinColumns = {@JoinColumn(name = "country_id")})
     private List<Country> filmCountries = new ArrayList<Country>();
+
+    @OneToMany(mappedBy = "film", cascade = CascadeType.MERGE)
+    private List<Vote> filmVotes = new ArrayList<Vote>();
+
+    public Film() {
+        // Se necesita inicializar score para tener un valor disponible
+        // en el formulario de añadir una nueva película
+        this.score = new BigDecimal(0);
+    }
 
     public Long getId() {
         return id;
@@ -127,6 +146,30 @@ public class Film {
         this.trailer = trailer;
     }
 
+    public BigDecimal getScore() {
+        return score;
+    }
+
+    public void setScore(BigDecimal score) {
+        this.score = score;
+    }
+
+    public int getNvotes() {
+        return nvotes;
+    }
+
+    public void setNvotes(int nvotes) {
+        this.nvotes = nvotes;
+    }
+
+    public int getViews() {
+        return views;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
+
     public List<Genre> getFilmGenres() {
         return filmGenres;
     }
@@ -165,6 +208,14 @@ public class Film {
 
     public void setFilmCountries(List<Country> filmCountries) {
         this.filmCountries = filmCountries;
+    }
+
+    public List<Vote> getFilmVotes() {
+        return filmVotes;
+    }
+
+    public void setFilmVotes(List<Vote> filmVotes) {
+        this.filmVotes = filmVotes;
     }
 
     @Override

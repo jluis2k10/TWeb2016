@@ -35,6 +35,9 @@ public class Account {
                 inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private Set<AccountRole> accountRoles = new HashSet<AccountRole>();
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.MERGE)
+    private List<Vote> accountVotes = new ArrayList<Vote>();
+
     // Sólo se utiliza a la hora de registrar una nueva cuenta
     @Transient
     private String passwordConfirm;
@@ -106,14 +109,13 @@ public class Account {
         this.passwordConfirm = passwordConfirm;
     }
 
-    /**
-     * No es posible bindear un Set en los formularios, así que necesitamos
-     * utilizar una Lista de forma auxiliar para bindear los roles de un usuario.
-     */
-    /*public List<AccountRole> getAccountRolesList() {
-        List<AccountRole> rolesList = new ArrayList<AccountRole>(this.accountRoles);
-        return rolesList;
-    }*/
+    public List<Vote> getAccountVotes() {
+        return accountVotes;
+    }
+
+    public void setAccountVotes(List<Vote> accountVotes) {
+        this.accountVotes = accountVotes;
+    }
 
     @Override
     public String toString() {

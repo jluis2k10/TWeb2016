@@ -2,7 +2,6 @@ package es.jperez2532.controllers;
 
 import es.jperez2532.entities.Film;
 import es.jperez2532.repositories.FilmRepo;
-import es.jperez2532.repositories.GenreRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +15,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 public class FilmsController extends MainController {
 
-    @Autowired private GenreRepo genreRepo;
     @Autowired private FilmRepo filmRepo;
 
     @Transactional // TODO: estudiar qué significa transctional para recuperar entity con lazy-loading
