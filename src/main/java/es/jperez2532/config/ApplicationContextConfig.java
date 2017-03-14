@@ -40,16 +40,6 @@ public class ApplicationContextConfig {
         return messageSource;
     }
 
-    // Configuración upload multipart
-    /*@Bean(name="multipartResolver")
-    public CommonsMultipartResolver multipartResolver(){
-        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-        resolver.setMaxUploadSizePerFile(1 * 1024 * 1024); // 1 Mb
-        resolver.setDefaultEncoding("UTF-8");
-        resolver.setResolveLazily(true);
-        return resolver;
-    }*/
-
     @Bean
     public UserService userService() {
         return new MyUserService();

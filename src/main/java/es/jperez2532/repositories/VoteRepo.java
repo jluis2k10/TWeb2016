@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 
 /**
  * Atención al segundo parámetro de JpaRepository. La PK de la tabla Votes es compuesta,
- * luego para buscar, insertar, borrar, modificar se utilizará un objeto VotePK que
- * modela esta clave compuesta para indexar las consultas a BBDD.
+ * luego para buscar, insertar, borrar, modificar (CRUD) se utilizará un objeto VotePK
+ * que modela esta clave compuesta para indexar las consultas a BBDD.
  */
 @Repository
 public interface VoteRepo extends JpaRepository<Vote, VotePK> {

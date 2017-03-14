@@ -19,7 +19,7 @@ public class VotePK implements Serializable {
     @Column(name = "account_id")
     public long accountId;
 
-    public VotePK() {}
+    public VotePK() { }
 
     public VotePK(long filmId, long accountId) {
         this.filmId = filmId;

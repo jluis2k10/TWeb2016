@@ -184,6 +184,8 @@
 
 <script>
     $( document ).ready(function() {
+        $("select").material_select();
+
         /*
             INICIALIZACIÓN DE LOS CHIPS
         */
@@ -199,19 +201,19 @@
         var countriesInit = textToInitChip(countries);
         /* Se recupera mediante JSON una lista con todos los directores que hay en la BBDD para
            el autocompletado. Se añade esta lista al objeto que inicializa los chips */
-        $.getJSON('${path}/admin/directoresJSON', function(data){
+        $.getJSON('${path}/rest/directoresJSON', function(data){
             directorsInit.autocompleteData = data.autocompleteData;
             $('#chips-directors').material_chip(directorsInit);
         });
 
         /* Mismo proceder para los chips de los actores y de los paises. */
-        $.getJSON('${path}/admin/actoresJSON', function(data){
+        $.getJSON('${path}/rest/actoresJSON', function(data){
             starsInit.autocompleteData = data.autocompleteData;
             $('#chips-stars').material_chip(starsInit);
             supportingsInit.autocompleteData = data.autocompleteData;
             $('#chips-supportings').material_chip(supportingsInit);
         });
-        $.getJSON('${path}/admin/paisesJSON', function(data){
+        $.getJSON('${path}/rest/paisesJSON', function(data){
             countriesInit.autocompleteData = data.autocompleteData;
             $('#chips-countries').material_chip(countriesInit);
         });

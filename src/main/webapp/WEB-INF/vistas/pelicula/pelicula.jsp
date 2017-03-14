@@ -13,6 +13,22 @@
                 <h4>${film.title}</h4>
             </div>
             <div class="col s12 film-badges">
+                <span class="badge">
+                    <select id="score">
+                        <option value=""></option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <sec:authorize access="isFullyAuthenticated()">
+                        <span style="${myScore == 0 ? 'display: none;' : ''}">
+                            <a href="#" id="mi-score" data-score="${myScore}">Mia</a> /
+                            <a href="#" id="global-score" data-score="${globalScore}">Global</a>
+                        </span>
+                    </sec:authorize>
+                </span>
                 <span class="badge">${film.duration} min</span>
                 <span class="badge">${film.year}</span>
                 <span class="badge">${film.rating}</span>
@@ -99,9 +115,14 @@
     </div>
 </div>
 
+<link rel="stylesheet" href="${path}/js/themes/css-stars.css"/>
 <%@ include file="../_js.jsp"%>
+<script type="text/javascript" src="${path}/js/jquery.barrating.min.js"></script>
 <script>
     $( document ).ready(function() {
+        /*
+            Modal para Youtube
+         */
         $(".modal").modal({
             ready: function () {
                 $('#trailer-youtube')[0].contentWindow.postMessage('{"event":"command","func":"' + 'playVideo' + '","args":""}', '*');
@@ -110,6 +131,88 @@
                 $('#trailer-youtube')[0].contentWindow.postMessage('{"event":"command","func":"' + 'pauseVideo' + '","args":""}', '*');
             }
         });
+
+        /* Recuperar token csrf para e incluirlo como cabecera en cada envío ajax */
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        $(document).ajaxSend(function(e, xhr, options) {
+            xhr.setRequestHeader(header, token);
+        });
+
+        /*
+            Inicializar barrating (estrellitas)
+         */
+        $(function() {
+            $('#score').barrating({
+                theme: 'css-stars',
+                deselectable: false,
+                initialRating: ${globalScore},
+                onSelect: function(value, text, event) {
+                    if (typeof(event) !== 'undefined') {
+                        ajaxVote(value);
+                        $('span.badge > span').show();
+                    }
+                }
+            });
+        });
+
+        /*
+            Enlaces mostrar puntuación del usuario/global
+         */
+        $('a#mi-score').on('click', function () {
+            $('#score').barrating('set', $(this).data('score'));
+        });
+        $('a#global-score').on('click', function () {
+            $('#score').barrating('set', $(this).data('score'));
+        });
+
     });
+
+    /*
+        JSON request con el voto emitido
+     */
+    function ajaxVote(value) {
+        var vote = {};
+        var id_vote = {};
+        id_vote.filmId = ${film.id};
+        id_vote.accountId = ${userId != null ? userId : 0}; // Chapucilla, pero de todos modos un invitado no puede votar
+        vote.id = id_vote;
+        vote.score = value;
+
+        var midata = JSON.stringify(vote);
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "${path}/rest/votar",
+            data: midata,
+            dataType: 'json',
+            timeout: 10000,
+            success: function(data) {
+                var voteResults = jQuery.parseJSON(data);
+                updateScores(voteResults.myScore, voteResults.globalScore);
+            },
+            error: function(e) {
+                console.log("ERROR", e);
+            }
+        });
+    };
+
+    /*
+        Función para actualizar datos en enlaces para ver puntuación del usuario / puntuación global
+     */
+    function updateScores(myScore, globalScore) {
+        $('a#mi-score').data('score', myScore);
+        $('a#global-score').data("score", globalScore);
+    };
 </script>
+<sec:authorize access="isAnonymous()">
+    <script>
+        $( document ).ready(function() {
+            // Si es anónimo desactivamos la opción de votar
+            $(function () {
+                $('#score').barrating('readonly', true);
+            });
+        });
+    </script>
+</sec:authorize>
 <%@ include file="../_footer.jsp"%>

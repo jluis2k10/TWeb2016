@@ -35,7 +35,7 @@ public class Account {
                 inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private Set<AccountRole> accountRoles = new HashSet<AccountRole>();
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Vote> accountVotes = new ArrayList<Vote>();
 
     // Sólo se utiliza a la hora de registrar una nueva cuenta

@@ -61,4 +61,9 @@
 </div>
 
 <%@ include file="_js.jsp"%>
+<script>
+    $( document ).ready(function() {
+        $("select").material_select();
+    });
+</script>
 <%@ include file="_footer.jsp"%>

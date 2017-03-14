@@ -12,6 +12,5 @@
             belowOrigin: true,
             constrainWidth: false
         });
-        $("select").material_select();
     });
 </script>

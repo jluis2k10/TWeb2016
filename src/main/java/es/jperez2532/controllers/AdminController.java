@@ -1,7 +1,8 @@
 package es.jperez2532.controllers;
 
 import es.jperez2532.components.UploadPoster;
-import es.jperez2532.entities.*;
+import es.jperez2532.entities.Film;
+import es.jperez2532.entities.Genre;
 import es.jperez2532.repositories.*;
 import es.jperez2532.services.FilmService;
 import es.jperez2532.validator.FilmValidator;
@@ -22,7 +23,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.ServletContext;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -36,9 +36,6 @@ public class AdminController extends MainController implements ServletContextAwa
     @Autowired private FilmService filmService;
     @Autowired private FilmRepo filmRepo;
     @Autowired private GenreRepo genreRepo;
-    @Autowired private ActorRepo actorRepo;
-    @Autowired private DirectorRepo directorRepo;
-    @Autowired private CountryRepo countryRepo;
     @Autowired private FilmValidator filmValidator;
     @Autowired private UploadPosterValidator uploadPosterValidator;
     @Autowired private GenreValidator genreValidator;
@@ -212,41 +209,6 @@ public class AdminController extends MainController implements ServletContextAwa
             redirectAttributes.addFlashAttribute("infoMsg",
                     "No se ha podido borrar la película con ID = " + id + ".");
         return("redirect:/admin/catalogo");
-    }
-
-    @RequestMapping(value = "directoresJSON", method = RequestMethod.GET)
-    @ResponseBody
-    public String directorsInJSON() {
-        List<Director> directorsList = directorRepo.findAllByOrderByNameAsc();
-        Iterator it = directorsList.iterator();
-        return doJSON(it);
-    }
-
-    @RequestMapping(value = "actoresJSON", method = RequestMethod.GET)
-    @ResponseBody
-    public String actorsInJSON() {
-        List<Actor> actorsList = actorRepo.findAllByOrderByNameAsc();
-        Iterator it = actorsList.iterator();
-        return doJSON(it);
-    }
-
-    @RequestMapping(value = "paisesJSON", method = RequestMethod.GET)
-    @ResponseBody
-    public String countriesInJSON() {
-        List<Country> countriesList = countryRepo.findAllByOrderByNameAsc();
-        Iterator it = countriesList.iterator();
-        return doJSON(it);
-    }
-
-    private String doJSON(Iterator<AbstractEntity> it) {
-        String jsonString = "{ \"autocompleteData\": {";
-        while (it.hasNext()) {
-            jsonString += "\"" + it.next().getName() + "\": null";
-            if (it.hasNext())
-                jsonString += ", ";
-        }
-        jsonString += "}}";
-        return jsonString;
     }
 
     @Override

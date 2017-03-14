@@ -58,6 +58,11 @@ div.film-badges span.badge {
     margin-left: 0;
     margin-right: 14px;
 }
+div.film-badges span.badge > span {
+    font-size: 0.6rem;
+    position: relative;
+    top: -10px;
+}
 
 div.film-info dl {
     display: table-row;

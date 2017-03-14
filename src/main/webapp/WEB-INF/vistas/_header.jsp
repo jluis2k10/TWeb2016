@@ -3,6 +3,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Etiquetas con información sobre el token csrf para utilizarlo en ajax POSTs -->
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
     <link type="text/css" rel="stylesheet" href="${path}/css/custom.css"/>
     <link type="text/css" rel="stylesheet" href="${path}/css/materialize.min.css"  media="screen,projection"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>

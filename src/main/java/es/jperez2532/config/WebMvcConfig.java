@@ -1,5 +1,7 @@
 package es.jperez2532.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -7,6 +9,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -28,12 +31,23 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
-    // Configurar conversión mensajes a codificación UTF-8
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        // UTF-8
         StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
         stringHttpMessageConverter.setSupportedMediaTypes(Arrays.asList(new MediaType("text", "plain", UTF8)));
         converters.add(stringHttpMessageConverter);
+
+        // Configurar Spring para que utilice Jackson (POJO <-> json) cuando se recibe una petición
+        // json con parámetros.
+        // Hero of the day: http://stackoverflow.com/a/21742818
+        final MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        converter.setObjectMapper(objectMapper);
+        converters.add(converter);
+
+        super.configureMessageConverters(converters);
     }
 
     // Configuración recursos estáticos
@@ -48,8 +62,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     // "Filtro" (argument resolver) para poder utilizar Pageable. Recoge automáticamente
     // los argumentos de ciertos parámetros de la URL y los convierte a un objeto Pageable
     // que puede ser utilizado por el repositorio para paginar los resultados.
-    // SortHandler: Filtro similar para poder utilizar Sort, que hace lo mismo pero para ordenar los
-    // resultados.
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         PageableHandlerMethodArgumentResolver pageableResolver = new PageableHandlerMethodArgumentResolver();
@@ -57,11 +69,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         pageableResolver.setPageParameterName("pagina");
         pageableResolver.setSizeParameterName("ver");
         argumentResolvers.add(pageableResolver);
-
-        /*SortHandlerMethodArgumentResolver sortResolver = new SortHandlerMethodArgumentResolver();
-        sortResolver.setFallbackSort(new Sort(Sort.Direction.DESC, "id")); // Orden por defecto
-        sortResolver.setSortParameter("orden");
-        argumentResolvers.add(sortResolver);*/
 
         super.addArgumentResolvers(argumentResolvers);
     }
