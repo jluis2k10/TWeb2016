@@ -73,7 +73,7 @@ public class Film {
             inverseJoinColumns = {@JoinColumn(name = "country_id")})
     private List<Country> filmCountries = new ArrayList<Country>();
 
-    @OneToMany(mappedBy = "film", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "film", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private List<Vote> filmVotes = new ArrayList<Vote>();
 
     public Film() {

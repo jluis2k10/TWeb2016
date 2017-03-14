@@ -153,12 +153,6 @@
             startingTop: '4%',
             endingTop: '30%'
         });
-        // Al hacer click en el botón de borrar actualizamos la ventana modal con la
-        // información de la película
-        $('.borrar-film').on('click', function () {
-            $('span.film-title').text($(this).data('title'));
-            $('a.confirm-delete').attr("href", '${path}/admin/pelicula/borrar/' + $(this).data('id'));
-        });
     });
 
     /* Mostrar/ocultar el dropbox de Ordenar los resultado */
@@ -181,6 +175,13 @@
         $("#materialbox-overlay").fadeToggle({
             duration: 100
         })
+    });
+
+    /* Al hacer click en el botón de borrar actualizamos la ventana modal con la
+       información de la película */
+    $('.borrar-film').on('click', function () {
+        $('span.film-title').text($(this).data('title'));
+        $('a.confirm-delete').attr("href", '${path}/admin/pelicula/borrar/' + $(this).data('id'));
     });
 </script>
 
