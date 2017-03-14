@@ -147,11 +147,12 @@ public class AdminController extends MainController implements ServletContextAwa
         // TODO: no me gusta hacer una query sólo para esto, mirar cómo meterlo en el form
         filmForm.setPoster(filmRepo.findOne(id).getPoster());
 
+        // ¿Se debe actualizar la imagen del poster?
         if (!uploadPoster.getPosterFile().isEmpty()) {
             uploadPosterValidator.validate(uploadPoster, bindingResultPelicula);
             if (!bindingResultPelicula.hasErrors()) {
                 try {
-                    // Primero borramos la imagen original
+                    // Borramos la imagen original
                     uploadPoster.delete(filmForm.getPoster(), servletContext);
                     filmForm.setPoster(uploadPoster.upload(Integer.toString(filmForm.hashCode()), servletContext));
                 } catch (RuntimeException e) {
@@ -220,7 +221,7 @@ public class AdminController extends MainController implements ServletContextAwa
                              RedirectAttributes redirectAttributes) {
         Film film = filmRepo.findOne(id);
         if (film != null) {
-            filmRepo.delete(id);
+            filmService.delete(film, servletContext);
             redirectAttributes.addFlashAttribute("infoMsg",
                     "Película eliminada con éxito: <strong>" + film.getTitle() + "</strong>.");
         }

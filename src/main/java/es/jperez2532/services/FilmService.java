@@ -2,6 +2,7 @@ package es.jperez2532.services;
 
 import es.jperez2532.entities.Film;
 
+import javax.servlet.ServletContext;
 import java.math.BigDecimal;
 
 /**
@@ -9,5 +10,6 @@ import java.math.BigDecimal;
  */
 public interface FilmService {
     void save(Film film);
+    void delete(Film film, ServletContext servletContext);
     BigDecimal reDoVotes(Film film);
 }

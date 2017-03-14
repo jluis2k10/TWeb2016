@@ -5,7 +5,12 @@ import es.jperez2532.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletContext;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class MyFilmService implements FilmService {
@@ -63,6 +68,17 @@ public class MyFilmService implements FilmService {
             countryRepo.save(film.getFilmCountries());
         }
         filmRepo.save(film);
+    }
+
+    public void delete (Film film, ServletContext servletContext) {
+        try {
+            Path path = Paths.get(servletContext.getRealPath("/") +
+                    "/WEB-INF/resources/img/posters/" + film.getPoster());
+            Files.delete(path);
+        } catch (IOException e) {
+            throw new RuntimeException("DeletionError.FilmForm.poster");
+        }
+        filmRepo.delete(film);
     }
 
     public BigDecimal reDoVotes(Film film) {

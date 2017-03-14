@@ -71,6 +71,7 @@
                         </c:forEach>
                     </dd>
                 </dl>
+                <c:if test="${not empty film.filmSupportings}">
                 <dl>
                     <dt>Reparto</dt>
                     <dd class="grey-text">
@@ -79,6 +80,7 @@
                         </c:forEach>
                     </dd>
                 </dl>
+                </c:if>
             </div>
             <div class="col s12 reproducir">
                 <div class="section"></div>
@@ -90,7 +92,9 @@
                     <a class="disabled btn-floating btn-large waves-effect waves-light"><i class="material-icons grey-text">play_arrow</i></a>
                     <span>Inicia sesión para reproducir</span>
                 </sec:authorize>
-                <a href="#trailer" class="waves-effect btn-large grey darken-3"><i class="material-icons left">theaters</i>Ver tráiler</a>
+                <c:if test="${not empty film.trailer}">
+                    <a href="#trailer" class="waves-effect btn-large grey darken-3"><i class="material-icons left">theaters</i>Ver tráiler</a>
+                </c:if>
                 <sec:authorize access="isFullyAuthenticated()">
                     <a class="waves-effect btn-large grey darken-3"><i class="material-icons left">view_list</i>Ver más tarde</a>
                 </sec:authorize>
