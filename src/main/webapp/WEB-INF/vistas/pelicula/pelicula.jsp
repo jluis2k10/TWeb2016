@@ -132,13 +132,6 @@
             }
         });
 
-        /* Recuperar token csrf para e incluirlo como cabecera en cada envío ajax */
-        var token = $("meta[name='_csrf']").attr("content");
-        var header = $("meta[name='_csrf_header']").attr("content");
-        $(document).ajaxSend(function(e, xhr, options) {
-            xhr.setRequestHeader(header, token);
-        });
-
         /*
             Inicializar barrating (estrellitas)
          */
@@ -155,9 +148,21 @@
                 }
             });
         });
+    });
+</script>
+<%-- JavaScript para usuarios identificados. --%>
+<sec:authorize access="isFullyAuthenticated()">
+<script>
+    $( document ).ready(function() {
+        /* Recuperar token csrf para e incluirlo como cabecera en cada envío ajax */
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        $(document).ajaxSend(function(e, xhr, options) {
+            xhr.setRequestHeader(header, token);
+        });
 
         /*
-            Enlaces mostrar puntuación del usuario/global
+         Enlaces mostrar puntuación del usuario/global
          */
         $('a#mi-score').on('click', function () {
             $('#score').barrating('set', $(this).data('score'));
@@ -165,17 +170,16 @@
         $('a#global-score').on('click', function () {
             $('#score').barrating('set', $(this).data('score'));
         });
-
     });
 
     /*
-        JSON request con el voto emitido
+     JSON request con el voto emitido
      */
     function ajaxVote(value) {
         var vote = {};
         var id_vote = {};
         id_vote.filmId = ${film.id};
-        id_vote.accountId = ${userId != null ? userId : 0}; // Chapucilla, pero de todos modos un invitado no puede votar
+        id_vote.accountId = ${userId != null ? userId : 0};
         vote.id = id_vote;
         vote.score = value;
 
@@ -198,21 +202,25 @@
     };
 
     /*
-        Función para actualizar datos en enlaces para ver puntuación del usuario / puntuación global
+     Función para actualizar datos en enlaces para ver puntuación del usuario / puntuación global
      */
     function updateScores(myScore, globalScore) {
         $('a#mi-score').data('score', myScore);
         $('a#global-score').data("score", globalScore);
     };
 </script>
+</sec:authorize>
+
+
+<%-- JavaScript para invitados/no autentificados. Desactivamos la opción de votar. --%>
 <sec:authorize access="isAnonymous()">
-    <script>
-        $( document ).ready(function() {
-            // Si es anónimo desactivamos la opción de votar
-            $(function () {
-                $('#score').barrating('readonly', true);
-            });
+<script>
+    $( document ).ready(function() {
+        // Si es anónimo desactivamos la opción de votar
+        $(function () {
+            $('#score').barrating('readonly', true);
         });
-    </script>
+    });
+</script>
 </sec:authorize>
 <%@ include file="../_footer.jsp"%>

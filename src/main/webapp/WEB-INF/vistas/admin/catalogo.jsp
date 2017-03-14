@@ -98,6 +98,7 @@
                     <span class="title">${film.title}</span>
                     <p>${film.year} - ${film.duration} min
                     </p>
+                    <a href="${path}/admin/pelicula/recalcular/${film.id}" class="secondary-content redo-votes" title="Recalcular votos"><i class="material-icons white-text">refresh</i></a>
                     <a href="${path}/admin/pelicula/editar/${film.id}" class="secondary-content edit-film" title="Editar"><i class="material-icons white-text">mode_edit</i></a>
                     <a href="#confirm-delete" class="secondary-content borrar-film" data-id="${film.id}" data-title="${film.title}" title="Borrar"><i class="material-icons white-text">delete</i></a>
                 </li>
@@ -135,6 +136,31 @@
 <%@ include file="../_js.jsp"%>
 
 <script>
+    $( document ).ready(function() {
+        $("select").material_select();
+
+        /* Redireccionar al hacer click en uno de los selects de "mostrar N elementos por página". */
+        $("div.input-filter > div.select-wrapper > ul.select-dropdown > li > span ").click(function () {
+            var url = '${path}/admin/catalogo${url_params}pagina=0&ver=' + $(this).text() + '&sort=${order}';
+            if (url != '')
+                window.location = url;
+        });
+
+        /* Modal de confirmación de borrado de película */
+        $('.modal').modal({
+            inDuration: 150,
+            outDuration: 150,
+            startingTop: '4%',
+            endingTop: '30%'
+        });
+        // Al hacer click en el botón de borrar actualizamos la ventana modal con la
+        // información de la película
+        $('.borrar-film').on('click', function () {
+            $('span.film-title').text($(this).data('title'));
+            $('a.confirm-delete').attr("href", '${path}/admin/pelicula/borrar/' + $(this).data('id'));
+        });
+    });
+
     /* Mostrar/ocultar el dropbox de Ordenar los resultado */
     $(".dropdown-filter").click(function (e) {
         $("#filter-content").slideToggle({
@@ -155,31 +181,6 @@
         $("#materialbox-overlay").fadeToggle({
             duration: 100
         })
-    });
-
-    /* Redireccionar al hacer click en uno de los selects de "mostrar N elementos por página". */
-    $(document).ready(function () {
-        $("div.input-filter > div.select-wrapper > ul.select-dropdown > li > span ").click(function () {
-            var url = '${path}/admin/catalogo${url_params}pagina=0&ver=' + $(this).text() + '&sort=${order}';
-            if (url != '')
-                window.location = url;
-        });
-    });
-
-    /* Modal de confirmación de borrado de película */
-    $(document).ready(function(){
-        $('.modal').modal({
-            inDuration: 150,
-            outDuration: 150,
-            startingTop: '4%',
-            endingTop: '30%'
-        });
-        // Al hacer click en el botón de borrar actualizamos la ventana modal con la
-        // información de la película
-        $('.borrar-film').on('click', function () {
-            $('span.film-title').text($(this).data('title'));
-            $('a.confirm-delete').attr("href", '${path}/admin/pelicula/borrar/' + $(this).data('id'));
-        });
     });
 </script>
 

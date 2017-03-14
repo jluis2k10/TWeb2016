@@ -21,8 +21,10 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -169,6 +171,23 @@ public class AdminController extends MainController implements ServletContextAwa
         redirectAttributes.addFlashAttribute("infoMsg",
                 "Nueva película editada con éxito: <strong>" + filmForm.getTitle() + "</strong>.");
         return("redirect:/admin/catalogo");
+    }
+
+    @RequestMapping(value = "/pelicula/recalcular/{id}", method = RequestMethod.GET)
+    public String reDoVotes(@PathVariable("id") Long id,
+                            RedirectAttributes redirectAttributes,
+                            HttpServletRequest request) {
+        Film film = filmRepo.findOne(id);
+        BigDecimal score = film.getScore();
+        BigDecimal recalcScore = new BigDecimal(0);
+        if (film.getFilmVotes().size() > 0) {
+            recalcScore = filmService.reDoVotes(film);
+        }
+        String requestPath = request.getHeader("referer");
+        redirectAttributes.addFlashAttribute("infoMsg",
+                "Recalculada correctamente la puntuación de <strong>" + film.getTitle() + "</strong> (" +
+                        score.toString() + " -> " + recalcScore.toString() + ").");
+        return("redirect:"+requestPath);
     }
 
     @RequestMapping(value = "/catalogo/nuevoGenero", method = RequestMethod.GET)

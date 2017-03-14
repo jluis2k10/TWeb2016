@@ -65,14 +65,14 @@ public class MyVotesService implements VotesService {
             BigDecimal fScore = film.getScore().multiply(new BigDecimal(film.getNvotes()));
             fScore = fScore.subtract(new BigDecimal(oldVote.getScore()));
             fScore = fScore.add(new BigDecimal(newVote.getScore()));
-            BigDecimal nScore = fScore.divide(new BigDecimal(film.getNvotes()));
+            BigDecimal nScore = fScore.divide(new BigDecimal(film.getNvotes()), 2, BigDecimal.ROUND_HALF_UP);
             film.setScore(nScore);
         } else {
             // Sumamos el nuevo voto
             int oldNvotes = film.getNvotes();
             BigDecimal fScore = film.getScore().multiply(new BigDecimal(oldNvotes));
             fScore = fScore.add(new BigDecimal(newVote.getScore()));
-            BigDecimal nScore = fScore.divide(new BigDecimal(oldNvotes + 1));
+            BigDecimal nScore = fScore.divide(new BigDecimal(oldNvotes + 1), 2, BigDecimal.ROUND_HALF_UP);
             film.setScore(nScore);
             film.setNvotes(oldNvotes + 1);
         }

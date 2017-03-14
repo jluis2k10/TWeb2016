@@ -148,6 +148,9 @@ li.collection-item a.secondary-content {
 li.collection-item a.edit-film {
     right: 64px !important;
 }
+li.collection-item a.redo-votes {
+    right: 115px !important;
+}
 
 .chip {
     background-color: #616161 !important;

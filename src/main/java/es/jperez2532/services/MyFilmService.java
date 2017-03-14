@@ -5,6 +5,8 @@ import es.jperez2532.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class MyFilmService implements FilmService {
 
@@ -61,6 +63,20 @@ public class MyFilmService implements FilmService {
             countryRepo.save(film.getFilmCountries());
         }
         filmRepo.save(film);
+    }
+
+    public BigDecimal reDoVotes(Film film) {
+        int count = 0;
+        BigDecimal fScore = new BigDecimal(0);
+        for(Vote vote: film.getFilmVotes()) {
+            fScore = fScore.add(new BigDecimal(vote.getScore()));
+            count++;
+        }
+        fScore = fScore.divide(new BigDecimal(count), 2, BigDecimal.ROUND_HALF_UP);
+        film.setScore(fScore);
+        film.setNvotes(count);
+        filmRepo.save(film);
+        return fScore;
     }
 
 }
