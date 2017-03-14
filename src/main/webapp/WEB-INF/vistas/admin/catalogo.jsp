@@ -96,8 +96,7 @@
                 <li class="collection-item avatar grey darken-3">
                     <img src="${path}/img/posters/${film.poster}" alt="" class="circle z-depth-3">
                     <span class="title">${film.title}</span>
-                    <p>${film.year} - ${film.duration} min
-                    </p>
+                    <p>${film.year} - ${film.duration} min</p>
                     <a href="${path}/admin/pelicula/recalcular/${film.id}" class="secondary-content redo-votes" title="Recalcular votos"><i class="material-icons white-text">refresh</i></a>
                     <a href="${path}/admin/pelicula/editar/${film.id}" class="secondary-content edit-film" title="Editar"><i class="material-icons white-text">mode_edit</i></a>
                     <a href="#confirm-delete" class="secondary-content borrar-film" data-id="${film.id}" data-title="${film.title}" title="Borrar"><i class="material-icons white-text">delete</i></a>
@@ -106,13 +105,14 @@
         </ul>
     </div>
 </div> <!-- /Resultados -->
+<!-- Paginación -->
 <div class="row">
     <mytags:paginate url="${path}/admin/catalogo${url_params}" page="${page}"
                          next="<i class=\"material-icons\">chevron_right</i>"
                          prev="<i class=\"material-icons\">chevron_left</i>"
                          listItemsCssClass="waves-effect z-depth-2"/>
 
-</div>
+</div><!-- /Paginación -->
 </c:if>
 <!-- Modal confirmación de borrado -->
 <div id="confirm-delete" class="modal grey darken-2">

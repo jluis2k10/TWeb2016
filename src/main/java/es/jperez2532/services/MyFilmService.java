@@ -70,15 +70,17 @@ public class MyFilmService implements FilmService {
         filmRepo.save(film);
     }
 
-    public void delete (Film film, ServletContext servletContext) {
+    public boolean delete (Film film, ServletContext servletContext) {
         try {
             Path path = Paths.get(servletContext.getRealPath("/") +
                     "/WEB-INF/resources/img/posters/" + film.getPoster());
             Files.delete(path);
         } catch (IOException e) {
-            throw new RuntimeException("DeletionError.FilmForm.poster");
+           return false;
+        } finally {
+            filmRepo.delete(film);
         }
-        filmRepo.delete(film);
+        return true;
     }
 
     public BigDecimal reDoVotes(Film film) {

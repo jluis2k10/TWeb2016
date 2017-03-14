@@ -1,9 +1,14 @@
 package es.jperez2532.controllers;
 
 import es.jperez2532.entities.Account;
+import es.jperez2532.entities.Film;
+import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.services.UserService;
 import es.jperez2532.validator.AccountValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +19,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Jose Luis on 18/02/2017.
@@ -24,9 +31,15 @@ public class HomeController extends MainController {
 
     @Autowired private UserService userService;
     @Autowired private AccountValidator accountValidator;
+    @Autowired private FilmRepo filmRepo;
 
     @RequestMapping("/")
     public String home(Model model) {
+        Page<Film> lastFilms = filmRepo.findAll(new PageRequest(0, 6, Sort.Direction.DESC, "id"));
+        List<String> idsCarousel = Arrays.asList("#one!", "#two!", "#three!", "#four!", "#five!", "#six!");
+        model.addAttribute("lastFilms", lastFilms.getContent());
+        model.addAttribute("idsCarousel", idsCarousel);
+
         model.addAttribute("title", "PelisUNED");
         return "index";
     }

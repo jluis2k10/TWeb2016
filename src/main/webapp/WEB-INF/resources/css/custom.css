@@ -6,6 +6,10 @@ body {
     color: #fff;
 }
 
+ul > ul {
+    padding-left: 30px !important;
+}
+
 div.row.no-margin {
     margin-bottom: 5px;
 }
@@ -312,6 +316,96 @@ div.tabs-vertical {
 span.film-title {
     font-weight: bold;
     font-style: italic;
+}
+
+.carousel {
+    height: 250px !important;
+}
+
+.carousel-background {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    -webkit-filter: blur(10px);
+    -moz-filter: blur(10px);
+    -o-filter: blur(10px);
+    -ms-filter: blur(10px);
+    filter: blur(10px);
+    z-index: -1;
+}
+.carousel-overlay {
+    background-color: #000;
+    opacity: .6;
+    width: 100%;
+    height: 100%;
+}
+.carousel-content {
+    height: 100%;
+}
+.carousel-content h4 {
+    color: #f7f7f7;
+    text-shadow: 2px 2px 4px #000;
+}
+.carousel-content span {
+    position: relative;
+    top: -15px;
+    color: #bcbcbc;
+    font-size: .9rem;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px #000;
+}
+.carousel.carousel-slider .carousel-item {
+    min-height: 250px !important;
+}
+.carousel-control {
+    position: relative;
+    z-index: 5;
+    top: 90px;
+}
+.carousel-arrow a {
+    color: #d7d7d7;
+    text-shadow: 3px 3px #000;
+}
+.carousel .carousel-item img {
+    width: auto !important;
+}
+
+div.filter-catalog .select-wrapper input {
+    height: 36px;
+    width: 50px;
+    margin: 0;
+}
+div.filter-catalog .select-wrapper {
+    width: 50px;
+    float: right;
+}
+div.filter-catalog .input-field {
+    margin-top: 5px;
+}
+
+div.catalog h5 {
+    margin-top: 0px;
+}
+div.catalog .card.horizontal .card-image img {
+    height: 280px;
+}
+div.catalog div.film-badges {
+    position: relative;
+    top: -10px;
+    display: inline-flex;
+}
+div.catalog span.badge {
+    padding-left: 0px;
+    font-weight: bold;
+    font-size: 1.0rem;
+}
+div.catalog .card-action span {
+    margin-left: 10px;
+}
+div.catalog .card-action .btn-watchlist {
+    margin-left: 35px;
 }
 
 @font-face {

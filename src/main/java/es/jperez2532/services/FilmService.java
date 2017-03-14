@@ -10,6 +10,6 @@ import java.math.BigDecimal;
  */
 public interface FilmService {
     void save(Film film);
-    void delete(Film film, ServletContext servletContext);
+    boolean delete(Film film, ServletContext servletContext) throws RuntimeException;
     BigDecimal reDoVotes(Film film);
 }

@@ -1,16 +1,21 @@
 package es.jperez2532.controllers;
 
 import es.jperez2532.components.UploadPoster;
+import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.entities.Genre;
-import es.jperez2532.repositories.*;
+import es.jperez2532.repositories.AccountRepo;
+import es.jperez2532.repositories.FilmRepo;
+import es.jperez2532.repositories.GenreRepo;
 import es.jperez2532.services.FilmService;
 import es.jperez2532.validator.FilmValidator;
 import es.jperez2532.validator.GenreValidator;
 import es.jperez2532.validator.UploadPosterValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -25,7 +30,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Necesitamos que implemente ServletContextAware para hacer uso de servletContext.getRealPath()
@@ -37,6 +44,7 @@ public class AdminController extends MainController implements ServletContextAwa
 
     @Autowired private FilmService filmService;
     @Autowired private FilmRepo filmRepo;
+    @Autowired private AccountRepo accountRepo;
     @Autowired private GenreRepo genreRepo;
     @Autowired private FilmValidator filmValidator;
     @Autowired private UploadPosterValidator uploadPosterValidator;
@@ -47,8 +55,21 @@ public class AdminController extends MainController implements ServletContextAwa
     @Transactional
     @RequestMapping("")
     public String home(Model model) {
-        List<Film> films = filmRepo.findAll();
-        model.addAttribute("films", films);
+        Pageable limit = new PageRequest(0,6, Sort.Direction.DESC, "id");
+        Page<Film> films = filmRepo.findAll(limit);
+        Page<Account> accounts = accountRepo.findAll(limit);
+        model.addAttribute("films", films.getContent());
+        model.addAttribute("accounts", accounts.getContent());
+
+        Long totalFilms = filmRepo.count();
+        Map<String, Film> filmStats = new HashMap<>();
+        filmStats.put("masVista", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.DESC, "views")).getContent().get(0));
+        filmStats.put("menosVista", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.ASC, "views")).getContent().get(0));
+        filmStats.put("mejorValorada", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.DESC, "score")).getContent().get(0));
+        filmStats.put("peorValorada", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.ASC, "score")).getContent().get(0));
+        model.addAttribute("totalFilms", totalFilms);
+        model.addAttribute("filmStats", filmStats);
+
         model.addAttribute("title", "PelisUNED - Panel de Administración");
         return("admin/index");
     }
@@ -221,8 +242,12 @@ public class AdminController extends MainController implements ServletContextAwa
                              RedirectAttributes redirectAttributes) {
         Film film = filmRepo.findOne(id);
         if (film != null) {
-            filmService.delete(film, servletContext);
-            redirectAttributes.addFlashAttribute("infoMsg",
+            if (!filmService.delete(film, servletContext))
+                redirectAttributes.addFlashAttribute("infoMsg",
+                        "Película eliminada con éxito: <strong>" + film.getTitle() + "</strong>.<br>" +
+                                "ATENCIÓN: no se pudo eliminar la imagen del poster en el servidor: " + film.getPoster());
+            else
+                redirectAttributes.addFlashAttribute("infoMsg",
                     "Película eliminada con éxito: <strong>" + film.getTitle() + "</strong>.");
         }
         else
