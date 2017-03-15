@@ -124,7 +124,7 @@
 
     <!-- Paginación -->
     <div class="row">
-        <mytags:paginate url="${path}/catalogo${url_params}" page="${page}"
+        <mytags:paginate url="${path}${url_params}" page="${page}"
                          next="<i class=\"material-icons\">chevron_right</i>"
                          prev="<i class=\"material-icons\">chevron_left</i>"
                          listItemsCssClass="waves-effect z-depth-2"/>
@@ -141,7 +141,7 @@
 
         /* Redireccionar al hacer click en uno de los selects de "mostrar N elementos por página". */
         $("div.input-filter > div.select-wrapper > ul.select-dropdown > li > span ").click(function () {
-            var url = '${path}/catalogo${url_params}pagina=0&ver=' + $(this).text() + '&sort=${order}';
+            var url = '${path}${url_params}pagina=0&ver=' + $(this).text() + '&sort=${order}';
             if (url != '')
                 window.location = url;
         });

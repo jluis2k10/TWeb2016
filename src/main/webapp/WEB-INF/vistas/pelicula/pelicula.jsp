@@ -43,7 +43,7 @@
                     <dt>Directores</dt>
                     <dd class="grey-text">
                         <c:forEach items="${film.filmDirectors}" var="director" varStatus="loopStatus">
-                            <a href="${path}/buscar">${director.name}</a>${!loopStatus.last ? ', ' : ''}
+                            <a href="${path}/buscar?ref=director&buscar=${director.name}">${director.name}</a>${!loopStatus.last ? ', ' : ''}
                         </c:forEach>
                     </dd>
                 </dl>
@@ -51,7 +51,7 @@
                     <dt>Estrellas</dt>
                     <dd class="grey-text">
                         <c:forEach items="${film.filmStars}" var="actor" varStatus="loopStatus">
-                            <a href="${path}/buscar">${actor.name}</a>${!loopStatus.last ? ', ' : ''}
+                            <a href="${path}/buscar?ref=actor&buscar=${actor.name}">${actor.name}</a>${!loopStatus.last ? ', ' : ''}
                         </c:forEach>
                     </dd>
                 </dl>
@@ -59,7 +59,7 @@
                     <dt>Géneros</dt>
                     <dd class="grey-text">
                         <c:forEach items="${film.filmGenres}" var="genre" varStatus="loopStatus">
-                            <a href="${path}/buscar">${genre.name}</a>${!loopStatus.last ? ', ' : ''}
+                            <a href="${path}/buscar?ref=genero&buscar=${genre.name}">${genre.name}</a>${!loopStatus.last ? ', ' : ''}
                         </c:forEach>
                     </dd>
                 </dl>
@@ -67,7 +67,7 @@
                     <dt>País</dt>
                     <dd class="grey-text">
                         <c:forEach items="${film.filmCountries}" var="country" varStatus="loopStatus">
-                            <a href="${path}/buscar">${country.name}</a>${!loopStatus.last ? ', ' : ''}
+                            <a href="${path}/buscar?ref=pais&buscar=${country.name}">${country.name}</a>${!loopStatus.last ? ', ' : ''}
                         </c:forEach>
                     </dd>
                 </dl>
@@ -76,7 +76,7 @@
                     <dt>Reparto</dt>
                     <dd class="grey-text">
                         <c:forEach items="${film.filmSupportings}" var="actor" varStatus="loopStatus">
-                            <a href="${path}/buscar">${actor.name}</a>${!loopStatus.last ? ', ' : ''}
+                            <a href="${path}/buscar?ref=actor&buscar=${actor.name}">${actor.name}</a>${!loopStatus.last ? ', ' : ''}
                         </c:forEach>
                     </dd>
                 </dl>

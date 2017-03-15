@@ -44,31 +44,31 @@ public class Film {
     @Column(name = "views")
     private int views;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Films_to_Genres",
                 joinColumns = {@JoinColumn(name = "film_id")},
                 inverseJoinColumns = {@JoinColumn(name = "genre_id")})
     private List<Genre> filmGenres = new ArrayList<Genre>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Films_to_Directors",
             joinColumns = {@JoinColumn(name = "film_id")},
             inverseJoinColumns = {@JoinColumn(name = "director_id")})
     private List<Director> filmDirectors = new ArrayList<Director>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Films_to_Stars",
             joinColumns = {@JoinColumn(name = "film_id")},
             inverseJoinColumns = {@JoinColumn(name = "actor_id")})
     private List<Actor> filmStars = new ArrayList<Actor>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Films_to_Supportings",
             joinColumns = {@JoinColumn(name = "film_id")},
             inverseJoinColumns = {@JoinColumn(name = "actor_id")})
     private List<Actor> filmSupportings = new ArrayList<Actor>();
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(name = "Films_to_Countries",
             joinColumns = {@JoinColumn(name = "film_id")},
             inverseJoinColumns = {@JoinColumn(name = "country_id")})

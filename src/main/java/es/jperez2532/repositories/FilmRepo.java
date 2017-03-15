@@ -13,22 +13,18 @@ public interface FilmRepo extends JpaRepository<Film, Long> {
     Film findByTitle(String title);
     Page<Film> findAll(Pageable pageable);
     Page<Film> findByTitleIgnoreCaseContaining(String title, Pageable pageable);
+    Page<Film> findByFilmGenres_NameIgnoreCase(String genre, Pageable pageable);
+    Page<Film> findByFilmDirectors_NameIgnoreCase(String director, Pageable pageable);
+    // Distinct o repite resultados (por el left outer join que genera)
+    Page<Film> findDistinctByFilmStars_NameIgnoreCaseOrFilmSupportings_NameIgnoreCase(String actor, String actor2, Pageable pageable);
+    Page<Film> findByFilmCountries_NameIgnoreCase(String country, Pageable pageable);
 
-    //@Cacheable(value = "searchFilm")
     Set<Film> findByTitleIgnoreCaseContaining(String title);
-    //@Cacheable(value = "searchFilm")
-    //@Cacheable(value = "searchFilm")
-    Set<Film> findByFilmGenres_NameIgnoreCase(String genres);
-    //@Cacheable("searchFilm")
-    Set<Film> findByFilmDirectors_NameIgnoreCaseContaining(String name);
-    //@Cacheable("searchFilm")
-    Set<Film> findByFilmStars_NameIgnoreCaseContaining(String name);
-    //@Cacheable("searchFilm")
-    Set<Film> findByFilmSupportings_NameIgnoreCaseContaining(String name);
-    //@Cacheable("searchFilm")
-    Set<Film> findByFilmCountries_NameIgnoreCase(String name);
-    //@Cacheable("searchFilm")
+    Set<Film> findByFilmGenres_NameIgnoreCase(String genre);
+    Set<Film> findByFilmDirectors_NameIgnoreCaseContaining(String director);
+    Set<Film> findByFilmStars_NameIgnoreCaseContaining(String actor);
+    Set<Film> findByFilmSupportings_NameIgnoreCaseContaining(String actor);
+    Set<Film> findByFilmCountries_NameIgnoreCase(String country);
     Set<Film> findByDescriptionIgnoreCaseContaining(String description);
-    //@Cacheable("searchFilm")
     Set<Film> findByYear(String year);
 }

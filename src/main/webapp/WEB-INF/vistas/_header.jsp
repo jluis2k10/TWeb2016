@@ -19,7 +19,7 @@
         <!-- Dropdown Structure -->
         <ul id="dropdown-gen" class="dropdown-content">
             <c:forEach items="${genresList}" var="genre" varStatus="loopStatus">
-                <li><a href="#">${genre.name}</a></li>
+                <li><a href="${path}/buscar?ref=genero&buscar=${genre.name}">${genre.name}</a></li>
                 ${!loopStatus.last ? '<li class="divider"></li>' : ''}
             </c:forEach>
         </ul>

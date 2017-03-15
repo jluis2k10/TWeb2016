@@ -103,6 +103,8 @@ public class MyFilmService implements FilmService {
      *   - Año
      * Devuelve una página (Page) con el número preciso de resultados necesarios y
      * ordenados para presentarlos en la página que muestra los resultados de la búsqueda.
+     * Como se hacen muchas consultas a BBDD, cacheamos los resultados para no tener que
+     * repetir las consultas si se realiza una búsqueda ya realizada con anterior
      *
      * @param term Término de búsqueda
      * @param pageable Información sobre la página actual (nº página, resultados por
