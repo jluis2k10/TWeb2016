@@ -53,29 +53,29 @@
                 <div id="lastDir" class="tab-content">
                     <h6>Por fecha de entrada:</h6>
                     <ul>
-                        <li><a href="${path}/catalogo${url_params}pagina=${page.number}&ver=${page.size}&sort=id,ASC"><i class="material-icons">arrow_drop_up</i>Ascendente</a></li>
-                        <li><a href="${path}/catalogo${url_params}pagina=${page.number}&ver=${page.size}&sort=id,DESC"><i class="material-icons">arrow_drop_down</i>Descendente</a></li>
+                        <li><a href="${path}${url_params}pagina=${page.number}&ver=${page.size}&sort=id,ASC"><i class="material-icons">arrow_drop_up</i>Ascendente</a></li>
+                        <li><a href="${path}${url_params}pagina=${page.number}&ver=${page.size}&sort=id,DESC"><i class="material-icons">arrow_drop_down</i>Descendente</a></li>
                     </ul>
                 </div>
                 <div id="titleDir" class="tab-content">
                     <h6>Por título de la película:</h6>
                     <ul>
-                        <li><a href="${path}/catalogo${url_params}pagina=${page.number}&ver=${page.size}&sort=title,ASC"><i class="material-icons">arrow_drop_up</i>Ascendente</a></li>
-                        <li><a href="${path}/catalogo${url_params}pagina=${page.number}&ver=${page.size}&sort=title,DESC"><i class="material-icons">arrow_drop_down</i>Descendente</a></li>
+                        <li><a href="${path}${url_params}pagina=${page.number}&ver=${page.size}&sort=title,ASC"><i class="material-icons">arrow_drop_up</i>Ascendente</a></li>
+                        <li><a href="${path}${url_params}pagina=${page.number}&ver=${page.size}&sort=title,DESC"><i class="material-icons">arrow_drop_down</i>Descendente</a></li>
                     </ul>
                 </div>
                 <div id="yearDir" class="tab-content">
                     <h6>Por año de estreno:</h6>
                     <ul>
-                        <li><a href="${path}/catalogo${url_params}pagina=${page.number}&ver=${page.size}&sort=year,ASC"><i class="material-icons">arrow_drop_up</i>Ascendente</a></li>
-                        <li><a href="${path}/catalogo${url_params}pagina=${page.number}&ver=${page.size}&sort=year,DESC"><i class="material-icons">arrow_drop_down</i>Descendente</a></li>
+                        <li><a href="${path}${url_params}pagina=${page.number}&ver=${page.size}&sort=year,ASC"><i class="material-icons">arrow_drop_up</i>Ascendente</a></li>
+                        <li><a href="${path}${url_params}pagina=${page.number}&ver=${page.size}&sort=year,DESC"><i class="material-icons">arrow_drop_down</i>Descendente</a></li>
                     </ul>
                 </div>
                 <div id="scoreDir" class="tab-content">
                     <h6>Por puntuación de usuarios:</h6>
                     <ul>
-                        <li><a href="${path}/catalogo${url_params}pagina=${page.number}&ver=${page.size}&sort=score,ASC"><i class="material-icons">arrow_drop_up</i>Ascendente</a></li>
-                        <li><a href="${path}/catalogo${url_params}pagina=${page.number}&ver=${page.size}&sort=score,DESC"><i class="material-icons">arrow_drop_down</i>Descendente</a></li>
+                        <li><a href="${path}${url_params}pagina=${page.number}&ver=${page.size}&sort=score,ASC"><i class="material-icons">arrow_drop_up</i>Ascendente</a></li>
+                        <li><a href="${path}${url_params}pagina=${page.number}&ver=${page.size}&sort=score,DESC"><i class="material-icons">arrow_drop_down</i>Descendente</a></li>
                     </ul>
                 </div>
             </div>

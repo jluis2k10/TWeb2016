@@ -1,6 +1,5 @@
 package es.jperez2532.controllers;
 
-import es.jperez2532.entities.Actor;
 import es.jperez2532.entities.Film;
 import es.jperez2532.entities.Vote;
 import es.jperez2532.entities.VotePK;
@@ -89,8 +88,6 @@ public class FilmsController extends MainController {
         String url_params = "/buscar?ref=" + ref + "&buscar=" + buscar + "&";
         Page<Film> page = null;
         List<Film> films = null;
-
-        Actor actor = actorRepo.findByName("Robert Duvall");
 
         switch (ref) {
             case "genero":
