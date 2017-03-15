@@ -6,6 +6,7 @@ import es.jperez2532.entities.VotePK;
 import es.jperez2532.repositories.AccountRepo;
 import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.repositories.VoteRepo;
+import es.jperez2532.services.FilmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,7 @@ public class FilmsController extends MainController {
     @Autowired private FilmRepo filmRepo;
     @Autowired private AccountRepo accountRepo;
     @Autowired private VoteRepo voteRepo;
+    @Autowired private FilmService filmService;
 
     @Transactional // TODO: estudiar qué significa transctional para recuperar entity con lazy-loading
     @RequestMapping(value = "/pelicula/{id}/*", method = RequestMethod.GET)
@@ -53,11 +55,24 @@ public class FilmsController extends MainController {
     @RequestMapping("/catalogo")
     public String catalogo(Model model, Pageable pageable,
                            @RequestParam(value = "buscar", required = false) String buscar) {
-        Page<Film> page = filmRepo.findAll(pageable);
-        List<Film> films = page.getContent();
+        Page<Film> page;
         String url_params = "?";
+        if (buscar != null) {
+            page = filmService.search(buscar, pageable);
+            url_params = "?buscar=" + buscar + "&";
+            model.addAttribute("headTitle", "Resultados para: <em>" + buscar + "</em>");
+        } else
+            page = filmRepo.findAll(pageable);
 
-        model.addAttribute("films", films);
+        if (page.getTotalElements() != 0) {
+            List<Film> films = page.getContent();
+            model.addAttribute("films", films);
+        }
+        else {
+            model.addAttribute("infoMsg", "No existen resultados para el término: <strong>" +
+                    buscar + "</strong>");
+        }
+
         model.addAttribute("page", page);
         model.addAttribute("url_params", url_params);
         model.addAttribute("title", "Catálogo - Pelis UNED");

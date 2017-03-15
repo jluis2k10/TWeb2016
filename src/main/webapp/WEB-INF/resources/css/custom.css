@@ -18,6 +18,10 @@ div.row.no-margin {
     padding-left: 135px !important;
 }
 
+input#search {
+    font-size: .9rem;
+}
+
 .dropdown-account .account-icon {
     display: inline-block;
 }
@@ -373,16 +377,25 @@ span.film-title {
 }
 
 div.filter-catalog .select-wrapper input {
-    height: 36px;
+    height: 35px;
     width: 50px;
     margin: 0;
 }
 div.filter-catalog .select-wrapper {
     width: 50px;
     float: right;
+    margin-right: 40px;
 }
 div.filter-catalog .input-field {
-    margin-top: 5px;
+    margin-top: 0px;
+}
+div.filter-catalog a.dropdown-filter {
+    float: right;
+}
+div.filter-catalog span.page-results {
+    float: right;
+    line-height: 36px;
+    margin-right: 20px;
 }
 
 div.catalog h5 {

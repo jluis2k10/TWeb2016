@@ -3,6 +3,7 @@ package es.jperez2532.entities;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Entity
@@ -247,5 +248,48 @@ public class Film {
                 ", filmSupportings=" + filmSupportings +
                 ", filmCountries=" + filmCountries +
                 '}';
+    }
+
+    /* Clases Comparator necesarias para ordenar una colección de objetos Película según
+     * ciertos campos (se utilizará al ordenar resultados de búsqueda) */
+
+    /**
+     * Comparar por ID
+     */
+    public static class ComparatorFilmId implements Comparator<Film> {
+        @Override
+        public int compare(Film film0, Film film1) {
+            return film0.getId().intValue() - film1.getId().intValue();
+        }
+    }
+
+    /**
+     * Comparar por Título
+     */
+    public static class ComparatorFilmTitle implements Comparator<Film> {
+        @Override
+        public int compare(Film film0, Film film1) {
+            return film0.getTitle().compareToIgnoreCase(film1.getTitle());
+        }
+    }
+
+    /**
+     * Comparar por Año de estreno
+     */
+    public static class ComparatorFilmYear implements Comparator<Film> {
+        @Override
+        public int compare(Film film0, Film film1) {
+            return Integer.parseInt(film0.getYear()) - Integer.parseInt(film1.getYear());
+        }
+    }
+
+    /**
+     * Comparar por Puntuación (estrellas)
+     */
+    public static class ComparatorFilmScore implements Comparator<Film> {
+        @Override
+        public int compare(Film film0, Film film1) {
+            return film0.getScore().intValueExact() - film1.getScore().intValueExact();
+        }
     }
 }

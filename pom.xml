@@ -74,6 +74,11 @@
       <groupId>org.springframework.data</groupId>
       <artifactId>spring-data-jpa</artifactId>
     </dependency>
+    <!-- Hibernate Validator -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+    </dependency>
     <!-- Log4j -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

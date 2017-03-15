@@ -14,4 +14,6 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
     Page<Account> findAll(Pageable pageable);
     Account findByUserName(String userName);
     Account findByEmail(String email);
+    Long countByAccountRoles_RoleIgnoreCase(String roleName);
+    Long countByActive(boolean status);
 }

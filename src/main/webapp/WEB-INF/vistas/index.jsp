@@ -43,7 +43,7 @@
         $('.carousel.carousel-slider').carousel({
             fullWidth: true
         });
-        //myInterval();
+        myInterval();
     });
 
     /* Intervalo para auto-reproducir el carrusel */

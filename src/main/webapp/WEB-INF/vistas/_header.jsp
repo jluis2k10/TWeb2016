@@ -54,9 +54,9 @@
                 <li><a class="dropdown-account" href="#!" data-activates="dropdown-acc"><i class="material-icons account-icon">account_circle</i><i class="material-icons right arrow-down">arrow_drop_down</i></a></li>
             </sec:authorize>
         </ul>
-        <form class="right">
+        <form class="right" method="get" action="${path}/catalogo">
             <div class="input-field">
-                <input id="search" type="search" required>
+                <input id="search" type="search" required name="buscar" placeholder="buscar...">
                 <label class="label-icon" for="search"><i class="material-icons">search</i></label>
                 <i class="material-icons">close</i>
             </div>

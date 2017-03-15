@@ -7,16 +7,26 @@
 <div class="row section">
     <div class="col s12">
         <div class="row card-panel light-blue lighten-4 blue-text text-darken-4">
-            <h5>Estadísticas</h5>
-            <ul>
-                <li><strong>Películas: </strong>${totalFilms}</li>
+            <div class="col s6">
                 <ul>
-                    <li>Más vista: ${filmStats['masVista'].title}, ${filmStats['masVista'].views} reproducciones</li>
-                    <li>Menos vista: ${filmStats['menosVista'].title}, ${filmStats['menosVista'].views} reproducciones</li>
-                    <li>Mejor valorada: ${filmStats['mejorValorada'].title}, ${filmStats['mejorValorada'].score} estrellas</li>
-                    <li>Peor valorada: ${filmStats['peorValorada'].title}, ${filmStats['peorValorada'].score} estrellas</li>
+                    <li><strong>Películas: </strong>${totalFilms}</li>
+                    <ul>
+                        <li>Más vista: ${filmStats['masVista'].title}, ${filmStats['masVista'].views} reproducciones</li>
+                        <li>Menos vista: ${filmStats['menosVista'].title}, ${filmStats['menosVista'].views} reproducciones</li>
+                        <li>Mejor valorada: ${filmStats['mejorValorada'].title}, ${filmStats['mejorValorada'].score} estrellas</li>
+                        <li>Peor valorada: ${filmStats['peorValorada'].title}, ${filmStats['peorValorada'].score} estrellas</li>
+                    </ul>
                 </ul>
-            </ul>
+            </div>
+            <div class="col s6">
+                <ul>
+                    <li><strong>Usuarios: </strong>${userStats['totalUsers']}</li>
+                    <ul>
+                        <li>Administradores: ${userStats['adminUsers']}</li>
+                        <li>Desactivados: ${userStats['inactiveUsers']}</li>
+                    </ul>
+                </ul>
+            </div>
         </div>
     </div>
 </div>

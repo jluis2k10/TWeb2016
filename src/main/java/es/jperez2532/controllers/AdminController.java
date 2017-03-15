@@ -70,6 +70,12 @@ public class AdminController extends MainController implements ServletContextAwa
         model.addAttribute("totalFilms", totalFilms);
         model.addAttribute("filmStats", filmStats);
 
+        Map<String, Long> userStats = new HashMap<>();
+        userStats.put("totalUsers", accountRepo.count());
+        userStats.put("adminUsers", accountRepo.countByAccountRoles_RoleIgnoreCase("admin"));
+        userStats.put("inactiveUsers", accountRepo.countByActive(false));
+        model.addAttribute("userStats", userStats);
+
         model.addAttribute("title", "PelisUNED - Panel de Administración");
         return("admin/index");
     }
@@ -86,7 +92,6 @@ public class AdminController extends MainController implements ServletContextAwa
         }
         else
             page = filmRepo.findAll(pageable);
-
 
         if (page.getTotalElements() != 0) {
             List<Film> films = page.getContent();
