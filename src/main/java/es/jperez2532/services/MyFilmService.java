@@ -3,6 +3,8 @@ package es.jperez2532.services;
 import es.jperez2532.entities.*;
 import es.jperez2532.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -27,8 +29,8 @@ public class MyFilmService implements FilmService {
     @Autowired private ActorRepo actorRepo;
     @Autowired private CountryRepo countryRepo;
 
+    @CacheEvict(value = "searchFilm", allEntries = true)
     public void save(Film film) {
-
         // Comprobar Géneros
         if (!film.getFilmGenres().isEmpty()) {
             for (Genre genre: film.getFilmGenres()) {
@@ -76,6 +78,7 @@ public class MyFilmService implements FilmService {
         filmRepo.save(film);
     }
 
+    @CacheEvict(value = "searchFilm", allEntries = true)
     public boolean delete (Film film, ServletContext servletContext) {
         try {
             Path path = Paths.get(servletContext.getRealPath("/") +
@@ -106,6 +109,7 @@ public class MyFilmService implements FilmService {
      *                 página y modo de ordenación)
      * @return Página con los resultados ordenados
      */
+    @Cacheable(value = "searchFilm")
     public Page<Film> search(String term, Pageable pageable) {
         // Separamos el término en palabras en caso de que sea una frase, para así poder
         // buscar también por cada una de estas palabras (mínimo 4 letras por palabra)
@@ -173,11 +177,11 @@ public class MyFilmService implements FilmService {
         // ... y devolvemos la porción necesaria de ella para la página en la que estemos
         int startIndex = pageable.getOffset();
         int endIndex = Math.min(pageable.getOffset() + pageable.getPageSize(), resultsList.size());
-        Page<Film> page = new PageImpl<Film>(resultsList.subList(startIndex, endIndex),
+        return new PageImpl<Film>(resultsList.subList(startIndex, endIndex),
                 pageable, resultsList.size());
-        return page;
     }
 
+    @CacheEvict(value = "searchFilm", allEntries = true)
     public BigDecimal reDoVotes(Film film) {
         int count = 0;
         BigDecimal fScore = new BigDecimal(0);
