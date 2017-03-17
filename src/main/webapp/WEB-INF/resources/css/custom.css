@@ -112,7 +112,7 @@ div.film-background {
     z-index: -100;
     width: 60%;
     height: 100%;
-    opacity: .25;
+    opacity: .60;
     background-repeat: no-repeat;
     background-size: cover;
     -webkit-filter: blur(10px);
