@@ -3,11 +3,10 @@ package es.jperez2532.controllers;
 import es.jperez2532.entities.Film;
 import es.jperez2532.entities.Vote;
 import es.jperez2532.entities.VotePK;
-import es.jperez2532.repositories.AccountRepo;
-import es.jperez2532.repositories.ActorRepo;
 import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.repositories.VoteRepo;
 import es.jperez2532.services.FilmService;
+import es.jperez2532.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,31 +21,38 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @EnableWebMvc
 public class FilmsController extends MainController {
 
     @Autowired private FilmRepo filmRepo;
-    @Autowired private AccountRepo accountRepo;
+    //@Autowired private AccountRepo accountRepo;
+    @Autowired private UserService userService;
     @Autowired private VoteRepo voteRepo;
     @Autowired private FilmService filmService;
-    @Autowired private ActorRepo actorRepo;
 
     @Transactional // TODO: estudiar qué significa transctional para recuperar entity con lazy-loading
     @RequestMapping(value = "/pelicula/{id}/*", method = RequestMethod.GET)
     public String pelicula(@PathVariable("id") Long id, Principal principal, Model model) {
+        Set<Long> userWatchlist = new HashSet<Long>();
         Film film = filmRepo.getOne(id);
         Long userId = null;
         int myScore = 0;
+
         if (principal != null) {
-            userId = accountRepo.findByUserName(principal.getName()).getId();
+            userWatchlist = userService.watchlistSet(userService.findByUserName(principal.getName()));
+            userId = userService.findByUserName(principal.getName()).getId();
             Vote vote = voteRepo.findOne(new VotePK(film.getId(), userId));
             if (vote != null)
                 myScore = vote.getScore();
         }
+
         model.addAttribute("film", film);
+        model.addAttribute("userWatchlist", userWatchlist);
         model.addAttribute("globalScore", film.getScore().setScale(0, BigDecimal.ROUND_HALF_UP).intValueExact());
         model.addAttribute("myScore", myScore);
         model.addAttribute("userId", userId);
@@ -55,10 +61,16 @@ public class FilmsController extends MainController {
     }
 
     @RequestMapping("/catalogo")
-    public String catalogo(Model model, Pageable pageable,
+    public String catalogo(Model model, Pageable pageable, Principal principal,
                            @RequestParam(value = "buscar", required = false) String buscar) {
+        Set<Long> userWatchlist = new HashSet<Long>();
         Page<Film> page;
         String url_params = "/catalogo?";
+
+        if (principal != null)
+            userWatchlist = userService.watchlistSet(userService.findByUserName(principal.getName()));
+        model.addAttribute("userWatchlist", userWatchlist);
+
         if (buscar != null) {
             page = filmService.search(buscar, pageable);
             url_params = "/catalogo?buscar=" + buscar + "&";
@@ -83,11 +95,16 @@ public class FilmsController extends MainController {
     }
 
     @RequestMapping("/buscar")
-    public String buscar(Model model, Pageable pageable,
+    public String buscar(Model model, Pageable pageable, Principal principal,
                          @RequestParam("ref") String ref, @RequestParam("buscar") String buscar) {
+        Set<Long> userWatchlist = new HashSet<Long>();
         String url_params = "/buscar?ref=" + ref + "&buscar=" + buscar + "&";
         Page<Film> page = null;
         List<Film> films = null;
+
+        if (principal != null)
+            userWatchlist = userService.watchlistSet(userService.findByUserName(principal.getName()));
+        model.addAttribute("userWatchlist", userWatchlist);
 
         switch (ref) {
             case "genero":

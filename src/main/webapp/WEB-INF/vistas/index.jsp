@@ -3,7 +3,7 @@
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
 <%@ include file="_header.jsp"%>
-
+<!-- Carrusel -->
 <div class="row section">
     <div class="col s12">
         <div class="carousel carousel-slider center-align" data-indicators="true">
@@ -35,15 +35,40 @@
         </c:forEach>
         </div>
     </div>
-</div>
+</div><!--/Carrusel -->
+
+<c:if test="${not empty watchlistFilms}">
+<!-- Películas en lista de reproducción -->
+<div class="row">
+    <div class="col s12">
+        <h6>En mi lista de reproducción<span><a href="${path}/micuenta/milista">Editar</a></span></h6>
+    </div>
+    <div class="col s12 watchlist">
+        <c:forEach var="film" items="${watchlistFilms}">
+            <div class="slick-films">
+                <a href="${path}/pelicula/${film.id}/${film.title}" class="tooltipped" data-tooltip="${film.title}">
+                    <img class="z-depth-2" src="${path}/img/posters/${film.poster}" height="210"/>
+                </a>
+            </div>
+        </c:forEach>
+    </div>
+</div><!-- /Películas en lista de reproducción -->
+</c:if>
 
 <%@ include file="_js.jsp"%>
+<script type="text/javascript" src="${path}/js/slick.min.js"></script>
 <script>
     $(document).ready(function () {
         $('.carousel.carousel-slider').carousel({
             fullWidth: true
         });
         myInterval();
+
+        $('.watchlist').slick({
+            infinite: false,
+            slidesToShow: 7,
+            variableWidth: true
+        });
     });
 
     /* Intervalo para auto-reproducir el carrusel */

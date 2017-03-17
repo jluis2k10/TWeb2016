@@ -113,7 +113,10 @@
                             <span>Inicia sesión para reproducir</span>
                         </sec:authorize>
                         <sec:authorize access="isFullyAuthenticated()">
-                            <a class="waves-effect btn grey darken-1 btn-watchlist"><i class="material-icons left">view_list</i>Ver más tarde</a>
+                            <a data-film="${film.id}" data-action="${userWatchlist.contains(film.id) ? 'delete' : 'add'}" class="waves-effect btn grey darken-1 btn-watchlist">
+                                <i class="material-icons left">view_list</i>
+                                ${userWatchlist.contains(film.id) ? 'Eliminar de mi lista' : 'Ver más tarde'}
+                            </a>
                         </sec:authorize>
                     </div>
                 </div>
@@ -136,7 +139,7 @@
 <%@ include file="../_js.jsp"%>
 
 <script>
-    $( document ).ready(function() {
+    $(document).ready(function() {
         $("select").material_select();
 
         /* Redireccionar al hacer click en uno de los selects de "mostrar N elementos por página". */
@@ -169,5 +172,85 @@
         })
     });
 </script>
+
+<sec:authorize access="isFullyAuthenticated()">
+<script>
+    $(document).ready(function () {
+        $('.btn-watchlist').on('click', function () {
+            addToWatchlist($(this));
+        });
+    });
+
+    /*
+        Petición ajax para añadir/eliminar película de la lista de reproducción
+     */
+    function addToWatchlist(btn) {
+        var action = btn.data("action");
+        var film_id = btn.data("film");
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: "${path}/micuenta/milista/"+action,
+            data: "film-id="+film_id,
+            dataType: 'json',
+            timeout: 10000,
+            success: function() {
+                updateWatchlistBtn(btn, action);
+            },
+            error: function() {
+                Materialize.toast('Error en la operación. Inténtalo más adelante.', 5000, 'red darken-3 rounded');
+            }
+        });
+    };
+
+    /*
+        Cambiar el estado del botón Añadir/Eliminar de lista de reproducción
+     */
+    function updateWatchlistBtn(btn, action) {
+        if (action === 'add') {
+            btn.data("action", "delete");
+            btn.text('Eliminar de mi lista');
+            flyToElement(btn.closest('.card').find('img'), $('.account-icon'));
+        } else {
+            btn.data("action", "add");
+            btn.text('Ver más tarde');
+        }
+        btn.prepend('<i class="material-icons left">view_list</i>');
+    };
+
+    /*
+        Animación/efecto al añadir una película a la lista de reproducción.
+        Pequeña adaptación de: http://www.codexworld.com/fly-to-cart-effect-using-jquery/
+     */
+    function flyToElement(flyer, flyingTo) {
+        var divider = 10;
+        var flyerClone = $(flyer).clone();
+        flyerClone.height(280);
+        $(flyerClone).css({position: 'absolute', top: $(flyer).offset().top + "px", left: $(flyer).offset().left + "px", opacity: 1, 'z-index': 1000});
+        $('body').append($(flyerClone));
+        var gotoX = $(flyingTo).offset().left + ($(flyingTo).width() / 2) - ($(flyer).width()/divider)/2;
+        var gotoY = $(flyingTo).offset().top + ($(flyingTo).height() / 2) - ($(flyer).height()/divider)/2;
+        console.log(gotoY);
+        gotoY = Math.max(gotoY, pageYOffset-30);
+
+        $(flyerClone).animate({
+                opacity: 0.4,
+                left: gotoX,
+                top: gotoY,
+                width: $(flyer).width()/divider,
+                height: $(flyer).height()/divider
+            }, 700,
+            function () {
+                $(flyingTo).fadeOut('fast', function () {
+                    $(flyingTo).fadeIn('fast', function () {
+                        $(flyerClone).fadeOut('fast', function () {
+                            $(flyerClone).remove();
+                        });
+                    });
+                });
+            });
+    };
+</script>
+</sec:authorize>
 
 <%@ include file="../_footer.jsp"%>

@@ -12,5 +12,8 @@
             belowOrigin: true,
             constrainWidth: false
         });
+        $('.tooltipped').tooltip({
+            delay: 20
+        });
     });
 </script>

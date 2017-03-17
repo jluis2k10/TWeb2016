@@ -2,6 +2,7 @@ package es.jperez2532.controllers;
 
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
+import es.jperez2532.repositories.AccountRepo;
 import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.services.UserService;
 import es.jperez2532.validator.AccountValidator;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,14 +32,23 @@ import java.util.List;
 public class HomeController extends MainController {
 
     @Autowired private UserService userService;
+    @Autowired private AccountRepo accountRepo;
     @Autowired private AccountValidator accountValidator;
     @Autowired private FilmRepo filmRepo;
 
     @RequestMapping("/")
-    public String home(Model model) {
+    public String home(Model model, Principal principal) {
+        Account account;
+        List<Film> watchlistFilms = null;
+        if (principal != null) {
+            account = accountRepo.findByUserName(principal.getName());
+            watchlistFilms = account.getWatchlist();
+        }
         Page<Film> lastFilms = filmRepo.findAll(new PageRequest(0, 6, Sort.Direction.DESC, "id"));
+
         List<String> idsCarousel = Arrays.asList("#one!", "#two!", "#three!", "#four!", "#five!", "#six!");
         model.addAttribute("lastFilms", lastFilms.getContent());
+        model.addAttribute("watchlistFilms", watchlistFilms);
         model.addAttribute("idsCarousel", idsCarousel);
 
         model.addAttribute("title", "PelisUNED");

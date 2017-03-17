@@ -1,7 +1,10 @@
 package es.jperez2532.entities;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Jose Luis on 18/02/2017.
@@ -29,7 +32,7 @@ public class Account {
     @Column(name = "Provincia", length = 25, nullable = false)
     private String provincia;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "Accounts_to_Roles",
                 joinColumns = {@JoinColumn(name = "account_id")},
                 inverseJoinColumns = {@JoinColumn(name = "role_id")})
@@ -38,12 +41,15 @@ public class Account {
     @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private List<Vote> accountVotes = new ArrayList<Vote>();
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "Watchlist",
+            joinColumns = {@JoinColumn(name = "account_id")},
+            inverseJoinColumns = {@JoinColumn(name = "film_id")})
+    private List<Film> watchlist = new ArrayList<Film>();
+
     // Sólo se utiliza a la hora de registrar una nueva cuenta
     @Transient
     private String passwordConfirm;
-
-    /*@Transient
-    private List<AccountRole> accountRolesList;*/
 
     public Long getId() {
         return id;
@@ -115,6 +121,14 @@ public class Account {
 
     public void setAccountVotes(List<Vote> accountVotes) {
         this.accountVotes = accountVotes;
+    }
+
+    public List<Film> getWatchlist() {
+        return watchlist;
+    }
+
+    public void setWatchlist(List<Film> watchlist) {
+        this.watchlist = watchlist;
     }
 
     @Override

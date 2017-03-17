@@ -3,6 +3,7 @@ package es.jperez2532.services;
 import es.jperez2532.components.ChangePassword;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.AccountRole;
+import es.jperez2532.entities.Film;
 import es.jperez2532.repositories.AccountRepo;
 import es.jperez2532.repositories.RoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +12,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * Created by Jose Luis on 20/02/2017.
  */
-public class MyUserService implements  UserService {
+public class MyUserService implements UserService {
 
     @Autowired private AccountRepo accountRepo;
     @Autowired private RoleRepo roleRepo;
@@ -57,6 +57,18 @@ public class MyUserService implements  UserService {
         if(account.getAccountRoles().isEmpty())
             account.setAccountRoles(accountRepo.findOne(account.getId()).getAccountRoles());
         this.save(account);
+    }
+
+    public void updateWatchlist(Account account) {
+        accountRepo.save(account);
+    }
+
+    public Set<Long> watchlistSet (Account account) {
+        Set<Long> watchlistSet = new HashSet<Long>();
+        for(Film film: account.getWatchlist()) {
+            watchlistSet.add(film.getId());
+        }
+        return watchlistSet;
     }
 
     public LinkedList<String> getProvincias() {

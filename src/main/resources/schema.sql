@@ -132,6 +132,15 @@ CREATE TABLE Votes (
   CONSTRAINT V_FK_Accounts FOREIGN KEY (account_id) REFERENCES Accounts (id)
 );
 
+drop table if exists Watchlist;
+CREATE TABLE Watchlist (
+  film_id BIGINT NOT NULL,
+  account_id BIGINT NOT NULL,
+  PRIMARY KEY (film_id, account_id),
+  CONSTRAINT W_FK_Films FOREIGN KEY (film_id) REFERENCES Films (id),
+  CONSTRAINT W_FK_Accounts FOREIGN KEY (account_id) REFERENCES Accounts (id)
+);
+
 drop table if EXISTS persistent_logins;
 CREATE TABLE persistent_logins (
   username VARCHAR(64) NOT NULL,

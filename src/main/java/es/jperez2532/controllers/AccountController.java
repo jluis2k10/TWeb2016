@@ -2,11 +2,13 @@ package es.jperez2532.controllers;
 
 import es.jperez2532.components.ChangePassword;
 import es.jperez2532.entities.Account;
-import es.jperez2532.repositories.AccountRepo;
+import es.jperez2532.entities.Film;
+import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.services.UserService;
 import es.jperez2532.validator.AccountValidator;
 import es.jperez2532.validator.EditPasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,27 +17,26 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.security.Principal;
 
 @Controller
 @EnableWebMvc
 @RequestMapping("/micuenta")
 public class AccountController extends MainController {
 
-    @Autowired private AccountRepo accountRepo;
     @Autowired private UserService userService;
     @Autowired private UserDetailsService userDetailsService;
     @Autowired private AccountValidator accountValidator;
     @Autowired private EditPasswordValidator editPasswordValidator;
+    @Autowired private FilmRepo filmRepo;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String editar(Model model) {
-        String accountUsername = userService.getPrincipal();
-        Account currentAccount = accountRepo.findByUserName(accountUsername);
+    public String editar(Model model, Principal principal) {
+        Account currentAccount = userService.findByUserName(principal.getName());
         ChangePassword changePassword = new ChangePassword();
         model.addAttribute("editarCuentaForm", currentAccount);
         model.addAttribute("provincias", userService.getProvincias());
@@ -66,6 +67,34 @@ public class AccountController extends MainController {
         SecurityContextHolder.getContext().setAuthentication(auth);
         redirectAttributes.addFlashAttribute("infoMsg", "Cuenta actualizada correctamente.");
         return("redirect:/");
+    }
+
+    @RequestMapping(value = "/milista", method = RequestMethod.GET)
+    public String miLista(Model model, Principal principal) {
+        Account account = userService.findByUserName(principal.getName());
+        model.addAttribute("films", account.getWatchlist());
+        model.addAttribute("title", "Lista de reproducción - PelisUNED");
+        return("micuenta/milista");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/milista/add", method = RequestMethod.GET)
+    public ResponseEntity<String> addWatchList (@RequestParam("film-id") Long filmId, Principal principal) {
+        Account account = userService.findByUserName(principal.getName());
+        Film film = filmRepo.findOne(filmId);
+        account.getWatchlist().add(film);
+        userService.updateWatchlist(account);
+        return ResponseEntity.ok("{}");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/milista/delete", method = RequestMethod.GET)
+    public ResponseEntity<String> deleteWatchList (@RequestParam("film-id") Long filmId, Principal principal) {
+        Account account = userService.findByUserName(principal.getName());
+        Film film = filmRepo.findOne(filmId);
+        account.getWatchlist().remove(film);
+        userService.updateWatchlist(account);
+        return ResponseEntity.ok("{}");
     }
 
     @RequestMapping("/listadereproduccion")

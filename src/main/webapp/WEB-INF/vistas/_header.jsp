@@ -3,10 +3,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- Etiquetas con información sobre el token csrf para utilizarlo en ajax POSTs -->
+    <%-- Etiquetas con información sobre el token csrf para utilizarlo en ajax POSTs --%>
     <meta name="_csrf" content="${_csrf.token}"/>
     <meta name="_csrf_header" content="${_csrf.headerName}"/>
     <link type="text/css" rel="stylesheet" href="${path}/css/custom.css"/>
+    <link type="text/css" rel="stylesheet" href="${path}/css/slick.css"/>
     <link type="text/css" rel="stylesheet" href="${path}/css/materialize.min.css"  media="screen,projection"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>${title}</title>
@@ -16,23 +17,24 @@
 <nav class="grey darken-3" role="navigation">
     <div class="nav-wrapper container">
         <a href="${path}/" class="left brand-logo"><img src="${path}/img/logo_pelis_uned.png"/></a>
-        <!-- Dropdown Structure -->
+        <!-- Dropdown Géneros -->
         <ul id="dropdown-gen" class="dropdown-content">
             <c:forEach items="${genresList}" var="genre" varStatus="loopStatus">
                 <li><a href="${path}/buscar?ref=genero&buscar=${genre.name}">${genre.name}</a></li>
                 ${!loopStatus.last ? '<li class="divider"></li>' : ''}
             </c:forEach>
-        </ul>
+        </ul><!-- /Dropdown Géneros -->
         <ul id="nav-mobile" class="main-menu hide-on-med-and-down">
             <li><a href="${path}/catalogo">Catálogo</a></li>
             <li><a class="dropdown-generos" href="#!" data-activates="dropdown-gen">Por Géneros<i class="material-icons right">arrow_drop_down</i></a></li>
             <li><a href="collapsible.html">Informe PED</a></li>
         </ul>
-        <!-- Dropdown Structure -->
+        <!-- Dropdown Cuenta -->
+        <sec:authorize access="isFullyAuthenticated()">
         <ul id="dropdown-acc" class="dropdown-content">
             <li><a href="${path}/micuenta">Mi cuenta</a></li>
             <li class="divider"></li>
-            <li><a href="${path}/micuenta/listadereproduccion">Mi Lista de reproducción</a></li>
+            <li><a href="${path}/micuenta/milista">Mi Lista de reproducción</a></li>
             <li class="divider"></li>
             <sec:authorize access="hasRole('ADMIN')">
                 <li><a href="${path}/admin">Panel de administración</a></li>
@@ -44,7 +46,8 @@
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
             </li>
-        </ul>
+        </ul><!-- /Dropdown cuenta -->
+        </sec:authorize>
         <ul class="right hide-on-med-and-down">
             <sec:authorize access="isAnonymous()">
                 <li><a href="${path}/login" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Administrador: admin/admin - Registrado: usuario/usuario"><i class="material-icons teal-text right">help_outline</i>Login</a></li>
