@@ -223,11 +223,10 @@ public class MyFilmService implements FilmService {
         results.put("vistas", vistas.getContent());
 
         // Recuperamos películas por género y las desordenamos antes de devolverlas
-        Page genre;
         Iterator<String> it = genres.iterator();
         while (it.hasNext()) {
             String nextGenre = it.next();
-            genre = filmRepo.findByFilmGenres_NameIgnoreCase(nextGenre, pageable);
+            Page<Film> genre = filmRepo.findByFilmGenres_NameIgnoreCase(nextGenre, pageable);
             List<Film> films = genre.getContent();
             List<Film> modificableFilms = new ArrayList<Film>(films);
             Collections.shuffle(modificableFilms, ThreadLocalRandom.current());

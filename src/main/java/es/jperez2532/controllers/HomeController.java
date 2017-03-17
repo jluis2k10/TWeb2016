@@ -2,7 +2,6 @@ package es.jperez2532.controllers;
 
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
-import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.services.FilmService;
 import es.jperez2532.services.UserService;
 import es.jperez2532.validator.AccountValidator;
@@ -25,7 +24,6 @@ public class HomeController extends MainController {
     @Autowired private UserService userService;
     @Autowired private FilmService filmService;
     @Autowired private AccountValidator accountValidator;
-    @Autowired private FilmRepo filmRepo;
 
     @RequestMapping("/")
     public String home(Model model, Principal principal) {

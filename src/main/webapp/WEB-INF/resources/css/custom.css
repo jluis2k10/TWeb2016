@@ -474,6 +474,38 @@ div.slick-films {
     position: relative;
 }
 
+div.player-container {
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+div.player-spin {
+    position: absolute;
+}
+div.player-background {
+    width: 100%;
+    min-height: 500px;
+    background: no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+}
+div.ply-bkg-cover {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    background-color: #000;
+    opacity: .7;
+}
+
 @font-face {
     font-family: 'Material Icons';
     font-style: normal;

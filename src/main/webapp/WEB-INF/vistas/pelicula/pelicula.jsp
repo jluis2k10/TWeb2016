@@ -85,7 +85,7 @@
             <div class="col s12 reproducir">
                 <div class="section"></div>
                 <sec:authorize access="isFullyAuthenticated()">
-                    <a class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">play_arrow</i></a>
+                    <a href="${path}/pelicula/ver/${film.id}/${film.title}" class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">play_arrow</i></a>
                     <span>Reproducir</span>
                 </sec:authorize>
                 <sec:authorize access="isAnonymous()">

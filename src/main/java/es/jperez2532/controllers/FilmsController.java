@@ -57,6 +57,16 @@ public class FilmsController extends MainController {
         return "pelicula/pelicula";
     }
 
+    @RequestMapping("/pelicula/ver/{id}/*")
+    public String viewFilm(@PathVariable("id") Long id, Model model) {
+        Film film = filmRepo.findOne(id);
+        film.setViews(film.getViews()+1);
+        filmService.update(film);
+        model.addAttribute("film", film);
+        model.addAttribute("title", film.getTitle());
+        return "pelicula/reproducir";
+    }
+
     @RequestMapping("/catalogo")
     public String catalogo(Model model, Pageable pageable, Principal principal,
                            @RequestParam(value = "buscar", required = false) String buscar) {
