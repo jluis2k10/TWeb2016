@@ -3,12 +3,10 @@ package es.jperez2532.controllers;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.repositories.FilmRepo;
+import es.jperez2532.services.FilmService;
 import es.jperez2532.services.UserService;
 import es.jperez2532.validator.AccountValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,13 +17,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class HomeController extends MainController {
 
     @Autowired private UserService userService;
+    @Autowired private FilmService filmService;
     @Autowired private AccountValidator accountValidator;
     @Autowired private FilmRepo filmRepo;
 
@@ -33,15 +31,18 @@ public class HomeController extends MainController {
     public String home(Model model, Principal principal) {
         Account account;
         List<Film> watchlistFilms = null;
+        Map<String, Collection<Film>> homePageFilms;
         if (principal != null) {
             account = userService.findByUserName(principal.getName());
             watchlistFilms = account.getWatchlist();
         }
-        Page<Film> lastFilms = filmRepo.findAll(new PageRequest(0, 6, Sort.Direction.DESC, "id"));
+        Set<String> randomGenres = filmService.getRandomGenres(2);
+        homePageFilms = filmService.findHomePageFilms(15, randomGenres);
 
         List<String> idsCarousel = Arrays.asList("#one!", "#two!", "#three!", "#four!", "#five!", "#six!");
-        model.addAttribute("lastFilms", lastFilms.getContent());
         model.addAttribute("watchlistFilms", watchlistFilms);
+        model.addAttribute("randomGenres", randomGenres);
+        model.addAttribute("homePageFilms", homePageFilms);
         model.addAttribute("idsCarousel", idsCarousel);
 
         model.addAttribute("title", "PelisUNED");

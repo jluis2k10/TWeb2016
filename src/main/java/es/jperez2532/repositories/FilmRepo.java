@@ -27,4 +27,7 @@ public interface FilmRepo extends JpaRepository<Film, Long> {
     Set<Film> findByFilmCountries_NameIgnoreCase(String country);
     Set<Film> findByDescriptionIgnoreCaseContaining(String description);
     Set<Film> findByYear(String year);
+
+    Page<Film> findAllByOrderByScoreDesc(Pageable pageable);
+    Page<Film> findAllByOrderByViewsDesc(Pageable pageable);
 }

@@ -3,7 +3,6 @@ package es.jperez2532.services;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.entities.Vote;
-import es.jperez2532.repositories.AccountRepo;
 import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.repositories.VoteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,10 @@ import java.util.Map;
 @Service
 public class MyVotesService implements VotesService {
 
-    @Autowired private AccountRepo accountRepo;
+    @Autowired private UserService userService;
     @Autowired private VoteRepo voteRepo;
     @Autowired private FilmRepo filmRepo;
+    @Autowired private FilmService filmService;
 
     /**
      * Aseguramos que el voto recibido es válido.
@@ -39,7 +39,7 @@ public class MyVotesService implements VotesService {
         Map<String, String> pathVariables = antPathMatcher.extractUriTemplateVariables(pathFormat, urlPath);
 
         // Recuperar usuario que ha hecho la petición
-        Account account = accountRepo.findByUserName(username);
+        Account account = userService.findByUserName(username);
 
         // Comprobar que el voto coincide
         if (vote.getId().getFilmId() != Long.parseLong(pathVariables.get("id")) ||
@@ -77,7 +77,7 @@ public class MyVotesService implements VotesService {
             film.setNvotes(oldNvotes + 1);
         }
         BigDecimal scaled = film.getScore().setScale(0, BigDecimal.ROUND_HALF_UP);
-        filmRepo.save(film);
+        filmService.update(film);
         voteRepo.save(newVote);
 
         String response = "{\"myScore\": \"" + newVote.getScore() + "\", " +

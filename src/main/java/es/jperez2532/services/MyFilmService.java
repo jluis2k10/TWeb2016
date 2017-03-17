@@ -5,10 +5,7 @@ import es.jperez2532.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletContext;
@@ -19,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.BreakIterator;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class MyFilmService implements FilmService {
@@ -29,7 +27,7 @@ public class MyFilmService implements FilmService {
     @Autowired private ActorRepo actorRepo;
     @Autowired private CountryRepo countryRepo;
 
-    @CacheEvict(value = "searchFilm", allEntries = true)
+    @CacheEvict(value = {"searchFilm", "homePageFilms"}, allEntries = true)
     public void save(Film film) {
         // Comprobar Géneros
         if (!film.getFilmGenres().isEmpty()) {
@@ -78,7 +76,7 @@ public class MyFilmService implements FilmService {
         filmRepo.save(film);
     }
 
-    @CacheEvict(value = "searchFilm", allEntries = true)
+    @CacheEvict(value = {"searchFilm", "homePageFilms"}, allEntries = true)
     public boolean delete (Film film, ServletContext servletContext) {
         try {
             Path path = Paths.get(servletContext.getRealPath("/") +
@@ -90,6 +88,11 @@ public class MyFilmService implements FilmService {
             filmRepo.delete(film);
         }
         return true;
+    }
+
+    @CacheEvict(value = {"searchFilm", "homePageFilms"}, allEntries = true)
+    public void update(Film film) {
+        filmRepo.save(film);
     }
 
     /**
@@ -183,7 +186,7 @@ public class MyFilmService implements FilmService {
                 pageable, resultsList.size());
     }
 
-    @CacheEvict(value = "searchFilm", allEntries = true)
+    @CacheEvict(value = {"searchFilm", "homePageFilms"}, allEntries = true)
     public BigDecimal reDoVotes(Film film) {
         int count = 0;
         BigDecimal fScore = new BigDecimal(0);
@@ -196,6 +199,42 @@ public class MyFilmService implements FilmService {
         film.setNvotes(count);
         filmRepo.save(film);
         return fScore;
+    }
+
+    @Cacheable(value = "homePageFilms")
+    public Set<String> getRandomGenres(int limit) {
+        Set<String> results = new HashSet<String>();
+        List<Genre> genres = genreRepo.findAllByOrderByNameAsc();
+        while (results.size() < limit && results.size() < genres.size())
+            results.add(genres.get(ThreadLocalRandom.current().nextInt(genres.size())).getName());
+        return results;
+    }
+
+    @Cacheable(value = "homePageFilms")
+    public Map<String, Collection<Film>> findHomePageFilms(int limit, Set<String> genres) {
+        Map<String, Collection<Film>> results = new HashMap<String, Collection<Film>>();
+        Pageable pageable = new PageRequest(0, limit );
+
+        Page<Film> lastFilms = filmRepo.findAll(new PageRequest(0, 6, Sort.Direction.DESC, "id"));
+        Page<Film> valoradas = filmRepo.findAllByOrderByScoreDesc(pageable);
+        Page<Film> vistas = filmRepo.findAllByOrderByViewsDesc(pageable);
+        results.put("ultimas", lastFilms.getContent());
+        results.put("valoradas", valoradas.getContent());
+        results.put("vistas", vistas.getContent());
+
+        // Recuperamos películas por género y las desordenamos antes de devolverlas
+        Page genre;
+        Iterator<String> it = genres.iterator();
+        while (it.hasNext()) {
+            String nextGenre = it.next();
+            genre = filmRepo.findByFilmGenres_NameIgnoreCase(nextGenre, pageable);
+            List<Film> films = genre.getContent();
+            List<Film> modificableFilms = new ArrayList<Film>(films);
+            Collections.shuffle(modificableFilms, ThreadLocalRandom.current());
+            results.put(nextGenre, modificableFilms);
+        }
+
+        return results;
     }
 
     /**

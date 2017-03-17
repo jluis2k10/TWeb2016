@@ -15,7 +15,7 @@
                     <i class="material-icons medium">chevron_right</i>
                 </a>
             </div>
-        <c:forEach var="film" items="${lastFilms}" varStatus="loop">
+        <c:forEach var="film" items="${homePageFilms['ultimas']}" varStatus="loop">
             <div class="carousel-item" href="${idsCarousel[loop.index]}">
                 <div class="col s12 carousel-content valign-wrapper">
                     <div class="col s5 offset-s2">
@@ -41,9 +41,9 @@
 <!-- Películas en lista de reproducción -->
 <div class="row">
     <div class="col s12">
-        <h6>En mi lista de reproducción<span><a href="${path}/micuenta/milista">Editar</a></span></h6>
+        <h6>En mi lista de reproducción<span class="right"><a href="${path}/micuenta/milista">Editar</a></span></h6>
     </div>
-    <div class="col s12 watchlist">
+    <div class="col s12 films-slider">
         <c:forEach var="film" items="${watchlistFilms}">
             <div class="slick-films">
                 <a href="${path}/pelicula/${film.id}/${film.title}" class="tooltipped" data-tooltip="${film.title}">
@@ -54,6 +54,54 @@
     </div>
 </div><!-- /Películas en lista de reproducción -->
 </c:if>
+<!-- Películas más vistas -->
+<div class="row section">
+    <div class="col s12">
+        <h6>Más vistas</h6>
+    </div>
+    <div class="col s12 films-slider">
+        <c:forEach var="film" items="${homePageFilms['vistas']}">
+            <div class="slick-films">
+                <a href="${path}/pelicula/${film.id}/${film.title}" class="tooltipped" data-tooltip="${film.title}">
+                    <img class="z-depth-2" src="${path}/img/posters/${film.poster}" height="210"/>
+                </a>
+            </div>
+        </c:forEach>
+    </div>
+</div><!-- /Películas más vistas -->
+<!-- Películas mejor valoradas -->
+<div class="row section">
+    <div class="col s12">
+        <h6>Mejor valoradas</h6>
+    </div>
+    <div class="col s12 films-slider">
+        <c:forEach var="film" items="${homePageFilms['valoradas']}">
+            <div class="slick-films">
+                <a href="${path}/pelicula/${film.id}/${film.title}" class="tooltipped" data-tooltip="${film.title}">
+                    <img class="z-depth-2" src="${path}/img/posters/${film.poster}" height="210"/>
+                </a>
+            </div>
+        </c:forEach>
+    </div>
+</div><!-- /Películas mejor valoradas -->
+<!-- Películas por géneros -->
+<c:forEach var="genre" items="${randomGenres}">
+<div class="row section">
+    <div class="col s12">
+        <h6>En ${genre}<span><a href="${path}/buscar?ref=genero&buscar=${genre}">Ver todas</a></span></h6>
+    </div>
+    <div class="col s12 films-slider">
+        <c:forEach var="film" items="${homePageFilms[genre]}">
+            <div class="slick-films">
+                <a href="${path}/pelicula/${film.id}/${film.title}" class="tooltipped" data-tooltip="${film.title}">
+                    <img class="z-depth-2" src="${path}/img/posters/${film.poster}" height="210"/>
+                </a>
+            </div>
+        </c:forEach>
+    </div>
+</div>
+</c:forEach><!-- /Películas por géneros -->
+
 
 <%@ include file="_js.jsp"%>
 <script type="text/javascript" src="${path}/js/slick.min.js"></script>
@@ -64,7 +112,7 @@
         });
         myInterval();
 
-        $('.watchlist').slick({
+        $('.films-slider').slick({
             infinite: false,
             slidesToShow: 7,
             variableWidth: true

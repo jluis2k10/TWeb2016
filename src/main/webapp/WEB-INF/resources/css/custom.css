@@ -15,7 +15,8 @@ h6 {
 }
 
 h6 span {
-    float: right;
+    margin-left: 20px;
+    font-size: .9rem;
 }
 
 div.row.no-margin {
