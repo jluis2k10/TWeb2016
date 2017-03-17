@@ -2,7 +2,6 @@ package es.jperez2532.controllers;
 
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
-import es.jperez2532.repositories.AccountRepo;
 import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.services.UserService;
 import es.jperez2532.validator.AccountValidator;
@@ -16,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,15 +22,10 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by Jose Luis on 18/02/2017.
- */
 @Controller
-@EnableWebMvc
 public class HomeController extends MainController {
 
     @Autowired private UserService userService;
-    @Autowired private AccountRepo accountRepo;
     @Autowired private AccountValidator accountValidator;
     @Autowired private FilmRepo filmRepo;
 
@@ -41,7 +34,7 @@ public class HomeController extends MainController {
         Account account;
         List<Film> watchlistFilms = null;
         if (principal != null) {
-            account = accountRepo.findByUserName(principal.getName());
+            account = userService.findByUserName(principal.getName());
             watchlistFilms = account.getWatchlist();
         }
         Page<Film> lastFilms = filmRepo.findAll(new PageRequest(0, 6, Sort.Direction.DESC, "id"));

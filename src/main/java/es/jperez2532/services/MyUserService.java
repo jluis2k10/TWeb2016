@@ -12,11 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
-/**
- * Created by Jose Luis on 20/02/2017.
- */
 public class MyUserService implements UserService {
 
     @Autowired private AccountRepo accountRepo;
@@ -63,7 +62,7 @@ public class MyUserService implements UserService {
         accountRepo.save(account);
     }
 
-    public Set<Long> watchlistSet (Account account) {
+    public Set<Long> makeWatchlistSet (Account account) {
         Set<Long> watchlistSet = new HashSet<Long>();
         for(Film film: account.getWatchlist()) {
             watchlistSet.add(film.getId());
@@ -128,10 +127,8 @@ public class MyUserService implements UserService {
         return provincias;
     }
 
-    // TODO: ¿es necesario? ya tenemos findByUserName en accountRepo...
     @Override
     public Account findByUserName(String userName) {
         return accountRepo.findByUserName(userName);
     }
-
 }

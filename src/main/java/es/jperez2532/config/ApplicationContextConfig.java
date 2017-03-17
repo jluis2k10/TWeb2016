@@ -10,9 +10,6 @@ import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-/**
- * Created by Jose Luis on 18/02/2017.
- */
 @Configuration
 @ComponentScan(value = "es.jperez2532.*")
 public class ApplicationContextConfig {

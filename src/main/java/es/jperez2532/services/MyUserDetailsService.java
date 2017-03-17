@@ -2,7 +2,6 @@ package es.jperez2532.services;
 
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.AccountRole;
-import es.jperez2532.repositories.AccountRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,12 +22,12 @@ import java.util.List;
 public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private AccountRepo accountRepo;
+    private UserService userService;
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountRepo.findByUserName(username);
+        Account account = userService.findByUserName(username);
         System.err.println("loadUser: " + account);
         if(account == null)
             throw new UsernameNotFoundException("Username not found");

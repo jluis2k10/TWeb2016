@@ -17,7 +17,7 @@ public interface UserService {
     String getPrincipal();
     void update(Account account, ChangePassword changePassword);
     void updateWatchlist(Account account);
-    Set<Long> watchlistSet (Account account);
+    Set<Long> makeWatchlistSet (Account account);
     LinkedList<String> getProvincias();
     Account findByUserName(String userName);
 
