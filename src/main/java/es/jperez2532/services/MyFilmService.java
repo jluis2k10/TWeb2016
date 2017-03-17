@@ -186,6 +186,36 @@ public class MyFilmService implements FilmService {
                 pageable, resultsList.size());
     }
 
+    // Si cacheo esto empiezan errores en hibernate
+    public Film findOne(Long id) {
+        return filmRepo.findOne(id);
+    }
+
+    @Cacheable(value = "searchFilm")
+    public Page<Film> findAll(Pageable pageable) {
+        return filmRepo.findAll(pageable);
+    }
+
+    @Cacheable(value = "searchFilm")
+    public Page<Film> findByGenre(String genre, Pageable pageable) {
+        return filmRepo.findByFilmGenres_NameIgnoreCase(genre, pageable);
+    }
+
+    @Cacheable(value = "searchFilm")
+    public Page<Film> findByDirector(String director, Pageable pageable) {
+        return filmRepo.findByFilmDirectors_NameIgnoreCase(director, pageable);
+    }
+
+    @Cacheable(value = "searchFilm")
+    public Page<Film> findByActor(String actor, Pageable pageable) {
+        return filmRepo.findDistinctByFilmStars_NameIgnoreCaseOrFilmSupportings_NameIgnoreCase(actor, actor, pageable);
+    }
+
+    @Cacheable(value = "searchFilm")
+    public Page<Film> findByCountry(String country, Pageable pageable) {
+        return filmRepo.findByFilmCountries_NameIgnoreCase(country, pageable);
+    }
+
     @CacheEvict(value = {"searchFilm", "homePageFilms"}, allEntries = true)
     public BigDecimal reDoVotes(Film film) {
         int count = 0;

@@ -17,7 +17,7 @@ public class CacheConfiguration {
     CacheManager cacheManager() {
         SimpleCacheManager simpleCacheManager = new SimpleCacheManager();
         simpleCacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("searchFilm"),
-                new ConcurrentMapCache("homePageFilms")));
+                new ConcurrentMapCache("homePageFilms"), new ConcurrentMapCache("findFilm")));
         return simpleCacheManager;
     }
 

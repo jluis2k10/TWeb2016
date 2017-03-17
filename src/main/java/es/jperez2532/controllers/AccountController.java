@@ -3,7 +3,7 @@ package es.jperez2532.controllers;
 import es.jperez2532.components.ChangePassword;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
-import es.jperez2532.repositories.FilmRepo;
+import es.jperez2532.services.FilmService;
 import es.jperez2532.services.UserService;
 import es.jperez2532.validator.AccountValidator;
 import es.jperez2532.validator.EditPasswordValidator;
@@ -30,7 +30,7 @@ public class AccountController extends MainController {
     @Autowired private UserDetailsService userDetailsService;
     @Autowired private AccountValidator accountValidator;
     @Autowired private EditPasswordValidator editPasswordValidator;
-    @Autowired private FilmRepo filmRepo;
+    @Autowired private FilmService filmService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String editar(Model model, Principal principal) {
@@ -79,7 +79,7 @@ public class AccountController extends MainController {
     @RequestMapping(value = "/milista/add", method = RequestMethod.GET)
     public ResponseEntity<String> addWatchList (@RequestParam("film-id") Long filmId, Principal principal) {
         Account account = userService.findByUserName(principal.getName());
-        Film film = filmRepo.findOne(filmId);
+        Film film = filmService.findOne(filmId);
         account.getWatchlist().add(film);
         userService.updateWatchlist(account);
         return ResponseEntity.ok("{}");
@@ -89,7 +89,7 @@ public class AccountController extends MainController {
     @RequestMapping(value = "/milista/delete", method = RequestMethod.GET)
     public ResponseEntity<String> deleteWatchList (@RequestParam("film-id") Long filmId, Principal principal) {
         Account account = userService.findByUserName(principal.getName());
-        Film film = filmRepo.findOne(filmId);
+        Film film = filmService.findOne(filmId);
         account.getWatchlist().remove(film);
         userService.updateWatchlist(account);
         return ResponseEntity.ok("{}");

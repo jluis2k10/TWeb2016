@@ -3,7 +3,6 @@ package es.jperez2532.controllers;
 import es.jperez2532.entities.Film;
 import es.jperez2532.entities.Vote;
 import es.jperez2532.entities.VotePK;
-import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.repositories.VoteRepo;
 import es.jperez2532.services.FilmService;
 import es.jperez2532.services.UserService;
@@ -29,14 +28,13 @@ public class FilmsController extends MainController {
 
     @Autowired private UserService userService;
     @Autowired private FilmService filmService;
-    @Autowired private FilmRepo filmRepo;
     @Autowired private VoteRepo voteRepo;
 
     @Transactional // TODO: estudiar qué significa transctional para recuperar entity con lazy-loading
     @RequestMapping(value = "/pelicula/{id}/*", method = RequestMethod.GET)
     public String pelicula(@PathVariable("id") Long id, Principal principal, Model model) {
         Set<Long> userWatchlist = new HashSet<Long>();
-        Film film = filmRepo.getOne(id);
+        Film film = filmService.findOne(id);
         Long userId = null;
         int myScore = 0;
 
@@ -59,7 +57,7 @@ public class FilmsController extends MainController {
 
     @RequestMapping("/pelicula/ver/{id}/*")
     public String viewFilm(@PathVariable("id") Long id, Model model) {
-        Film film = filmRepo.findOne(id);
+        Film film = filmService.findOne(id);
         film.setViews(film.getViews()+1);
         filmService.update(film);
         model.addAttribute("film", film);
@@ -84,7 +82,7 @@ public class FilmsController extends MainController {
             model.addAttribute("headTitle", page.getTotalElements() + " resultado" +
                     (page.getTotalElements() > 1 ? "s" : "") + " para: <em>" + buscar + "</em>");
         } else {
-            page = filmRepo.findAll(pageable);
+            page = filmService.findAll(pageable);
         }
 
         if (page.getTotalElements() != 0) {
@@ -115,16 +113,16 @@ public class FilmsController extends MainController {
 
         switch (ref) {
             case "genero":
-                page = filmRepo.findByFilmGenres_NameIgnoreCase(buscar, pageable);
+                page = filmService.findByGenre(buscar, pageable);
                 break;
             case "director":
-                page = filmRepo.findByFilmDirectors_NameIgnoreCase(buscar, pageable);
+                page = filmService.findByDirector(buscar, pageable);
                 break;
             case "actor":
-                page = filmRepo.findDistinctByFilmStars_NameIgnoreCaseOrFilmSupportings_NameIgnoreCase(buscar, buscar, pageable);
+                page = filmService.findByActor(buscar, pageable);
                 break;
             case "pais":
-                page = filmRepo.findByFilmCountries_NameIgnoreCase(buscar, pageable);
+                page = filmService.findByCountry(buscar, pageable);
                 break;
         }
 

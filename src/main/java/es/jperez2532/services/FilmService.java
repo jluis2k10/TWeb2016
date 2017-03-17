@@ -17,6 +17,14 @@ public interface FilmService {
     void save(Film film);
     boolean delete(Film film, ServletContext servletContext) throws RuntimeException;
     void update(Film film);
+
+    Film findOne(Long id);
+    Page<Film> findAll(Pageable pageable);
+    Page<Film> findByGenre(String genre, Pageable pageable);
+    Page<Film> findByDirector(String director, Pageable pageable);
+    Page<Film> findByActor(String actor, Pageable pageable);
+    Page<Film> findByCountry(String country, Pageable pageable);
+
     BigDecimal reDoVotes(Film film);
     Page<Film> search(String term, Pageable pageable);
     Set<String> getRandomGenres(int limit);

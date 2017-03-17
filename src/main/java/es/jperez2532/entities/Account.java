@@ -32,16 +32,16 @@ public class Account {
     @Column(name = "Provincia", length = 25, nullable = false)
     private String provincia;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinTable(name = "Accounts_to_Roles",
                 joinColumns = {@JoinColumn(name = "account_id")},
                 inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private Set<AccountRole> accountRoles = new HashSet<AccountRole>();
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, orphanRemoval = true, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     private List<Vote> accountVotes = new ArrayList<Vote>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
     @JoinTable(name = "Watchlist",
             joinColumns = {@JoinColumn(name = "account_id")},
             inverseJoinColumns = {@JoinColumn(name = "film_id")})

@@ -34,7 +34,6 @@ public class RESTController {
     /**
      * Resupuesta Ajax (json) a la acción de votar/calificar una película por parte de un usuario
      */
-    //@Transactional
     @RequestMapping(value = "/votar", method = RequestMethod.POST, consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
     public ResponseEntity<String> processVote(@RequestBody Vote vote, HttpServletRequest request, Principal principal) {
         // Comprobar voto válido
