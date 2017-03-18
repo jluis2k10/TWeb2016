@@ -17,6 +17,7 @@ public interface FilmService {
     void save(Film film);
     boolean delete(Film film, ServletContext servletContext) throws RuntimeException;
     void update(Film film);
+    void updateViews(Film film);
 
     Film findOne(Long id);
     Page<Film> findAll(Pageable pageable);

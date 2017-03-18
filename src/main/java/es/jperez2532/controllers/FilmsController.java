@@ -59,7 +59,7 @@ public class FilmsController extends MainController {
     public String viewFilm(@PathVariable("id") Long id, Model model) {
         Film film = filmService.findOne(id);
         film.setViews(film.getViews()+1);
-        filmService.update(film);
+        filmService.updateViews(film);
         model.addAttribute("film", film);
         model.addAttribute("title", film.getTitle());
         return "pelicula/reproducir";

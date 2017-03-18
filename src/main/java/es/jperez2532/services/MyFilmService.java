@@ -26,6 +26,12 @@ import java.util.concurrent.ThreadLocalRandom;
  *  - homePageFilms: almacena los resultados que se muestran en la portada
  *  - allFilms: almacena los resultados que se muestran en el catálogo/buscar por término
  *  - film: almacena películas una por una
+ *
+ * La caché de la portada se regenera con cualquier cambio que se haga a cualquier
+ * película, incluyendo votos y reproducciones. Es decir todos los usuarios verán la misma
+ * portada hasta que se produzca algún cambio en alguna película.
+ * La caché de allFilms que guarda las búsquedas NO SE REGENRA al reproducir una
+ * película.
  */
 @Service
 public class MyFilmService implements FilmService {
@@ -105,11 +111,34 @@ public class MyFilmService implements FilmService {
         return true;
     }
 
+    /**
+     * Actualizar película en BBDD.
+     * Necesario refrescar todas las cachés para que no contengan información
+     * desactualizada.
+     * @param film
+     */
     @Caching(evict = {
             @CacheEvict(value = "homePageFilms", allEntries = true),
-            @CacheEvict(value = "film", key = "#film.id")
-    })
+            @CacheEvict(value = "allFilms", allEntries = true),
+            @CacheEvict(value = "film", key = "#film.id")})
     public void update(Film film) {
+        filmRepo.save(film);
+    }
+
+    /**
+     * Actualizar película en BBDD.
+     * Este método se utiliza únicamente para actualizar la información acerca del
+     * número de reproducciones de la película ya que no es necesario refrescar la
+     * caché de resultados porque ellos no se da la opción de ordenar por número
+     * de reproducciones.
+     * Si utilizáramos el método update() en su lugar estaríamos eliminando datos
+     * de la caché de forma innecesaria.
+     * @param film
+     */
+    @Caching(evict = {
+            @CacheEvict(value = "homePageFilms", allEntries = true),
+            @CacheEvict(value = "film", key = "#film.id")})
+    public void updateViews(Film film) {
         filmRepo.save(film);
     }
 
@@ -237,6 +266,7 @@ public class MyFilmService implements FilmService {
 
     @Caching(evict = {
             @CacheEvict(value = "homePageFilms", allEntries = true),
+            @CacheEvict(value = "allFilms", allEntries = true),
             @CacheEvict(value = "film", key = "#film.id")})
     public BigDecimal reDoVotes(Film film) {
         int count = 0;
