@@ -7,12 +7,14 @@ import es.jperez2532.entities.Film;
 import es.jperez2532.repositories.AccountRepo;
 import es.jperez2532.repositories.RoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -21,6 +23,7 @@ public class MyUserService implements UserService {
     @Autowired private AccountRepo accountRepo;
     @Autowired private RoleRepo roleRepo;
     @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired private FilmService filmService;
 
     @Override
     public void save(Account account) {
@@ -58,7 +61,24 @@ public class MyUserService implements UserService {
         this.save(account);
     }
 
-    public void updateWatchlist(Account account) {
+    // OJO: si no se elimina aquí la caché que almacena la película antes de
+    // insertarla en la watchlist surgen conflictos
+    @CacheEvict(value = "film", key = "#filmId")
+    public void addToWatchlist(String username, Long filmId) {
+        Account account = this.findByUserName(username);
+        account.getWatchlist().add(filmService.findOne(filmId));
+        accountRepo.save(account);
+    }
+
+    public void deleteFromWatchlist(String username, Long filmId) {
+        Account account = this.findByUserName(username);
+        Iterator<Film> it = account.getWatchlist().iterator();
+        while (it.hasNext()) {
+            if (it.next().getId() == filmId) {
+                it.remove();
+                break;
+            }
+        }
         accountRepo.save(account);
     }
 

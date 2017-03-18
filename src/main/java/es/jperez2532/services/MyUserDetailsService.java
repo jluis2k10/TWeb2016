@@ -15,9 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Jose Luis on 20/02/2017.
- */
 @Service("myUserDetailsService")
 public class MyUserDetailsService implements UserDetailsService {
 

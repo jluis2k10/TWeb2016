@@ -22,12 +22,10 @@
         <ul id="dropdown-acc" class="dropdown-content">
             <li><a href="${path}/micuenta">Mi cuenta</a></li>
             <li class="divider"></li>
-            <li><a href="${path}/micuenta/listadereproduccion">Mi Lista de reproducción</a></li>
+            <li><a href="${path}/micuenta/milista">Mi Lista de reproducción</a></li>
             <li class="divider"></li>
-            <sec:authorize access="hasRole('ADMIN')">
-                <li><a href="${path}/admin">Panel de administración</a></li>
-                <li class="divider"></li>
-            </sec:authorize>
+            <li><a href="${path}/admin">Panel de administración</a></li>
+            <li class="divider"></li>
             <li>
                 <a href="#" onclick="document.getElementById('logout-form').submit()"">Cerrar sesión</a>
                 <form action="${path}/logout" method="POST" id="logout-form">

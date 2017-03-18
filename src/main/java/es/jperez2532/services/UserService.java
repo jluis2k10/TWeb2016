@@ -16,7 +16,8 @@ public interface UserService {
     void save(Account account);
     String getPrincipal();
     void update(Account account, ChangePassword changePassword);
-    void updateWatchlist(Account account);
+    void addToWatchlist(String username, Long filmId);
+    void deleteFromWatchlist(String username, Long filmId);
     Set<Long> makeWatchlistSet (Account account);
     LinkedList<String> getProvincias();
     Account findByUserName(String userName);

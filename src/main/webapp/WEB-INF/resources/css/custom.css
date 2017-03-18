@@ -13,10 +13,30 @@ ul > ul {
 h6 {
     margin-bottom: 1rem !important;
 }
-
 h6 span {
     margin-left: 20px;
     font-size: .9rem;
+}
+
+a {
+    color: #039be5;
+    -o-transition: .3s ease-out;
+    -ms-transition: .3s ease-out;
+    -moz-transition: .3s ease-out;
+    -webkit-transition: .3s ease-out;
+    transition: .3s ease-out;
+}
+a:hover {
+    color: #20b7e5;
+}
+nav ul a:hover {
+    color: white;
+}
+.dropdown-content li > a:hover {
+    color: #26a69a;
+}
+.btn:hover, .btn-large:hover, .btn-flat:hover {
+    color: white;
 }
 
 div.row.no-margin {
@@ -428,6 +448,15 @@ div.catalog .card-action span {
 }
 div.catalog .card-action .btn-watchlist {
     margin-left: 35px;
+}
+
+div.films-slider {
+    display: flex;
+    display: -webkit-flex;
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    justify-content: flex-start;
+    -webkit-justify-content: center;
 }
 
 div.wl-container {

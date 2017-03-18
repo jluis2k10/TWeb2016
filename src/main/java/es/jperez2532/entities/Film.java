@@ -234,17 +234,10 @@ public class Film {
         return "Film{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", duration=" + duration +
-                ", year=" + year +
-                ", poster='" + poster + '\'' +
-                ", rating='" + rating + '\'' +
-                ", trailer='" + trailer + '\'' +
+                ", year='" + year + '\'' +
+                ", score=" + score +
+                ", views=" + views +
                 ", filmGenres=" + filmGenres +
-                ", filmDirectors=" + filmDirectors +
-                ", filmStars=" + filmStars +
-                ", filmSupportings=" + filmSupportings +
-                ", filmCountries=" + filmCountries +
                 '}';
     }
 

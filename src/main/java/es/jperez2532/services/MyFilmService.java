@@ -5,6 +5,7 @@ import es.jperez2532.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,14 @@ import java.text.BreakIterator;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Servicios para operaciones con películas.
+ *
+ * Todos los resultados de consultas a la BBDD se guardan en tres cachés:
+ *  - homePageFilms: almacena los resultados que se muestran en la portada
+ *  - allFilms: almacena los resultados que se muestran en el catálogo/buscar por término
+ *  - film: almacena películas una por una
+ */
 @Service
 public class MyFilmService implements FilmService {
 
@@ -27,7 +36,10 @@ public class MyFilmService implements FilmService {
     @Autowired private ActorRepo actorRepo;
     @Autowired private CountryRepo countryRepo;
 
-    @CacheEvict(value = {"searchFilm", "homePageFilms"}, allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "homePageFilms", allEntries = true),
+            @CacheEvict(value = "allFilms", allEntries = true),
+            @CacheEvict(value = "film", key = "#film.id")})
     public void save(Film film) {
         // Comprobar Géneros
         if (!film.getFilmGenres().isEmpty()) {
@@ -76,7 +88,10 @@ public class MyFilmService implements FilmService {
         filmRepo.save(film);
     }
 
-    @CacheEvict(value = {"searchFilm", "homePageFilms"}, allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "homePageFilms", allEntries = true),
+            @CacheEvict(value = "allFilms", allEntries = true),
+            @CacheEvict(value = "film", key = "#film.id")})
     public boolean delete (Film film, ServletContext servletContext) {
         try {
             Path path = Paths.get(servletContext.getRealPath("/") +
@@ -90,7 +105,10 @@ public class MyFilmService implements FilmService {
         return true;
     }
 
-    @CacheEvict(value = {"searchFilm", "homePageFilms"}, allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "homePageFilms", allEntries = true),
+            @CacheEvict(value = "film", key = "#film.id")
+    })
     public void update(Film film) {
         filmRepo.save(film);
     }
@@ -114,7 +132,7 @@ public class MyFilmService implements FilmService {
      *                 página y modo de ordenación)
      * @return Página con los resultados ordenados
      */
-    @Cacheable(value = "searchFilm")
+    @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> search(String term, Pageable pageable) {
         // Separamos el término en palabras en caso de que sea una frase, para así poder
         // buscar también por cada una de estas palabras (mínimo 4 letras por palabra)
@@ -187,36 +205,39 @@ public class MyFilmService implements FilmService {
     }
 
     // Si cacheo esto empiezan errores en hibernate
+    @Cacheable(value = "film", key = "#id")
     public Film findOne(Long id) {
         return filmRepo.findOne(id);
     }
 
-    @Cacheable(value = "searchFilm")
+    @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findAll(Pageable pageable) {
         return filmRepo.findAll(pageable);
     }
 
-    @Cacheable(value = "searchFilm")
+    @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findByGenre(String genre, Pageable pageable) {
         return filmRepo.findByFilmGenres_NameIgnoreCase(genre, pageable);
     }
 
-    @Cacheable(value = "searchFilm")
+    @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findByDirector(String director, Pageable pageable) {
         return filmRepo.findByFilmDirectors_NameIgnoreCase(director, pageable);
     }
 
-    @Cacheable(value = "searchFilm")
+    @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findByActor(String actor, Pageable pageable) {
         return filmRepo.findDistinctByFilmStars_NameIgnoreCaseOrFilmSupportings_NameIgnoreCase(actor, actor, pageable);
     }
 
-    @Cacheable(value = "searchFilm")
+    @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findByCountry(String country, Pageable pageable) {
         return filmRepo.findByFilmCountries_NameIgnoreCase(country, pageable);
     }
 
-    @CacheEvict(value = {"searchFilm", "homePageFilms"}, allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(value = "homePageFilms", allEntries = true),
+            @CacheEvict(value = "film", key = "#film.id")})
     public BigDecimal reDoVotes(Film film) {
         int count = 0;
         BigDecimal fScore = new BigDecimal(0);
@@ -231,7 +252,7 @@ public class MyFilmService implements FilmService {
         return fScore;
     }
 
-    @Cacheable(value = "homePageFilms")
+    @Cacheable(value = "homePageFilms", keyGenerator = "filmsKey")
     public Set<String> getRandomGenres(int limit) {
         Set<String> results = new HashSet<String>();
         List<Genre> genres = genreRepo.findAllByOrderByNameAsc();
@@ -240,7 +261,7 @@ public class MyFilmService implements FilmService {
         return results;
     }
 
-    @Cacheable(value = "homePageFilms")
+    @Cacheable(value = "homePageFilms", keyGenerator = "filmsKey")
     public Map<String, Collection<Film>> findHomePageFilms(int limit, Set<String> genres) {
         Map<String, Collection<Film>> results = new HashMap<String, Collection<Film>>();
         Pageable pageable = new PageRequest(0, limit );

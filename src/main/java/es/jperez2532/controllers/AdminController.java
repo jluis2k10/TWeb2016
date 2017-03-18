@@ -52,9 +52,19 @@ public class AdminController extends MainController implements ServletContextAwa
     /* Necesario para pasarle el path del servidor al método que sube el archivo del poster */
     private ServletContext servletContext;
 
+    // TODO: para debug de la cache, eliminar
+    /*@Resource(name = "cacheManager")
+    private CacheManager cacheManager;*/
+
     @Transactional
     @RequestMapping("")
     public String home(Model model) {
+
+        /*Collection<String> caches = cacheManager.getCacheNames();
+        Cache homePageFilms = cacheManager.getCache("homePageFilms");
+        Cache filmsById = cacheManager.getCache("film");
+        Cache allFilms = cacheManager.getCache("allFilms");*/
+
         Pageable limit = new PageRequest(0,6, Sort.Direction.DESC, "id");
         Page<Film> films = filmRepo.findAll(limit);
         Page<Account> accounts = accountRepo.findAll(limit);

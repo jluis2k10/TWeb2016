@@ -3,7 +3,6 @@ package es.jperez2532.services;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.entities.Vote;
-import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.repositories.VoteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,6 @@ public class MyVotesService implements VotesService {
 
     @Autowired private UserService userService;
     @Autowired private VoteRepo voteRepo;
-    @Autowired private FilmRepo filmRepo;
     @Autowired private FilmService filmService;
 
     /**
@@ -59,7 +57,7 @@ public class MyVotesService implements VotesService {
      */
     public String doVote(Vote newVote) {
         Vote oldVote = voteRepo.findOne(newVote.getId());
-        Film film = filmRepo.findOne(newVote.getId().getFilmId());
+        Film film = filmService.findOne(newVote.getId().getFilmId());
         if (oldVote != null) {
             // Restamos el voto antiguo y sumamos el nuevo
             BigDecimal fScore = film.getScore().multiply(new BigDecimal(film.getNvotes()));
