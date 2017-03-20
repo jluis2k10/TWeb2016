@@ -2,12 +2,11 @@ package es.jperez2532.controllers;
 
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
+import es.jperez2532.entities.Vote;
 import es.jperez2532.services.FilmService;
 import es.jperez2532.services.UserService;
 import es.jperez2532.validator.AccountValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,11 +28,6 @@ public class HomeController extends MainController {
 
     @RequestMapping("/")
     public String home(Model model, Principal principal) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String name = "";
-        if (auth != null)
-            name = auth.getName();
-        System.err.println(name);
         Account account;
         List<Film> watchlistFilms = null;
         Map<String, Collection<Film>> homePageFilms;
@@ -43,7 +37,6 @@ public class HomeController extends MainController {
         }
         Set<String> randomGenres = filmService.getRandomGenres(2);
         homePageFilms = filmService.findHomePageFilms(15, randomGenres);
-
         List<String> idsCarousel = Arrays.asList("#one!", "#two!", "#three!", "#four!", "#five!", "#six!");
         model.addAttribute("watchlistFilms", watchlistFilms);
         model.addAttribute("randomGenres", randomGenres);

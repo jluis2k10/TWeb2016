@@ -373,9 +373,12 @@ public class AdminController extends MainController implements ServletContextAwa
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
-        // TODO: no entiendo por qué tengo que hacer antes esto. Hibernate falla al intentar borrar una cuenta con roles (intenta borrar los roles asociados a la cuenta)
+        // TODO: no entiendo por qué tengo que hacer antes esto. Hibernate falla al intentar borrar
+        // una cuenta con roles (intenta borrar los roles asociados a la cuenta). Y lo mismo con la watchlist.
         accountToDelete.setAccountRoles(null);
+        accountToDelete.setWatchlist(null);
         accountRepo.delete(accountToDelete);
+        filmService.reDoVotes(accountToDelete.getAccountVotes());
         sessionHandle.expireUserSessions(accountToDelete.getUserName());
         response.put("message", accountToDelete.getUserName() + " eliminado.");
 

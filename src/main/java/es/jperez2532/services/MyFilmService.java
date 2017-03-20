@@ -282,6 +282,12 @@ public class MyFilmService implements FilmService {
         return fScore;
     }
 
+    public void reDoVotes(List<Vote> votes) {
+        for(Vote vote: votes) {
+            reDoVotes(vote.getFilm());
+        }
+    }
+
     @Cacheable(value = "homePageFilms", keyGenerator = "filmsKey")
     public Set<String> getRandomGenres(int limit) {
         Set<String> results = new HashSet<String>();
