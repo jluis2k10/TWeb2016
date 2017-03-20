@@ -4,6 +4,7 @@ import es.jperez2532.components.ChangePassword;
 import es.jperez2532.entities.Account;
 
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -15,6 +16,7 @@ public interface UserService {
 
     void save(Account account);
     String getPrincipal();
+    String update(Account account, String modify, String action);
     void updateOwn(Account account, ChangePassword changePassword);
     void delete(Account account);
     boolean deleteOwn(Account account);
@@ -23,5 +25,5 @@ public interface UserService {
     Set<Long> makeWatchlistSet (Account account);
     LinkedList<String> getProvincias();
     Account findByUserName(String userName);
-
+    Map<String, Long> getStats();
 }

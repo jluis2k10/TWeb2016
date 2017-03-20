@@ -1,8 +1,6 @@
 package es.jperez2532.components;
 
 import org.apache.commons.fileupload.FileUploadBase;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MultipartException;
@@ -15,9 +13,6 @@ import java.io.IOException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
-    @Autowired
-    private MessageSource messageSource;
 
     @ExceptionHandler(value = MultipartException.class)
     public RedirectView handleMultipartException(Exception ex, HttpServletRequest request){

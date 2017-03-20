@@ -17,7 +17,7 @@ import java.util.Set;
  */
 public interface FilmService {
     void save(Film film);
-    boolean delete(Film film, ServletContext servletContext) throws RuntimeException;
+    boolean delete(Film film, ServletContext servletContext);
     void update(Film film);
     void updateViews(Film film);
 
@@ -33,4 +33,5 @@ public interface FilmService {
     Page<Film> search(String term, Pageable pageable);
     Set<String> getRandomGenres(int limit);
     Map<String, Collection<Film>> findHomePageFilms(int limit, Set<String> genres);
+    Map<String, Film> getStats();
 }

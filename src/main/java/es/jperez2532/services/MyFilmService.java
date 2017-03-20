@@ -1,5 +1,6 @@
 package es.jperez2532.services;
 
+import es.jperez2532.components.UploadPoster;
 import es.jperez2532.entities.*;
 import es.jperez2532.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +11,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletContext;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.BreakIterator;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -41,6 +38,7 @@ public class MyFilmService implements FilmService {
     @Autowired private DirectorRepo directorRepo;
     @Autowired private ActorRepo actorRepo;
     @Autowired private CountryRepo countryRepo;
+    @Autowired private UploadPoster uploadPoster;
 
     @Caching(evict = {
             @CacheEvict(value = "homePageFilms", allEntries = true),
@@ -100,10 +98,8 @@ public class MyFilmService implements FilmService {
             @CacheEvict(value = "film", key = "#film.id")})
     public boolean delete (Film film, ServletContext servletContext) {
         try {
-            Path path = Paths.get(servletContext.getRealPath("/") +
-                    "/WEB-INF/resources/img/posters/" + film.getPoster());
-            Files.delete(path);
-        } catch (IOException e) {
+            uploadPoster.delete(film.getPoster(), servletContext);
+        } catch (RuntimeException e) {
            return false;
         } finally {
             filmRepo.delete(film);
@@ -392,4 +388,12 @@ public class MyFilmService implements FilmService {
         return words;
     }
 
+    public Map<String, Film> getStats() {
+        Map<String, Film> filmStats = new HashMap<String, Film>();
+        filmStats.put("masVista", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.DESC, "views")).getContent().get(0));
+        filmStats.put("menosVista", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.ASC, "views")).getContent().get(0));
+        filmStats.put("mejorValorada", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.DESC, "score")).getContent().get(0));
+        filmStats.put("peorValorada", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.ASC, "score")).getContent().get(0));
+        return filmStats;
+    }
 }

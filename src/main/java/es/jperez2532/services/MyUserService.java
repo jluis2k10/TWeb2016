@@ -18,10 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 public class MyUserService implements UserService {
 
@@ -31,6 +28,7 @@ public class MyUserService implements UserService {
     @Autowired private SessionHandle sessionHandle;
     @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired private FilmService filmService;
+
 
     @Cacheable(value = "account", key = "#userName")
     public Account findByUserName(String userName) {
@@ -62,6 +60,38 @@ public class MyUserService implements UserService {
             userName = principal.toString();
         }
         return userName;
+    }
+
+    @CacheEvict(value = "account", key = "#account.userName")
+    public String update(Account account, String modify, String action) {
+        String response = "";
+
+        // Cambiar estado admin
+        if (modify.equals("admin")) {
+            if (action.equals("add")) {
+                account.getAccountRoles().add(roleRepo.findByRole("ADMIN"));
+                response = account.getUserName() + " añadido al grupo de Administradores";
+            }
+            else if (action.equals("delete")) {
+                account.getAccountRoles().remove(roleRepo.findByRole("ADMIN"));
+                response = account.getUserName() + " eliminado del grupo de Administradores";
+            }
+        }
+        // Cambiar estado activo
+        else if (modify.equals("active")) {
+            if (action.equals("add")) {
+                account.setActive(true);
+                response = account.getUserName() + " activado.";
+            }
+            else if (action.equals("delete")) {
+                account.setActive(false);
+                response = account.getUserName() + " desactivado.";
+            }
+        }
+        accountRepo.save(account);
+        // Expiramos las sesiones del usuario recién editado
+        sessionHandle.expireUserSessions(account.getUserName());
+        return response;
     }
 
     @CacheEvict(value = "account", key = "#account.userName")
@@ -190,5 +220,13 @@ public class MyUserService implements UserService {
         provincias.add("Ceuta");
         provincias.add("Melilla");
         return provincias;
+    }
+
+    public Map<String, Long> getStats() {
+        Map<String, Long> stats = new HashMap<String, Long>();
+        stats.put("totalUsers", accountRepo.count());
+        stats.put("adminUsers", accountRepo.countByAccountRoles_RoleIgnoreCase("admin"));
+        stats.put("inactiveUsers", accountRepo.countByActive(false));
+        return stats;
     }
 }

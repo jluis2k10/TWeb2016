@@ -14,6 +14,8 @@ public class UploadPoster {
 
     private MultipartFile posterFile;
 
+    public UploadPoster() {}
+
     public MultipartFile getPosterFile() {
         return posterFile;
     }
@@ -23,7 +25,6 @@ public class UploadPoster {
     }
 
     public String upload(String fileName, ServletContext servletContext) throws RuntimeException {
-
         if (posterFile.isEmpty())
             throw new RuntimeException("NotEmpty");
 
@@ -36,9 +37,9 @@ public class UploadPoster {
                 posterFile.getOriginalFilename().lastIndexOf('.'), posterFile.getOriginalFilename().length());
         // Guardar la imagen
         try {
-            Path imgPath = Paths.get(servletContext.getRealPath("/") +
-                     "/WEB-INF/resources/img/posters/" + fileName + ext);
-            Files.write(imgPath, posterFile.getBytes());
+            Path path = Paths.get(servletContext.getRealPath("/") +
+                    "/WEB-INF/resources/img/posters/" + fileName + ext);
+            Files.write(path, posterFile.getBytes());
         } catch (IOException e) {
             throw new RuntimeException("UploadingError.FilmForm.poster");
         }

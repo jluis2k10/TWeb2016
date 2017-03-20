@@ -139,7 +139,7 @@ public class AccountController extends MainController {
     }
 
     /**
-     * Recoge una petición para eliminar una película de la lista de reproducci del usuario
+     * Recoge una petición para eliminar una película de la lista de reproducción del usuario
      * y devuelve confirmación JSON de la operación.
      * @param filmId ID de la película a eliminar de la lista
      * @param principal Token de autenticación del usuario
