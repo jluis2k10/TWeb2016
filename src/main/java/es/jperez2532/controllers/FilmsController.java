@@ -23,6 +23,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Controlador que maneja aspectos relacionados con la presentación de las películas.
+ */
 @Controller
 public class FilmsController extends MainController {
 
@@ -30,6 +33,14 @@ public class FilmsController extends MainController {
     @Autowired private FilmService filmService;
     @Autowired private VoteRepo voteRepo;
 
+    /**
+     * Muestra una película.
+     *
+     * @param id ID de la película a mostrar
+     * @param principal Token de autenticación del usuario
+     * @param model Interfaz/contenedor para pasar datos a la Vista
+     * @return La Vista a mostrar
+     */
     @Transactional // TODO: estudiar qué significa transctional para recuperar entity con lazy-loading
     @RequestMapping(value = "/pelicula/{id}/*", method = RequestMethod.GET)
     public String pelicula(@PathVariable("id") Long id, Principal principal, Model model) {
@@ -55,6 +66,13 @@ public class FilmsController extends MainController {
         return "pelicula/pelicula";
     }
 
+    /**
+     * Muestra la reproducción (simulada) de la película.
+     *
+     * @param id ID de la película a reproducir
+     * @param model Interfaz/contenedor para pasar datos a la Vista
+     * @return La Vista a mostrar
+     */
     @RequestMapping("/pelicula/ver/{id}/*")
     public String viewFilm(@PathVariable("id") Long id, Model model) {
         Film film = filmService.findOne(id);
@@ -65,6 +83,21 @@ public class FilmsController extends MainController {
         return "pelicula/reproducir";
     }
 
+    /**
+     * Muestra una lista paginada con todas las películas disponibles o, si existe el
+     * término de búsqueda, muestra aquellas películas que lo contengan en alguno de
+     * sus campos.
+     * <p>
+     * La búsqueda que realiza, en caso de hacerse, es diferente a la del método
+     * {@link FilmsController#buscar(Model, Pageable, Principal, String, String)}, ya que
+     * en este controlador se busca el término en múltiples campos de la película.
+     *
+     * @param model Interfaz/contenedor para pasar datos a la Vista
+     * @param pageable Interfaz con información sobre la paginación
+     * @param principal Token de autenticación del usuario
+     * @param buscar Término de búsqueda (opcional)
+     * @return La Vista a mostrar
+     */
     @RequestMapping("/catalogo")
     public String catalogo(Model model, Pageable pageable, Principal principal,
                            @RequestParam(value = "buscar", required = false) String buscar) {
@@ -99,6 +132,21 @@ public class FilmsController extends MainController {
         return "pelicula/catalogo";
     }
 
+    /**
+     * Muestra una lista paginada de todas las películas que coincidan con
+     * el término de búsqueda.
+     * <p>
+     * En este caso la búsqueda se realiza en uno solo de los campos de la
+     * película. Por ejemplo busca el término dado en el campo Categoría, pero
+     * en ninguno más.
+     *
+     * @param model Interfaz/contenedor para pasar datos a la Vista
+     * @param pageable Interfaz con información sobre la paginación
+     * @param principal Token de autenticación del usuario
+     * @param ref Campo de la Película sobre el que realizar la búsqueda del término <code>buscar</code>
+     * @param buscar Término de búsqueda (obligatorio)
+     * @return La Vista a mostrar
+     */
     @RequestMapping("/buscar")
     public String buscar(Model model, Pageable pageable, Principal principal,
                          @RequestParam("ref") String ref, @RequestParam("buscar") String buscar) {
@@ -139,5 +187,4 @@ public class FilmsController extends MainController {
         model.addAttribute("url_params", url_params);
         return "pelicula/catalogo";
     }
-
 }
