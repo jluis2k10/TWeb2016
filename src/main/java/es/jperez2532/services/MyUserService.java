@@ -10,9 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
@@ -24,6 +27,7 @@ public class MyUserService implements UserService {
 
     @Autowired private AccountRepo accountRepo;
     @Autowired private RoleRepo roleRepo;
+    @Autowired private UserDetailsService userDetailsService;
     @Autowired private SessionHandle sessionHandle;
     @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired private FilmService filmService;
@@ -61,13 +65,17 @@ public class MyUserService implements UserService {
     }
 
     @CacheEvict(value = "account", key = "#account.userName")
-    public void update(Account account, ChangePassword changePassword) {
+    public void updateOwn(Account account, ChangePassword changePassword) {
         // Sólo si el nuevo password no está vacío
         if (changePassword.getNewPassword() != "")
             account.setPassword(changePassword.getNewPassword());
         if(account.getAccountRoles().isEmpty())
             account.setAccountRoles(accountRepo.findOne(account.getId()).getAccountRoles());
         this.save(account);
+        // Recargar contexto de seguridad con la info actualizada
+        UserDetails userDetails = userDetailsService.loadUserByUsername(account.getUserName());
+        Authentication auth = new PreAuthenticatedAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
     @CacheEvict(value = "account", key = "#account.userName")

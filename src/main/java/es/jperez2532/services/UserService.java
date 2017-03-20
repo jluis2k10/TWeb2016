@@ -15,7 +15,7 @@ public interface UserService {
 
     void save(Account account);
     String getPrincipal();
-    void update(Account account, ChangePassword changePassword);
+    void updateOwn(Account account, ChangePassword changePassword);
     void delete(Account account);
     boolean deleteOwn(Account account);
     void addToWatchlist(String username, Long filmId);
