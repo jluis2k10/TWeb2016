@@ -25,7 +25,6 @@ public class MyUserDetailsService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = userService.findByUserName(username);
-        System.err.println("loadUser: " + account);
         if(account == null)
             throw new UsernameNotFoundException("Username not found");
         // TODO: estudiar llamada al constructor User()
@@ -35,11 +34,8 @@ public class MyUserDetailsService implements UserDetailsService {
 
     private List<GrantedAuthority> getGrantedAuthorities(Account account) {
         List<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
-        for(AccountRole accountRole : account.getAccountRoles()) {
-            System.err.println("AccountRoles: " + accountRole);
+        for(AccountRole accountRole : account.getAccountRoles())
             auths.add(new SimpleGrantedAuthority("ROLE_" + accountRole.getRole()));
-        }
-        System.err.println("Authorities: " + auths);
         return auths;
 
     }

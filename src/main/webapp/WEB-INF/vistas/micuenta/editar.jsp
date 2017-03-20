@@ -65,6 +65,7 @@
                         <button class="btn waves-effect waves-light center-align" type="submit" name="action">
                             Confirmar cambios <i class="material-icons right">send</i>
                         </button>
+                        <a href="${path}/micuenta/borrar" class="red waves-effect waves-light btn"><i class="material-icons left">clear</i>Borrar cuenta</a>
                     </div>
                 </div>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

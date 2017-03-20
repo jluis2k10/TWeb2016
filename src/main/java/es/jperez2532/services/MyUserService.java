@@ -1,6 +1,7 @@
 package es.jperez2532.services;
 
 import es.jperez2532.components.ChangePassword;
+import es.jperez2532.components.SessionHandle;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.repositories.AccountRepo;
@@ -21,6 +22,7 @@ public class MyUserService implements UserService {
 
     @Autowired private AccountRepo accountRepo;
     @Autowired private RoleRepo roleRepo;
+    @Autowired private SessionHandle sessionHandle;
     @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired private FilmService filmService;
 
@@ -58,6 +60,29 @@ public class MyUserService implements UserService {
         if(account.getAccountRoles().isEmpty())
             account.setAccountRoles(accountRepo.findOne(account.getId()).getAccountRoles());
         this.save(account);
+    }
+
+    public void delete(Account account) {
+        // TODO: no entiendo por qué tengo que hacer antes esto. Hibernate falla al intentar borrar
+        // una cuenta con roles (intenta borrar los roles asociados a la cuenta). Y lo mismo con la watchlist.
+        account.setAccountRoles(null);
+        account.setWatchlist(null);
+
+        accountRepo.delete(account);
+        filmService.reDoVotes(account.getAccountVotes());
+        sessionHandle.expireUserSessions(account.getUserName());
+    }
+
+    /**
+     * No se permite eliminar la cuenta del usuario si es la única con el rol de administrador.
+     * @param account
+     * @return
+     */
+    public boolean deleteOwn(Account account) {
+        if (account.isAdmin() && accountRepo.countByAccountRoles_RoleIgnoreCase("ADMIN") == 1)
+            return false;
+        this.delete(account);
+        return true;
     }
 
     // OJO: si no se elimina aquí la caché que almacena la película antes de

@@ -64,6 +64,25 @@ public class AccountController extends MainController {
         return("redirect:/");
     }
 
+    @RequestMapping(value = "/borrar", method = RequestMethod.GET)
+    public String delete(Model model) {
+        model.addAttribute("title", "Confirmación - PelisUNED");
+        return("micuenta/borrar");
+    }
+
+    @RequestMapping(value = "/borrar", method = RequestMethod.POST)
+    public String delete(Principal principal, RedirectAttributes redirectAttributes,
+                         @RequestParam("confirm") String confirm) {
+        if (confirm.equals("on")) {
+            Account account = userService.findByUserName(principal.getName());
+            if (!userService.deleteOwn(account)) {
+                redirectAttributes.addFlashAttribute("infoMsg",
+                        "Eres el único usuario administrador, no es posibile eliminar tu cuenta.");
+            }
+        }
+        return "redirect:/";
+    }
+
     @RequestMapping(value = "/milista", method = RequestMethod.GET)
     public String miLista(Model model, Principal principal) {
         Account account = userService.findByUserName(principal.getName());

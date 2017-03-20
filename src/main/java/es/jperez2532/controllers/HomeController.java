@@ -81,7 +81,7 @@ public class HomeController extends MainController {
     @RequestMapping(value = "/expiredSession")
     public String expiredSession(RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("infoMsg",
-                "Tu cuenta ha sido actualizada, necesitas iniciar sesión nuevamente.");
+                "Tu cuenta ha sido actualizada o eliminada. Intenta iniciar sesión nuevamente.");
         return "redirect:/login";
     }
 
