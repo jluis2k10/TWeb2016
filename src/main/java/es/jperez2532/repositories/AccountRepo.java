@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface AccountRepo extends JpaRepository<Account, Long> {
     Page<Account> findAll(Pageable pageable);
     Account findByUserName(String userName);
+    Page<Account> findByUserNameIgnoreCaseContaining(String username, Pageable pageable);
     Account findByEmail(String email);
     Long countByAccountRoles_RoleIgnoreCase(String roleName);
     Long countByActive(boolean status);

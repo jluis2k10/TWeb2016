@@ -18,6 +18,11 @@ h6 span {
     font-size: .9rem;
 }
 
+span > i.material-icons {
+    margin-left: 10px;
+    vertical-align: sub;
+}
+
 a {
     color: #039be5;
     -o-transition: .3s ease-out;
@@ -187,6 +192,35 @@ li.collection-item a.edit-film {
 }
 li.collection-item a.redo-votes {
     right: 115px !important;
+}
+
+li.row.collection-item {
+    display: flex;
+}
+li.row.collection-item h6 {
+    margin-bottom: 5px !important;
+}
+li.row.collection-item p {
+    margin: 5px 0;
+}
+li.row.collection-item .switch {
+    display: inline-grid;
+}
+
+.flex-middle-right {
+    display: flex;
+    display: -webkit-flex;
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    justify-content: right;
+    -webkit-justify-content: flex-end;
+    align-items: center;
+}
+div.col.actions .switch {
+    margin-left: 60px;
+}
+div.col.actions a.secondary-content {
+    margin-left: 60px;
 }
 
 .chip {

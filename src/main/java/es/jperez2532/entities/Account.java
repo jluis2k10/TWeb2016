@@ -1,10 +1,7 @@
 package es.jperez2532.entities;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Jose Luis on 18/02/2017.
@@ -32,7 +29,7 @@ public class Account {
     @Column(name = "Provincia", length = 25, nullable = false)
     private String provincia;
 
-    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Accounts_to_Roles",
                 joinColumns = {@JoinColumn(name = "account_id")},
                 inverseJoinColumns = {@JoinColumn(name = "role_id")})
@@ -50,6 +47,15 @@ public class Account {
     // Sólo se utiliza a la hora de registrar una nueva cuenta
     @Transient
     private String passwordConfirm;
+
+    public boolean isAdmin() {
+        Iterator<AccountRole> it = accountRoles.iterator();
+        while (it.hasNext()) {
+            if (it.next().getRole().equals("ADMIN"))
+                return true;
+        }
+        return false;
+    }
 
     public Long getId() {
         return id;

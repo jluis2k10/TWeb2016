@@ -14,7 +14,7 @@
         </c:if>
     </div>
 </div>
-<!-- Opciones de resultados -->
+<!-- Navegación cabecera de resultados (buscar, ordenar) -->
 <div class="row no-margin">
     <div class="col s4">
         <a href="${path}/admin/catalogo/nueva" class="waves-effect waves-light btn"><i class="material-icons right">send</i>Nueva película</a>
@@ -29,7 +29,7 @@
         </form>
         <a class="dropdown-filter btn waves-effect grey darken-4" href="#" data-activates="dropdown-filter">Ordenar<i class="material-icons right">arrow_drop_down</i></a>
     </div>
-</div> <!-- /Opciones de resultados -->
+</div> <!-- /Navegación cabecera de resultados -->
 
 <!-- Dropdown "ordenar" -->
 <div class="row" id="filter-content">
@@ -95,7 +95,7 @@
             <c:forEach items="${films}" var="film">
                 <li class="collection-item avatar grey darken-3">
                     <img src="${path}/img/posters/${film.poster}" alt="" class="circle z-depth-3">
-                    <span class="title">${film.title}</span>
+                    <span class="title">${film.title} <i class="material-icons tiny">star</i> ${film.score} <i class="material-icons tiny">play_circle_outline</i> ${film.views}</span>
                     <p>${film.year} - ${film.duration} min</p>
                     <a href="${path}/admin/pelicula/recalcular/${film.id}" class="secondary-content redo-votes" title="Recalcular votos"><i class="material-icons white-text">refresh</i></a>
                     <a href="${path}/admin/pelicula/editar/${film.id}" class="secondary-content edit-film" title="Editar"><i class="material-icons white-text">mode_edit</i></a>
@@ -113,7 +113,6 @@
                          listItemsCssClass="waves-effect z-depth-2"/>
 
 </div><!-- /Paginación -->
-</c:if>
 <!-- Modal confirmación de borrado -->
 <div id="confirm-delete" class="modal grey darken-2">
     <div class="modal-content">
@@ -130,7 +129,7 @@
         <a href="#" class="confirm-delete waves-effect btn-flat white-text">Borrar</a>
     </div>
 </div><!-- /Modal confirmación de borrado -->
-
+</c:if>
 <div id="materialbox-overlay" class="filter-overlay"></div>
 
 <%@ include file="../_js.jsp"%>

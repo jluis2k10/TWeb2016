@@ -2,7 +2,6 @@ package es.jperez2532.services;
 
 import es.jperez2532.components.ChangePassword;
 import es.jperez2532.entities.Account;
-import es.jperez2532.entities.AccountRole;
 import es.jperez2532.entities.Film;
 import es.jperez2532.repositories.AccountRepo;
 import es.jperez2532.repositories.RoleRepo;
@@ -34,7 +33,7 @@ public class MyUserService implements UserService {
             account.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
         account.setActive(true);
         if (account.getAccountRoles().isEmpty())
-            account.setAccountRoles(new HashSet<AccountRole>(roleRepo.findByRole("USER")));
+            account.getAccountRoles().add(roleRepo.findByRole("USER"));
         accountRepo.save(account);
     }
 

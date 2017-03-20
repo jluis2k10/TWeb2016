@@ -24,8 +24,8 @@ create table Accounts_to_Roles (
   account_id BIGINT NOT NULL,
   role_id BIGINT NOT NULL,
   PRIMARY KEY (account_id, role_id),
-  CONSTRAINT FK_Accounts FOREIGN KEY (account_id) REFERENCES Accounts (id),
-  CONSTRAINT FK_Account_Roles FOREIGN KEY (role_id) REFERENCES Account_Roles (id)
+  CONSTRAINT A2R_FK_Accounts FOREIGN KEY (account_id) REFERENCES Accounts (id),
+  CONSTRAINT A2R_FK_Account_Roles FOREIGN KEY (role_id) REFERENCES Account_Roles (id)
 );
 
 drop table if exists Films;
