@@ -3,9 +3,6 @@ package es.jperez2532.entities;
 import javax.persistence.*;
 import java.util.*;
 
-/**
- * Created by Jose Luis on 18/02/2017.
- */
 @Entity
 @Table(name = "Accounts")
 public class Account {

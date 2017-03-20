@@ -8,6 +8,8 @@ import es.jperez2532.repositories.AccountRepo;
 import es.jperez2532.repositories.RoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,7 +28,12 @@ public class MyUserService implements UserService {
     @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired private FilmService filmService;
 
-    @Override
+    @Cacheable(value = "account", key = "#userName")
+    public Account findByUserName(String userName) {
+        return accountRepo.findByUserName(userName);
+    }
+
+    @CacheEvict(value = "account", key = "#account.userName")
     public void save(Account account) {
         // Si el password está vacío viene de update() (sin modificar) y debemos mantener el anterior
         if (account.getPassword() == null)
@@ -53,6 +60,7 @@ public class MyUserService implements UserService {
         return userName;
     }
 
+    @CacheEvict(value = "account", key = "#account.userName")
     public void update(Account account, ChangePassword changePassword) {
         // Sólo si el nuevo password no está vacío
         if (changePassword.getNewPassword() != "")
@@ -62,6 +70,7 @@ public class MyUserService implements UserService {
         this.save(account);
     }
 
+    @CacheEvict(value = "account", key = "#account.userName")
     public void delete(Account account) {
         // TODO: no entiendo por qué tengo que hacer antes esto. Hibernate falla al intentar borrar
         // una cuenta con roles (intenta borrar los roles asociados a la cuenta). Y lo mismo con la watchlist.
@@ -78,6 +87,7 @@ public class MyUserService implements UserService {
      * @param account
      * @return
      */
+    @CacheEvict(value = "account", key = "#account.userName")
     public boolean deleteOwn(Account account) {
         if (account.isAdmin() && accountRepo.countByAccountRoles_RoleIgnoreCase("ADMIN") == 1)
             return false;
@@ -87,13 +97,16 @@ public class MyUserService implements UserService {
 
     // OJO: si no se elimina aquí la caché que almacena la película antes de
     // insertarla en la watchlist surgen conflictos
-    @CacheEvict(value = "film", key = "#filmId")
+    @Caching(evict = {
+            @CacheEvict(value = "film", key = "#filmId"),
+            @CacheEvict(value = "account", key = "#username")})
     public void addToWatchlist(String username, Long filmId) {
         Account account = this.findByUserName(username);
         account.getWatchlist().add(filmService.findOne(filmId));
         accountRepo.save(account);
     }
 
+    @CacheEvict(value = "account", key = "#username")
     public void deleteFromWatchlist(String username, Long filmId) {
         Account account = this.findByUserName(username);
         Iterator<Film> it = account.getWatchlist().iterator();
@@ -169,10 +182,5 @@ public class MyUserService implements UserService {
         provincias.add("Ceuta");
         provincias.add("Melilla");
         return provincias;
-    }
-
-    @Override
-    public Account findByUserName(String userName) {
-        return accountRepo.findByUserName(userName);
     }
 }
