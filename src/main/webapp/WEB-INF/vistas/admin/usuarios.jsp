@@ -194,13 +194,16 @@
 
         /* Al hacer click en el botón de borrar actualizamos la ventana modal con la
          información del nombre de usuario */
+        var _id;
+        var _row;
         $('.account-delete').on('click', function () {
+            _id = $(this).data('id');
+            _row = $(this).closest('li.row');
             $('span.account-name').text($(this).data('name'));
-            $('a.confirm-delete').data('id', $(this).data('id'));
         });
         /* Acción al hacer click en el botón de confirmar borrado */
         $('a.confirm-delete').on('click', function () {
-            deleteAccount($(this).data('id'));
+            deleteAccount(_id, _row);
         });
     });
 
@@ -232,7 +235,7 @@
     /*
         Ajax request para borrar un usuario
      */
-    function deleteAccount(account_id) {
+    function deleteAccount(account_id, row_to_delete) {
         $('.modal').modal('close');
         $.ajax({
             type: "GET",
@@ -242,6 +245,7 @@
             dataType: 'json',
             timeout: 10000,
             success: function(response) {
+                row_to_delete.remove();
                 Materialize.toast(response.message, 3000, 'teal rounded');
             },
             error: function(response) {

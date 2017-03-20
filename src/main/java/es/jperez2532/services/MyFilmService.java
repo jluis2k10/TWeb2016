@@ -275,7 +275,8 @@ public class MyFilmService implements FilmService {
             fScore = fScore.add(new BigDecimal(vote.getScore()));
             count++;
         }
-        fScore = fScore.divide(new BigDecimal(count), 2, BigDecimal.ROUND_HALF_UP);
+        if (fScore.compareTo(BigDecimal.ZERO) != 0)
+            fScore = fScore.divide(new BigDecimal(count), 2, BigDecimal.ROUND_HALF_UP);
         film.setScore(fScore);
         film.setNvotes(count);
         filmRepo.save(film);
