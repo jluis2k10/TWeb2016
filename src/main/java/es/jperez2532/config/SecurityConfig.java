@@ -74,14 +74,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
-                .antMatchers("/micuenta/**").access("hasRole('ROLE_USER')")
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/micuenta/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/rest/votar").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/registro").anonymous()
+                .antMatchers("/login").anonymous()
                 .and().formLogin()
                     .loginPage("/login")
                     .usernameParameter("username")
                     .passwordParameter("password")
                     .successHandler(successHandler())
-                    .permitAll()
                 // Ver http://www.concretepage.com/spring-4/spring-4-mvc-security-custom-login-form-and-logout-example-with-csrf-protection-using-annotation-and-xml-configuration
                 // para recordar cómo funciona logout con csrf activado
                 .and().logout()
