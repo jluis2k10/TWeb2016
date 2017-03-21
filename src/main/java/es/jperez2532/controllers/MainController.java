@@ -20,6 +20,19 @@ public class MainController {
 
     @Autowired private GenreRepo genreRepo;
 
+    /**
+     * Genera una lista con todos los géneros disponibles y Spring se encarga de
+     * almacenarla en la sesión del usuario. De este modo conseguimos que no sea
+     * necesario realizar una llamada a algún método cada vez que se necesite la
+     * lista (que es en cada página del frontend del sitio, para el menú principal
+     * de navegación).
+     * <p>
+     * Cuando se añade un nuevo género, se debe eliminar la lista de la sesión para
+     * que ésta no contenga información obsoleta. Se regenerará cautomáticamente en
+     * la próxima llamada a cualquier página.
+     *
+     * @return Lista que contiene los géneros disponibles
+     */
     @ModelAttribute("genresList")
     public List<Genre> getGenres() {
         return genreRepo.findAllByOrderByNameAsc();
