@@ -1,5 +1,6 @@
 package es.jperez2532.controllers;
 
+import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.entities.Vote;
 import es.jperez2532.entities.VotePK;
@@ -50,7 +51,8 @@ public class FilmsController extends MainController {
         int myScore = 0;
 
         if (principal != null) {
-            userWatchlist = userService.makeWatchlistSet(userService.findByUserName(principal.getName()));
+            Account account = userService.findByUserName(principal.getName());
+            userWatchlist = userService.makeWatchlistSet(account);
             userId = userService.findByUserName(principal.getName()).getId();
             Vote vote = voteRepo.findOne(new VotePK(film.getId(), userId));
             if (vote != null)

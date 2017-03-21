@@ -38,6 +38,7 @@ public class MyFilmService implements FilmService {
     @Autowired private DirectorRepo directorRepo;
     @Autowired private ActorRepo actorRepo;
     @Autowired private CountryRepo countryRepo;
+    @Autowired private VoteRepo voteRepo;
     @Autowired private UploadPoster uploadPoster;
 
     @Caching(evict = {
@@ -260,7 +261,7 @@ public class MyFilmService implements FilmService {
         return filmRepo.findByFilmCountries_NameIgnoreCase(country, pageable);
     }
 
-    @Caching(evict = {
+    /*@Caching(evict = {
             @CacheEvict(value = "homePageFilms", allEntries = true),
             @CacheEvict(value = "allFilms", allEntries = true),
             @CacheEvict(value = "film", key = "#film.id")})
@@ -277,13 +278,31 @@ public class MyFilmService implements FilmService {
         film.setNvotes(count);
         filmRepo.save(film);
         return fScore;
+    }*/
+    @Caching(evict = {
+            @CacheEvict(value = "homePageFilms", allEntries = true),
+            @CacheEvict(value = "allFilms", allEntries = true),
+            @CacheEvict(value = "film", key = "#film.id")})
+    public void calcScore(Film film) {
+        int count = 0;
+        BigDecimal fScore = new BigDecimal(0);
+        List<Vote> votes = voteRepo.findByIdFilm(film.getId());
+        for (Vote vote: votes) {
+            fScore = fScore.add(new BigDecimal(vote.getScore()));
+            count++;
+        }
+        if (fScore.compareTo(BigDecimal.ZERO) != 0)
+            fScore = fScore.divide(new BigDecimal(count), 2, BigDecimal.ROUND_HALF_UP);
+        film.setScore(fScore);
+        film.setNvotes(count);
+        filmRepo.save(film);
     }
 
-    public void reDoVotes(List<Vote> votes) {
+    /*public void reDoVotes(List<Vote> votes) {
         for(Vote vote: votes) {
             reDoVotes(vote.getFilm());
         }
-    }
+    }*/
 
     @Cacheable(value = "homePageFilms", keyGenerator = "filmsKey")
     public Set<String> getRandomGenres(int limit) {

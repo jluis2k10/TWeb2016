@@ -24,11 +24,22 @@ public class MyUserService implements UserService {
 
     @Autowired private AccountRepo accountRepo;
     @Autowired private RoleRepo roleRepo;
+    @Autowired private VotesService votesService;
     @Autowired private UserDetailsService userDetailsService;
     @Autowired private SessionHandle sessionHandle;
     @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired private FilmService filmService;
 
+
+    /**
+     * Ojo no está cacheado
+     *
+     * @param accountId
+     * @return
+     */
+    public Account findOne(Long accountId) {
+        return accountRepo.findOne(accountId);
+    }
 
     @Cacheable(value = "account", key = "#userName")
     public Account findByUserName(String userName) {
@@ -115,8 +126,9 @@ public class MyUserService implements UserService {
         account.setAccountRoles(null);
         account.setWatchlist(null);
 
+        // Borrar votos emitidos por este usuario
+        votesService.deleteVotesFromAccount(account.getId());
         accountRepo.delete(account);
-        filmService.reDoVotes(account.getAccountVotes());
         sessionHandle.expireUserSessions(account.getUserName());
     }
 
@@ -157,6 +169,7 @@ public class MyUserService implements UserService {
         accountRepo.save(account);
     }
 
+    @Transactional
     public Set<Long> makeWatchlistSet (Account account) {
         Set<Long> watchlistSet = new HashSet<Long>();
         for(Film film: account.getWatchlist()) {

@@ -1,5 +1,6 @@
 package es.jperez2532.entities;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
@@ -13,35 +14,40 @@ import java.io.Serializable;
 public class VotePK implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Basic
     @Column(name = "film_id")
-    public long filmId;
+    public long film;
 
+    @Basic
     @Column(name = "account_id")
-    public long accountId;
+    public long account;
 
     public VotePK() { }
 
     public VotePK(long filmId, long accountId) {
-        this.filmId = filmId;
-        this.accountId = accountId;
+        this.film = filmId;
+        this.account = accountId;
     }
 
     public long getFilmId() {
-        return filmId;
+        return film;
     }
 
     public void setFilmId(long filmId) {
-        this.filmId = filmId;
+        this.film = filmId;
     }
 
     public long getAccountId() {
-        return accountId;
+        return account;
     }
 
     public void setAccountId(long accountId) {
-        this.accountId = accountId;
+        this.account = accountId;
     }
 
+    /** (non-Javadoc)
+	 * @see java.lang.Object#equals(Object)
+	 */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,14 +55,17 @@ public class VotePK implements Serializable {
 
         VotePK votePK = (VotePK) o;
 
-        if (filmId != votePK.filmId) return false;
-        return accountId == votePK.accountId;
+        if (film != votePK.film) return false;
+        return account == votePK.account;
     }
 
+    /** (non-Javadoc)
+     * @see Object#hashCode()
+     */
     @Override
     public int hashCode() {
-        int result = (int) (filmId ^ (filmId >>> 32));
-        result = 31 * result + (int) (accountId ^ (accountId >>> 32));
+        int result = (int) (film ^ (film >>> 32));
+        result = 31 * result + (int) (account ^ (account >>> 32));
         return result;
     }
 }

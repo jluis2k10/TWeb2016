@@ -17,12 +17,18 @@ public class Vote {
     @Column(name = "score", nullable = false)
     private int score;
 
-    @ManyToOne
-    @JoinColumn(name = "film_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @MapsId("film")
+    @JoinColumns({
+            @JoinColumn(name = "film_id", referencedColumnName = "id")
+    })
+    @OneToOne(fetch = FetchType.LAZY)
     private Film film;
 
-    @ManyToOne
-    @JoinColumn(name = "account_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @MapsId("account")
+    @JoinColumns({
+            @JoinColumn(name = "account_id", referencedColumnName = "id")
+    })
+    @OneToOne(fetch = FetchType.LAZY)
     private Account account;
 
     public VotePK getId() {

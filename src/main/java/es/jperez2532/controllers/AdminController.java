@@ -9,6 +9,7 @@ import es.jperez2532.entities.Genre;
 import es.jperez2532.repositories.AccountRepo;
 import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.repositories.GenreRepo;
+import es.jperez2532.repositories.VoteRepo;
 import es.jperez2532.services.FilmService;
 import es.jperez2532.services.UserService;
 import es.jperez2532.validator.FilmValidator;
@@ -51,12 +52,17 @@ public class AdminController extends MainController {
     @Autowired private UserService userService;
     @Autowired private FilmRepo filmRepo;
     @Autowired private AccountRepo accountRepo;
+    @Autowired private VoteRepo voteRepo;
     @Autowired private GenreRepo genreRepo;
     @Autowired private FilmValidator filmValidator;
     @Autowired private UploadPosterValidator uploadPosterValidator;
     @Autowired private GenreValidator genreValidator;
     /* Necesario para obtener el path real del servidor */
     @Autowired private ServletContext servletContext;
+
+    // TODO: para debug de la cache, eliminar
+    /*@Resource(name = "cacheManager")
+    private CacheManager cacheManager;*/
 
     /**
      * Portada de la administración.
@@ -66,6 +72,11 @@ public class AdminController extends MainController {
      */
     @RequestMapping("")
     public String home(Model model) {
+
+        /*Collection<String> caches = cacheManager.getCacheNames();
+        Cache filmsById = cacheManager.getCache("film");
+        Cache accountsCache = cacheManager.getCache("account");*/
+
         Pageable limit = new PageRequest(0,6, Sort.Direction.DESC, "id");
         Page<Film> films = filmRepo.findAll(limit);
         Page<Account> accounts = accountRepo.findAll(limit);
@@ -269,13 +280,14 @@ public class AdminController extends MainController {
         Film film = filmRepo.findOne(id);
         BigDecimal score = film.getScore();
         BigDecimal recalcScore = new BigDecimal(0);
-        if (film.getFilmVotes().size() > 0)
-            recalcScore = filmService.reDoVotes(film);
+        if (film.getNvotes() > 0) {
+            filmService.calcScore(film);
+        }
 
         String requestPath = request.getHeader("referer");
         redirectAttributes.addFlashAttribute("infoMsg",
                 "Recalculada correctamente la puntuación de <strong>" + film.getTitle() + "</strong> (" +
-                        score.toString() + " -> " + recalcScore.toString() + ").");
+                        score.toString() + " -> " + film.getScore().toString() + ").");
         return("redirect:"+requestPath);
     }
 

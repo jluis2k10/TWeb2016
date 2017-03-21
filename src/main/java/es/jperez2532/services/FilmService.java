@@ -1,14 +1,11 @@
 package es.jperez2532.services;
 
 import es.jperez2532.entities.Film;
-import es.jperez2532.entities.Vote;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import javax.servlet.ServletContext;
-import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,8 +25,8 @@ public interface FilmService {
     Page<Film> findByActor(String actor, Pageable pageable);
     Page<Film> findByCountry(String country, Pageable pageable);
 
-    BigDecimal reDoVotes(Film film);
-    void reDoVotes(List<Vote> votes);
+    void calcScore(Film film);
+    //void reDoVotes(List<Vote> votes);
     Page<Film> search(String term, Pageable pageable);
     Set<String> getRandomGenres(int limit);
     Map<String, Collection<Film>> findHomePageFilms(int limit, Set<String> genres);

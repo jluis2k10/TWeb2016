@@ -28,17 +28,14 @@ public class Account {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Accounts_to_Roles",
-                joinColumns = {@JoinColumn(name = "account_id")},
-                inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    private Set<AccountRole> accountRoles = new HashSet<AccountRole>();
+                joinColumns = {@JoinColumn(name = "account_id", referencedColumnName = "id")},
+                inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private List<AccountRole> accountRoles = new ArrayList<AccountRole>();
 
-    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY, orphanRemoval = true, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    private List<Vote> accountVotes = new ArrayList<Vote>();
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Watchlist",
-            joinColumns = {@JoinColumn(name = "account_id")},
-            inverseJoinColumns = {@JoinColumn(name = "film_id")})
+            joinColumns = {@JoinColumn(name = "account_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "film_id", referencedColumnName = "id")})
     private List<Film> watchlist = new ArrayList<Film>();
 
     // Sólo se utiliza a la hora de registrar una nueva cuenta
@@ -102,11 +99,11 @@ public class Account {
         this.active = active;
     }
 
-    public Set<AccountRole> getAccountRoles() {
+    public List<AccountRole> getAccountRoles() {
         return accountRoles;
     }
 
-    public void setAccountRoles(Set<AccountRole> accountRoles) {
+    public void setAccountRoles(List<AccountRole> accountRoles) {
         this.accountRoles = accountRoles;
     }
 
@@ -116,14 +113,6 @@ public class Account {
 
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
-    }
-
-    public List<Vote> getAccountVotes() {
-        return accountVotes;
-    }
-
-    public void setAccountVotes(List<Vote> accountVotes) {
-        this.accountVotes = accountVotes;
     }
 
     public List<Film> getWatchlist() {

@@ -57,6 +57,7 @@ public class RESTController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
         // Contabilizar el voto
+        votesService.populateVote(vote);
         String jsonResponse = votesService.doVote(vote);
 
         return ResponseEntity.ok(jsonResponse);

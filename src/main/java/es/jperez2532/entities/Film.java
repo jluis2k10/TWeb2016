@@ -46,8 +46,8 @@ public class Film {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Films_to_Genres",
-                joinColumns = {@JoinColumn(name = "film_id")},
-                inverseJoinColumns = {@JoinColumn(name = "genre_id")})
+                joinColumns = {@JoinColumn(name = "film_id", referencedColumnName = "id")},
+                inverseJoinColumns = {@JoinColumn(name = "genre_id", referencedColumnName = "id")})
     private List<Genre> filmGenres = new ArrayList<Genre>();
 
     @OneToMany(fetch = FetchType.LAZY)
@@ -73,9 +73,6 @@ public class Film {
             joinColumns = {@JoinColumn(name = "film_id")},
             inverseJoinColumns = {@JoinColumn(name = "country_id")})
     private List<Country> filmCountries = new ArrayList<Country>();
-
-    @OneToMany(mappedBy = "film", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REMOVE})
-    private List<Vote> filmVotes = new ArrayList<Vote>();
 
     public Film() {
         // Se necesita inicializar score para tener un valor disponible
@@ -209,14 +206,6 @@ public class Film {
 
     public void setFilmCountries(List<Country> filmCountries) {
         this.filmCountries = filmCountries;
-    }
-
-    public List<Vote> getFilmVotes() {
-        return filmVotes;
-    }
-
-    public void setFilmVotes(List<Vote> filmVotes) {
-        this.filmVotes = filmVotes;
     }
 
     @Override

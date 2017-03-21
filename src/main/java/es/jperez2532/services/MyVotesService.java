@@ -3,8 +3,11 @@ package es.jperez2532.services;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.entities.Vote;
+import es.jperez2532.repositories.AccountRepo;
 import es.jperez2532.repositories.VoteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 
@@ -15,6 +18,7 @@ import java.util.Map;
 public class MyVotesService implements VotesService {
 
     @Autowired private UserService userService;
+    @Autowired private AccountRepo accountRepo;
     @Autowired private VoteRepo voteRepo;
     @Autowired private FilmService filmService;
 
@@ -47,6 +51,22 @@ public class MyVotesService implements VotesService {
     }
 
     /**
+     * Recoge la película y el usuario a los que hace referencia la clave del
+     * voto.
+     *
+     * Necesario para vaciar la caché posteriormente en {@link MyVotesService#doVote(Vote)}
+     * y para persistir la entidad sin que hibernate se queje.
+     *
+     * @param vote
+     */
+    public void populateVote(Vote vote) {
+        if (vote.getFilm() == null && vote.getAccount() == null) {
+            vote.setFilm(filmService.findOne(vote.getId().getFilmId()));
+            vote.setAccount(userService.findOne(vote.getId().getAccountId()));
+        }
+    }
+
+    /**
      * Contabilizar el voto.
      *
      * Comprobamos si el usuario ya había votado anteriormente la misma película
@@ -55,6 +75,10 @@ public class MyVotesService implements VotesService {
      * @param newVote
      * @return
      */
+    @Caching(evict = {
+            @CacheEvict(value = "film", key = "#newVote.film.id"),
+            @CacheEvict(value = "account", key = "#newVote.account.userName")
+    })
     public String doVote(Vote newVote) {
         Vote oldVote = voteRepo.findOne(newVote.getId());
         Film film = filmService.findOne(newVote.getId().getFilmId());
@@ -81,6 +105,13 @@ public class MyVotesService implements VotesService {
         String response = "{\"myScore\": \"" + newVote.getScore() + "\", " +
                 "\"globalScore\": \"" + scaled.intValueExact() + "\"}";
         return response;
+    }
+
+    public void deleteVotesFromAccount(Long accountID) {
+        for (Vote vote: voteRepo.findByIdAccount(accountID)) {
+            voteRepo.delete(vote);
+            filmService.calcScore(vote.getFilm());
+        }
     }
 
 }

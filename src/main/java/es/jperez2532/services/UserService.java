@@ -14,6 +14,8 @@ import java.util.Set;
  */
 public interface UserService {
 
+    Account findByUserName(String userName);
+    Account findOne(Long accountId);
     void save(Account account);
     String getPrincipal();
     String update(Account account, String modify, String action);
@@ -24,6 +26,5 @@ public interface UserService {
     void deleteFromWatchlist(String username, Long filmId);
     Set<Long> makeWatchlistSet (Account account);
     LinkedList<String> getProvincias();
-    Account findByUserName(String userName);
     Map<String, Long> getStats();
 }
