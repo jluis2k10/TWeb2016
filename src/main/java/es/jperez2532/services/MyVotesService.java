@@ -15,6 +15,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Servicios para operaciones con Votos.
+ */
 @Service
 public class MyVotesService implements VotesService {
 

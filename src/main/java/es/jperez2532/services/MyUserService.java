@@ -21,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+/**
+ * Servicios para operaciones con Usuarios.
+ */
 @Service
 public class MyUserService implements UserService {
 
