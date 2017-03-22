@@ -74,6 +74,12 @@ public class Film {
             inverseJoinColumns = {@JoinColumn(name = "country_id")})
     private List<Country> filmCountries = new ArrayList<Country>();
 
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "Watchlist",
+            joinColumns = {@JoinColumn(name = "film_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "account_id", referencedColumnName = "id")})
+    private List<Account> listedIn = new ArrayList<Account>();
+
     public Film() {
         // Se necesita inicializar score para tener un valor disponible
         // en el formulario de añadir una nueva película
@@ -206,6 +212,14 @@ public class Film {
 
     public void setFilmCountries(List<Country> filmCountries) {
         this.filmCountries = filmCountries;
+    }
+
+    public List<Account> getListedIn() {
+        return listedIn;
+    }
+
+    public void setListedIn(List<Account> listedIn) {
+        this.listedIn = listedIn;
     }
 
     @Override

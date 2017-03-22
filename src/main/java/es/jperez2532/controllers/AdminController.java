@@ -9,7 +9,6 @@ import es.jperez2532.entities.Genre;
 import es.jperez2532.repositories.AccountRepo;
 import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.repositories.GenreRepo;
-import es.jperez2532.repositories.VoteRepo;
 import es.jperez2532.services.FilmService;
 import es.jperez2532.services.UserService;
 import es.jperez2532.validator.FilmValidator;
@@ -52,7 +51,6 @@ public class AdminController extends MainController {
     @Autowired private UserService userService;
     @Autowired private FilmRepo filmRepo;
     @Autowired private AccountRepo accountRepo;
-    @Autowired private VoteRepo voteRepo;
     @Autowired private GenreRepo genreRepo;
     @Autowired private FilmValidator filmValidator;
     @Autowired private UploadPosterValidator uploadPosterValidator;
@@ -279,7 +277,6 @@ public class AdminController extends MainController {
                             HttpServletRequest request) {
         Film film = filmRepo.findOne(id);
         BigDecimal score = film.getScore();
-        BigDecimal recalcScore = new BigDecimal(0);
         if (film.getNvotes() > 0) {
             filmService.calcScore(film);
         }

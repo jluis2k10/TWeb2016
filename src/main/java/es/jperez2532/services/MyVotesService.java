@@ -3,7 +3,6 @@ package es.jperez2532.services;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.entities.Vote;
-import es.jperez2532.repositories.AccountRepo;
 import es.jperez2532.repositories.VoteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -18,9 +17,12 @@ import java.util.Map;
 public class MyVotesService implements VotesService {
 
     @Autowired private UserService userService;
-    @Autowired private AccountRepo accountRepo;
     @Autowired private VoteRepo voteRepo;
     @Autowired private FilmService filmService;
+
+    public void delete(Vote vote) {
+        voteRepo.delete(vote);
+    }
 
     /**
      * Aseguramos que el voto recibido es válido.
@@ -109,9 +111,14 @@ public class MyVotesService implements VotesService {
 
     public void deleteVotesFromAccount(Long accountID) {
         for (Vote vote: voteRepo.findByIdAccount(accountID)) {
-            voteRepo.delete(vote);
+            this.delete(vote);
             filmService.calcScore(vote.getFilm());
         }
+    }
+
+    public void deleteVotesFromFilm(Long filmID) {
+        for (Vote vote: voteRepo.findByIdFilm(filmID))
+            this.delete(vote);
     }
 
 }

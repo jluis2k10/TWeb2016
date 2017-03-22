@@ -145,6 +145,11 @@ public class MyUserService implements UserService {
         return true;
     }
 
+    @CacheEvict(value = "account", key = "#account.userName")
+    public void clearCache(Account account) {
+        return;
+    }
+
     // OJO: si no se elimina aquí la caché que almacena la película antes de
     // insertarla en la watchlist surgen conflictos
     @Caching(evict = {

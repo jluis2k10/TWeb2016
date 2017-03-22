@@ -26,7 +26,7 @@ public class Account {
     @Column(name = "Provincia", length = 25, nullable = false)
     private String provincia;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Accounts_to_Roles",
                 joinColumns = {@JoinColumn(name = "account_id", referencedColumnName = "id")},
                 inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})

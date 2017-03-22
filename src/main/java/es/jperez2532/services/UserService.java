@@ -22,6 +22,7 @@ public interface UserService {
     void updateOwn(Account account, ChangePassword changePassword);
     void delete(Account account);
     boolean deleteOwn(Account account);
+    void clearCache(Account account);
     void addToWatchlist(String username, Long filmId);
     void deleteFromWatchlist(String username, Long filmId);
     Set<Long> makeWatchlistSet (Account account);

@@ -40,6 +40,8 @@ public class MyFilmService implements FilmService {
     @Autowired private CountryRepo countryRepo;
     @Autowired private VoteRepo voteRepo;
     @Autowired private UploadPoster uploadPoster;
+    @Autowired private UserService userService;
+    @Autowired private VotesService votesService;
 
     @Caching(evict = {
             @CacheEvict(value = "homePageFilms", allEntries = true),
@@ -103,6 +105,10 @@ public class MyFilmService implements FilmService {
         } catch (RuntimeException e) {
            return false;
         } finally {
+            votesService.deleteVotesFromFilm(film.getId());
+            for(Account account: film.getListedIn())
+                userService.clearCache(account);
+            film.getListedIn().clear();
             filmRepo.delete(film);
         }
         return true;
@@ -261,24 +267,6 @@ public class MyFilmService implements FilmService {
         return filmRepo.findByFilmCountries_NameIgnoreCase(country, pageable);
     }
 
-    /*@Caching(evict = {
-            @CacheEvict(value = "homePageFilms", allEntries = true),
-            @CacheEvict(value = "allFilms", allEntries = true),
-            @CacheEvict(value = "film", key = "#film.id")})
-    public BigDecimal reDoVotes(Film film) {
-        int count = 0;
-        BigDecimal fScore = new BigDecimal(0);
-        for(Vote vote: film.getFilmVotes()) {
-            fScore = fScore.add(new BigDecimal(vote.getScore()));
-            count++;
-        }
-        if (fScore.compareTo(BigDecimal.ZERO) != 0)
-            fScore = fScore.divide(new BigDecimal(count), 2, BigDecimal.ROUND_HALF_UP);
-        film.setScore(fScore);
-        film.setNvotes(count);
-        filmRepo.save(film);
-        return fScore;
-    }*/
     @Caching(evict = {
             @CacheEvict(value = "homePageFilms", allEntries = true),
             @CacheEvict(value = "allFilms", allEntries = true),
@@ -297,12 +285,6 @@ public class MyFilmService implements FilmService {
         film.setNvotes(count);
         filmRepo.save(film);
     }
-
-    /*public void reDoVotes(List<Vote> votes) {
-        for(Vote vote: votes) {
-            reDoVotes(vote.getFilm());
-        }
-    }*/
 
     @Cacheable(value = "homePageFilms", keyGenerator = "filmsKey")
     public Set<String> getRandomGenres(int limit) {
