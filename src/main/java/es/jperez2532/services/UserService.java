@@ -3,6 +3,8 @@ package es.jperez2532.services;
 import es.jperez2532.components.ChangePassword;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,11 +23,30 @@ import java.util.Set;
  */
 public interface UserService {
     /**
+     * Busca todos los usuarios y devuelve una página ({@link Page}) que contiene
+     * aquellos que se correspondan con la página indicada.
+     * @param pageable información sobre la página actual (nº página, resultados por
+     *                 página y modo de ordenación)
+     * @return la página con los usuarios
+     */
+    Page<Account> findAll(Pageable pageable);
+
+    /**
      * Busca una cuenta de usuario por nombre.
      * @param userName nombre de usuario a buscar
      * @return resultado encontrado
      */
     Account findByUserName(String userName);
+
+    /**
+     * Devuelve una página ({@link Page}) con los usuarios filtrados por
+     * nombre de usuario.
+     * @param userName nombre de usuario a buscar
+     * @param pageable información sobre la página actual (nº página, resultados por
+     *                 página y modo de ordenación)
+     * @return la página con los usuarios encontrados
+     */
+    Page<Account> findByUserName(String userName, Pageable pageable);
 
     /**
      * Busca una cuenta de usuario por ID

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,6 +39,13 @@ public class MyUserService implements UserService {
 
     /**
      * {@inheritDoc}
+     */
+    public Page<Account> findAll(Pageable pageable) {
+        return accountRepo.findAll(pageable);
+    }
+
+    /**
+     * {@inheritDoc}
      * <p>
      * Ojo no está cacheado
      */
@@ -50,6 +59,13 @@ public class MyUserService implements UserService {
     @Cacheable(value = "account", key = "#userName")
     public Account findByUserName(String userName) {
         return accountRepo.findByUserName(userName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Page<Account> findByUserName(String userName, Pageable pageable) {
+        return accountRepo.findByUserNameIgnoreCaseContaining(userName, pageable);
     }
 
     /**

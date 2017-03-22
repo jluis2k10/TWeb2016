@@ -1,16 +1,26 @@
 package es.jperez2532.services;
 
 import es.jperez2532.entities.Film;
+import es.jperez2532.entities.Genre;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import javax.servlet.ServletContext;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 /**
  * Proporciona servicio para manejar una Película ({@link Film}).
+ * <p>
+ * Se incluyen también operaciones de servicio para otras entidades asociadas
+ * con las Películas para ahorrar en inyecciones de dependencia en los controladores.
+ * Operaciones para:
+ * <p><ul>
+ *     <li> Géneros ({@link Genre})
+ *     <li>  ({@link Genre})
+ * </ul>
  * <p>
  * Forma parte de la capa de servicio de la aplicación, es decir se encarga
  * de tratar los datos antes de enviarlos (o después de recibirlos) a la capa
@@ -58,6 +68,12 @@ public interface FilmService {
     void updateViews(Film film);
 
     /**
+     * Devuelve el número total de películas disponibles en la Base de Datos.
+     * @return el número de películas
+     */
+    Long count();
+
+    /**
      * Busca una Película por su ID.
      * @param id ID de la Película a buscar
      * @return la Película que se haya encontrado
@@ -73,6 +89,16 @@ public interface FilmService {
      * @return la página construida
      */
     Page<Film> findAll(Pageable pageable);
+
+    /**
+     * Busca Películas por Título. Devuelve una página {@link Page} con
+     * un conjunto de Películas que se correspondan con el Título indicado.
+     * @param title    Título de las Películas
+     * @param pageable información sobre la página actual (nº página, resultados por
+     *                 página y modo de ordenación)
+     * @return la página construida
+     */
+    Page<Film> findByTitle(String title, Pageable pageable);
 
     /**
      * Busca Películas por Género. Devuelve una página {@link Page} con
@@ -158,4 +184,16 @@ public interface FilmService {
      * @return conjunto de películas top
      */
     Map<String, Film> getTopFilms();
+
+    /**
+     * Persiste un Género.
+     * @param genre Género a persistir
+     */
+    void saveGenre(Genre genre);
+
+    /**
+     * Devuelve una lista ordenada alfabéticamente de todos los Géneros disponibles.
+     * @return lista de Géneros ordenados alfabéticamente
+     */
+    List<Genre> findGenresAll();
 }

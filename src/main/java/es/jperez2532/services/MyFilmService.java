@@ -254,6 +254,13 @@ public class MyFilmService implements FilmService {
     /**
      * {@inheritDoc}
      */
+    public Long count() {
+        return filmRepo.count();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Cacheable(value = "film", key = "#id")
     public Film findOne(Long id) {
         return filmRepo.findOne(id);
@@ -265,6 +272,14 @@ public class MyFilmService implements FilmService {
     @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findAll(Pageable pageable) {
         return filmRepo.findAll(pageable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
+    public Page<Film> findByTitle(String title, Pageable pageable) {
+        return filmRepo.findByTitleIgnoreCaseContaining(title, pageable);
     }
 
     /**
@@ -372,6 +387,20 @@ public class MyFilmService implements FilmService {
         topFilms.put("mejorValorada", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.DESC, "score")).getContent().get(0));
         topFilms.put("peorValorada", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.ASC, "score")).getContent().get(0));
         return topFilms;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void saveGenre(Genre genre) {
+        genreRepo.save(genre);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Genre> findGenresAll() {
+        return genreRepo.findAllByOrderByNameAsc();
     }
 
     /**
