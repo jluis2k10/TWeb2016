@@ -132,6 +132,8 @@
       <artifactId>jackson-databind</artifactId>
     </dependency>
   </dependencies>
+
+  <!-- build -->
   <build>
     <finalName>PelisUNED</finalName>
     <plugins>
@@ -153,4 +155,36 @@
       </resource>
     </resources>
   </build>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <links>
+            <link>http://docs.oracle.com/javase/7/docs/api/</link>
+            <link>http://docs.spring.io/spring-data/commons/docs/1.12.x/api/</link>
+            <link>http://docs.spring.io/spring-framework/docs/4.3.6.RELEASE/javadoc-api/</link>
+            <link>http://fasterxml.github.io/jackson-databind/javadoc/2.2.0/</link>
+            <link>https://tomcat.apache.org/tomcat-8.0-doc/servletapi/</link>
+          </links>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <configuration>
+          <linkJavadoc>true</linkJavadoc>
+          <javadocDir>../apidocs</javadocDir>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+
 </project>

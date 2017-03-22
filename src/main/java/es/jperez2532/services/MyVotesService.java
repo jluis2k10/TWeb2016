@@ -6,11 +6,13 @@ import es.jperez2532.entities.Vote;
 import es.jperez2532.repositories.VoteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -20,6 +22,7 @@ public class MyVotesService implements VotesService {
     @Autowired private VoteRepo voteRepo;
     @Autowired private FilmService filmService;
 
+    @CacheEvict(value = "filmVotes", key = "#vote.film.id")
     public void delete(Vote vote) {
         voteRepo.delete(vote);
     }
@@ -49,6 +52,7 @@ public class MyVotesService implements VotesService {
         if (vote.getId().getFilmId() != Long.parseLong(pathVariables.get("id")) ||
                 vote.getId().getAccountId() != account.getId())
             return false;
+
         return true;
     }
 
@@ -79,8 +83,8 @@ public class MyVotesService implements VotesService {
      */
     @Caching(evict = {
             @CacheEvict(value = "film", key = "#newVote.film.id"),
-            @CacheEvict(value = "account", key = "#newVote.account.userName")
-    })
+            @CacheEvict(value = "account", key = "#newVote.account.userName"),
+            @CacheEvict(value = "filmVotes", key = "#newVote.film.id")})
     public String doVote(Vote newVote) {
         Vote oldVote = voteRepo.findOne(newVote.getId());
         Film film = filmService.findOne(newVote.getId().getFilmId());
@@ -107,6 +111,11 @@ public class MyVotesService implements VotesService {
         String response = "{\"myScore\": \"" + newVote.getScore() + "\", " +
                 "\"globalScore\": \"" + scaled.intValueExact() + "\"}";
         return response;
+    }
+
+    @Cacheable(value = "filmVotes", key = "#filmID")
+    public List<Vote> findFilmVotes(Long filmID) {
+        return voteRepo.findByIdFilm(filmID);
     }
 
     public void deleteVotesFromAccount(Long accountID) {

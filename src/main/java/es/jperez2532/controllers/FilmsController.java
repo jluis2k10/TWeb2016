@@ -37,9 +37,9 @@ public class FilmsController extends MainController {
     /**
      * Muestra una película.
      *
-     * @param id ID de la película a mostrar
+     * @param id        ID de la película a mostrar
      * @param principal Token de autenticación del usuario
-     * @param model Interfaz/contenedor para pasar datos a la Vista
+     * @param model     Interfaz/contenedor para pasar datos a la Vista
      * @return La Vista a mostrar
      */
     @Transactional // TODO: estudiar qué significa transctional para recuperar entity con lazy-loading
@@ -71,7 +71,7 @@ public class FilmsController extends MainController {
     /**
      * Muestra la reproducción (simulada) de la película.
      *
-     * @param id ID de la película a reproducir
+     * @param id    ID de la película a reproducir
      * @param model Interfaz/contenedor para pasar datos a la Vista
      * @return La Vista a mostrar
      */
@@ -94,10 +94,10 @@ public class FilmsController extends MainController {
      * {@link FilmsController#buscar(Model, Pageable, Principal, String, String)}, ya que
      * en este controlador se busca el término en múltiples campos de la película.
      *
-     * @param model Interfaz/contenedor para pasar datos a la Vista
-     * @param pageable Interfaz con información sobre la paginación
+     * @param model     Interfaz/contenedor para pasar datos a la Vista
+     * @param pageable  Interfaz con información sobre la paginación
      * @param principal Token de autenticación del usuario
-     * @param buscar Término de búsqueda (opcional)
+     * @param buscar    Término de búsqueda (opcional)
      * @return La Vista a mostrar
      */
     @RequestMapping("/catalogo")
@@ -142,11 +142,12 @@ public class FilmsController extends MainController {
      * película. Por ejemplo busca el término dado en el campo Categoría, pero
      * en ninguno más.
      *
-     * @param model Interfaz/contenedor para pasar datos a la Vista
-     * @param pageable Interfaz con información sobre la paginación
+     * @param model     Interfaz/contenedor para pasar datos a la Vista
+     * @param pageable  Interfaz con información sobre la paginación
      * @param principal Token de autenticación del usuario
-     * @param ref Campo de la Película sobre el que realizar la búsqueda del término <code>buscar</code>
-     * @param buscar Término de búsqueda (obligatorio)
+     * @param ref       Campo de la Película sobre el que realizar la búsqueda del término
+     *                  <code>buscar</code>
+     * @param buscar    Término de búsqueda (obligatorio)
      * @return La Vista a mostrar
      */
     @RequestMapping("/buscar")

@@ -190,7 +190,7 @@
         $.ajax({
             type: "GET",
             contentType: "application/json",
-            url: "${path}/micuenta/milista/"+action,
+            url: "${path}/rest/milista/"+action,
             data: "film-id="+film_id,
             dataType: 'json',
             timeout: 10000,

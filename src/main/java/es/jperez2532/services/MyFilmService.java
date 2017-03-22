@@ -33,15 +33,14 @@ import java.util.concurrent.ThreadLocalRandom;
 @Service
 public class MyFilmService implements FilmService {
 
+    @Autowired private UserService userService;
+    @Autowired private VotesService votesService;
     @Autowired private FilmRepo filmRepo;
     @Autowired private GenreRepo genreRepo;
     @Autowired private DirectorRepo directorRepo;
     @Autowired private ActorRepo actorRepo;
     @Autowired private CountryRepo countryRepo;
-    @Autowired private VoteRepo voteRepo;
     @Autowired private UploadPoster uploadPoster;
-    @Autowired private UserService userService;
-    @Autowired private VotesService votesService;
 
     @Caching(evict = {
             @CacheEvict(value = "homePageFilms", allEntries = true),
@@ -274,7 +273,7 @@ public class MyFilmService implements FilmService {
     public void calcScore(Film film) {
         int count = 0;
         BigDecimal fScore = new BigDecimal(0);
-        List<Vote> votes = voteRepo.findByIdFilm(film.getId());
+        List<Vote> votes = votesService.findFilmVotes(film.getId());
         for (Vote vote: votes) {
             fScore = fScore.add(new BigDecimal(vote.getScore()));
             count++;

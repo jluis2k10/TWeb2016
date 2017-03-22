@@ -5,15 +5,13 @@ import es.jperez2532.entities.*;
 import es.jperez2532.repositories.ActorRepo;
 import es.jperez2532.repositories.CountryRepo;
 import es.jperez2532.repositories.DirectorRepo;
+import es.jperez2532.services.UserService;
 import es.jperez2532.services.VotesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
@@ -31,6 +29,7 @@ import java.util.List;
 public class RESTController {
 
     @Autowired private VotesService votesService;
+    @Autowired private UserService userService;
     @Autowired private ActorRepo actorRepo;
     @Autowired private DirectorRepo directorRepo;
     @Autowired private CountryRepo countryRepo;
@@ -38,8 +37,8 @@ public class RESTController {
     /**
      * Resupuesta Ajax (json) a la acción de votar/calificar una película por parte de un usuario.
      *
-     * @param vote El voto emitido
-     * @param request Información sobre la petición HTTP a éste controlador
+     * @param vote      El voto emitido
+     * @param request   Información sobre la petición HTTP a éste controlador
      * @param principal Token de autenticación del usuario
      * @return Respuesta del servidor a la petición
      */
@@ -61,6 +60,34 @@ public class RESTController {
         String jsonResponse = votesService.doVote(vote);
 
         return ResponseEntity.ok(jsonResponse);
+    }
+
+    /**
+     * Recoge una petición para añadir una película a la lista de reproducción del usuario
+     * y devuelve confirmación JSON de la operación.
+     *
+     * @param filmId    ID de la película a añadir a la lista
+     * @param principal Token de autenticación del usuario
+     * @return Resupuesta JSON (en forma de text/html)
+     */
+    @RequestMapping(value = "/milista/add", method = RequestMethod.GET)
+    public ResponseEntity<String> addToWatchList(@RequestParam("film-id") Long filmId, Principal principal) {
+        userService.addToWatchlist(principal.getName(), filmId);
+        return ResponseEntity.ok("{}");
+    }
+
+    /**
+     * Recoge una petición para eliminar una película de la lista de reproducción del usuario
+     * y devuelve confirmación JSON de la operación.
+     *
+     * @param filmId    ID de la película a eliminar de la lista
+     * @param principal Token de autenticación del usuario
+     * @return Respuesta JSON (en forma de text/html)
+     */
+    @RequestMapping(value = "/milista/delete", method = RequestMethod.GET)
+    public ResponseEntity<String> deleteFromWatchList(@RequestParam("film-id") Long filmId, Principal principal) {
+        userService.deleteFromWatchlist(principal.getName(), filmId);
+        return ResponseEntity.ok("{}");
     }
 
     /**

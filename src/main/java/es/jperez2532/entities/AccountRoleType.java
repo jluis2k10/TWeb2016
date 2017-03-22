@@ -1,7 +1,7 @@
 package es.jperez2532.entities;
 
 /**
- * Created by Jose Luis on 20/02/2017.
+ * Tipo enumerado con los roles posibles.
  */
 public enum AccountRoleType {
     USER("USER"),
@@ -9,10 +9,14 @@ public enum AccountRoleType {
 
     String accountRoleType;
 
-    private AccountRoleType(String accountRoleType) {
+    AccountRoleType(String accountRoleType) {
         this.accountRoleType = accountRoleType;
     }
 
+    /**
+     * Devuelve el tipo de Rol.
+     * @return el tipo de Rol
+     */
     public String getAccountRoleType() {
         return accountRoleType;
     }

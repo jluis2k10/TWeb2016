@@ -6,7 +6,9 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 /**
- * Primary key compuesta para la clase Vote.class
+ * Primary key compuesta para la clase {@link Vote}, que necesita un ID "empotrable" para
+ * poder modelar la clave compuesta (película, voto) de la que consta.
+ * <p>
  * Necesitamos un constructor para generar la clave compuesta cada vez que creamos el objeto,
  * y un constructor vacío que es el que usará Hibernate.
  */
@@ -22,32 +24,53 @@ public class VotePK implements Serializable {
     @Column(name = "account_id")
     public long account;
 
+    /**
+     * Constructor de la clase.
+     */
     public VotePK() { }
 
+    /**
+     * Constructor de la clase. Establece los ID de la Película y de la Cuenta.
+     * @param filmId    ID de la Película
+     * @param accountId ID de la Cuenta
+     */
     public VotePK(long filmId, long accountId) {
         this.film = filmId;
         this.account = accountId;
     }
 
+    /**
+     * Devuelve el ID de la Película.
+     * @return el ID de la Película
+     */
     public long getFilmId() {
         return film;
     }
 
+    /**
+     * Establece el ID de la Película.
+     * @param filmId ID a establecer
+     */
     public void setFilmId(long filmId) {
         this.film = filmId;
     }
 
+    /**
+     * Devuelve el ID de la Cuenta.
+     * @return el ID de la Cuenta
+     */
     public long getAccountId() {
         return account;
     }
 
+    /**
+     * Establece el ID de la Cuenta.
+     * @param accountId ID a establecer
+     */
     public void setAccountId(long accountId) {
         this.account = accountId;
     }
 
-    /** (non-Javadoc)
-	 * @see java.lang.Object#equals(Object)
-	 */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -59,9 +82,6 @@ public class VotePK implements Serializable {
         return account == votePK.account;
     }
 
-    /** (non-Javadoc)
-     * @see Object#hashCode()
-     */
     @Override
     public int hashCode() {
         int result = (int) (film ^ (film >>> 32));

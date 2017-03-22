@@ -33,13 +33,13 @@ public class HomeController extends MainController {
     /**
      * Muestra la portada del sitio.
      *
-     * @param model Interfaz/contenedor para pasar datos a la Vista
+     * @param model     Interfaz/contenedor para pasar datos a la Vista
      * @param principal Token de autenticación del usuario
      * @return La Vista a mostrar
      */
     @RequestMapping("/")
     public String home(Model model, Principal principal) {
-        Account account;
+        Account account = null;
         List<Film> watchlistFilms = null;
         Map<String, Collection<Film>> homePageFilms;
 
@@ -63,7 +63,7 @@ public class HomeController extends MainController {
      * Controlador para las peticiones de loguearse en el sitio.
      *
      * @param request Información sobre la petición HTTP a éste controlador
-     * @param model Interfaz/contenedor para pasar datos a la Vista
+     * @param model   Interfaz/contenedor para pasar datos a la Vista
      * @return La Vista a mostrar
      */
     @RequestMapping(value = "/login",  method = RequestMethod.GET)
@@ -91,10 +91,10 @@ public class HomeController extends MainController {
     /**
      * Recoge el formulario (<code>POST</code>) de registro de nuevo usuario.
      *
-     * @param accountForm Contenedor de los datos introducidos en el formulario recogido
-     * @param bindingResult Errores en el formulario <code>accountForm</code>
+     * @param accountForm        Contenedor de los datos introducidos en el formulario recogido
+     * @param bindingResult      Errores en el formulario <code>accountForm</code>
      * @param redirectAttributes Interfaz/contenedor para pasar datos a una Redirección
-     * @param model Interfaz/contenedor para pasar datos a la Vista
+     * @param model              Interfaz/contenedor para pasar datos a la Vista
      * @return Vista a mostrar o Redirección a efectuar
      */
     @RequestMapping(value = "/registro", method = RequestMethod.POST)

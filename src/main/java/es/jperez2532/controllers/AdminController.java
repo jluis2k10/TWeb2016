@@ -97,9 +97,9 @@ public class AdminController extends MainController {
      * Muestra el catálogo, paginado, de todas las películas disponibles en el sistema
      * o de aquellas que coinciden con el término indicado en el parámetro <code>buscar</code>.
      *
-     * @param model Interfaz/contenedor para pasar datos a la Vista
+     * @param model    Interfaz/contenedor para pasar datos a la Vista
      * @param pageable Interfaz con información sobre la paginación
-     * @param buscar Título de película a buscar (opcional)
+     * @param buscar   Título de película a buscar (opcional)
      * @return La Vista a mostrar
      */
     @RequestMapping("/catalogo")
@@ -148,11 +148,12 @@ public class AdminController extends MainController {
     /**
      * Recoge el formulario (<code>POST</code>) de añadir una nueva película al sistema.
      *
-     * @param filmForm Contenedor de los datos introducidos en el formulario recogido
+     * @param filmForm              Contenedor de los datos introducidos en el formulario recogido
      * @param bindingResultPelicula Errores en el formulario <code>filmForm</code>
-     * @param uploadPoster Objeto {@link UploadPoster} recogido del formulario automáticamente (formulario multipart)
-     * @param model Interfaz/contenedor para pasar datos a la Vista
-     * @param redirectAttributes Interfaz/contenedor para pasar datos a una Redirección
+     * @param uploadPoster          Objeto {@link UploadPoster} recogido del formulario automáticamente
+     *                              (formulario multipart)
+     * @param model                 Interfaz/contenedor para pasar datos a la Vista
+     * @param redirectAttributes    Interfaz/contenedor para pasar datos a una Redirección
      * @return Vista a mostrar o redirección a efectuar
      * @throws IOException Para informar de errores en la carga de la imagen mediante {@link es.jperez2532.components.GlobalExceptionHandler}
      */
@@ -189,8 +190,8 @@ public class AdminController extends MainController {
     /**
      * Muestra el formulario para editar una película del catálogo.
      *
-     * @param id ID de la película a editar
-     * @param model Interfaz/contenedor para pasar datos a la Vista
+     * @param id                 ID de la película a editar
+     * @param model              Interfaz/contenedor para pasar datos a la Vista
      * @param redirectAttributes Interfaz/contenedor para pasar datos a una Redirección
      * @return Vista a mostrar o Redirección a efectuar
      */
@@ -213,12 +214,13 @@ public class AdminController extends MainController {
     /**
      * Recoge el formulario (<code>POST</code>) de editar una película.
      *
-     * @param id ID de la película que se trata de editar.
-     * @param filmForm Contenedor de los datos introducidos en el formulario recogido
+     * @param id                    ID de la película que se trata de editar.
+     * @param filmForm              Contenedor de los datos introducidos en el formulario recogido
      * @param bindingResultPelicula Errores en el formulario <code>filmForm</code>
-     * @param uploadPoster Objeto {@link UploadPoster} recogido del formulario automáticamente (formulario multipart)
-     * @param model Interfaz/contenedor para pasar datos a la Vista
-     * @param redirectAttributes Interfaz/contenedor para pasar datos a una Redirección
+     * @param uploadPoster          Objeto {@link UploadPoster} recogido del formulario automáticamente
+     *                              (formulario multipart)
+     * @param model                 Interfaz/contenedor para pasar datos a la Vista
+     * @param redirectAttributes    Interfaz/contenedor para pasar datos a una Redirección
      * @return Vista a mostrar o Redirección a efectuar
      * @throws IOException Para informar de errores en la carga de la imagen mediante {@link es.jperez2532.components.GlobalExceptionHandler}
      */
@@ -266,9 +268,9 @@ public class AdminController extends MainController {
      * Una vez recalculada la puntuación se redirecciona automáticamente al usuario a
      * la página desde donde se hizo la petición.
      *
-     * @param id ID de la película
+     * @param id                 ID de la película
      * @param redirectAttributes Interfaz/contenedor para pasar datos a una Redirección
-     * @param request Información sobre la petición HTTP a éste controlador
+     * @param request            Información sobre la petición HTTP a éste controlador
      * @return Redirección a efectuar
      */
     @RequestMapping(value = "/pelicula/recalcular/{id}", method = RequestMethod.GET)
@@ -304,11 +306,11 @@ public class AdminController extends MainController {
     /**
      * Recoge el formulario (<code>POST</code>) de añadir un nuevo Género.
      *
-     * @param genreForm Contenedor de los datos introducidos en el formulario recogido
+     * @param genreForm          Contenedor de los datos introducidos en el formulario recogido
      * @param bindingResultGenre Errores en el formulario <code>genreForm</code>
-     * @param model Interfaz/contenedor para pasar datos a la Vista
+     * @param model              Interfaz/contenedor para pasar datos a la Vista
      * @param redirectAttributes Interfaz/contenedor para pasar datos a una Redirección
-     * @param sessionStatus Interfaz con datos sobre la sesión del usuario
+     * @param sessionStatus      Interfaz con datos sobre la sesión del usuario
      * @return Vista a mostrar o Redirección a efectuar
      */
     @RequestMapping(value = "/catalogo/nuevoGenero", method = RequestMethod.POST)
@@ -331,7 +333,7 @@ public class AdminController extends MainController {
     /**
      * Maneja la petición de eliminar una película del sistema.
      *
-     * @param id ID de la película a eliminar
+     * @param id                 ID de la película a eliminar
      * @param redirectAttributes Interfaz/contenedor para pasar datos a una Redirección
      * @return Redirección a efectuar
      */
@@ -359,16 +361,16 @@ public class AdminController extends MainController {
      * Muestra la lista, paginada, de todos los usuarios registrados en el sistema o de
      * aquellos que coinciden con el término indicado en el parámetro <code>buscar</code>.
      *
-     * @param model Interfaz/contenedor para pasar datos a la Vista
-     * @param pageable Interfaz con información sobre la paginación
+     * @param model     Interfaz/contenedor para pasar datos a la Vista
+     * @param pageable  Interfaz con información sobre la paginación
      * @param principal Token de autenticación del usuario
-     * @param buscar Nombre del usuario a buscar (opcional)
+     * @param buscar    Nombre del usuario a buscar (opcional)
      * @return La Vista a mostrar
      */
     @RequestMapping(value = "/usuarios")
     public String users(Model model, Pageable pageable, Principal principal,
                            @RequestParam(value = "buscar", required = false) String buscar) {
-        Account loggedAccount = userService.findByUserName(principal.getName());
+        Account loggedAccount = accountRepo.findByUserName(principal.getName());
         String url_params = "?";
         Page<Account> page;
 
@@ -401,8 +403,8 @@ public class AdminController extends MainController {
      * una respuesta acorde en formato JSON.
      *
      * @param accountId ID del usuario a editar
-     * @param modify Parámetro a modificar
-     * @param action Acción a realizar sobre el parámetro <code>modify</code> (add, delete)
+     * @param modify    Parámetro a modificar
+     * @param action    Acción a realizar sobre el parámetro <code>modify</code> (add, delete)
      * @param principal Token de autenticación del usuario
      * @return Respuesta con objeto JSON de la operación
      */
