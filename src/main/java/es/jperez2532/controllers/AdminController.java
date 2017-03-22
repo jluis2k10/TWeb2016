@@ -82,7 +82,7 @@ public class AdminController extends MainController {
         model.addAttribute("accounts", accounts.getContent());
 
         Long totalFilms = filmRepo.count();
-        Map<String, Film> filmStats = filmService.getStats();
+        Map<String, Film> filmStats = filmService.getTopFilms();
         model.addAttribute("totalFilms", totalFilms);
         model.addAttribute("filmStats", filmStats);
 

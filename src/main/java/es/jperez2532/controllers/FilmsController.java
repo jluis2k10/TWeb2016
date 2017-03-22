@@ -52,7 +52,7 @@ public class FilmsController extends MainController {
 
         if (principal != null) {
             Account account = userService.findByUserName(principal.getName());
-            userWatchlist = userService.makeWatchlistSet(account);
+            userWatchlist = userService.makeWatchlistSet(account.getWatchlist());
             userId = userService.findByUserName(principal.getName()).getId();
             Vote vote = voteRepo.findOne(new VotePK(film.getId(), userId));
             if (vote != null)
@@ -108,7 +108,7 @@ public class FilmsController extends MainController {
         String url_params = "/catalogo?";
 
         if (principal != null)
-            userWatchlist = userService.makeWatchlistSet(userService.findByUserName(principal.getName()));
+            userWatchlist = userService.makeWatchlistSet(userService.findByUserName(principal.getName()).getWatchlist());
         model.addAttribute("userWatchlist", userWatchlist);
 
         if (buscar != null) {
@@ -159,7 +159,7 @@ public class FilmsController extends MainController {
         List<Film> films = null;
 
         if (principal != null)
-            userWatchlist = userService.makeWatchlistSet(userService.findByUserName(principal.getName()));
+            userWatchlist = userService.makeWatchlistSet(userService.findByUserName(principal.getName()).getWatchlist());
         model.addAttribute("userWatchlist", userWatchlist);
 
         switch (ref) {

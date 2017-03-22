@@ -18,15 +18,17 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Servicios para operaciones con películas.
- *
+ * <p>
  * Todos los resultados de consultas a la BBDD se guardan en tres cachés:
- *  - homePageFilms: almacena los resultados que se muestran en la portada
- *  - allFilms: almacena los resultados que se muestran en el catálogo/buscar por término
- *  - film: almacena películas una por una
- *
+ * <ul>
+ *   <li> homePageFilms: almacena los resultados que se muestran en la portada
+ *   <li> allFilms: almacena los resultados que se muestran en el catálogo/buscar por término
+ *   <li> film: almacena películas una por una
+ * </ul><p>
  * La caché de la portada se regenera con cualquier cambio que se haga a cualquier
  * película, incluyendo votos y reproducciones. Es decir todos los usuarios verán la misma
  * portada hasta que se produzca algún cambio en alguna película.
+ * <p>
  * La caché de allFilms que guarda las búsquedas NO SE REGENRA al reproducir una
  * película.
  */
@@ -42,6 +44,19 @@ public class MyFilmService implements FilmService {
     @Autowired private CountryRepo countryRepo;
     @Autowired private UploadPoster uploadPoster;
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Para persistir una película nueva (que provenga del formulario de crear
+     * una nueva película), debemos previamente persistir cada una de las entidades
+     * que tenga asociadas (Géneros, Países, Directores, etc).
+     * <p>
+     * Si estas entidades asociadas ya existían en la Base de Datos, hay que
+     * recuperar su identificador para que no se produzcan errores al intentar
+     * persisitr la entidad y que Hibernate genere automáticamente las asociaciones
+     * adecuadas en las distintas tablas "join" entre la Película y sus entidades
+     * asociadas.
+     */
     @Caching(evict = {
             @CacheEvict(value = "homePageFilms", allEntries = true),
             @CacheEvict(value = "allFilms", allEntries = true),
@@ -94,11 +109,21 @@ public class MyFilmService implements FilmService {
         filmRepo.save(film);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Antes de poder borrar una película debemos eliminar todos los votos emitidos
+     * hacia esa película y borrar las posibles cachés de cuentas de usuarios que
+     * la pudieran tener en su lista de reproducción para que no se produzcan
+     * inconsistencias en la Base de Datos.
+     */
     @Caching(evict = {
             @CacheEvict(value = "homePageFilms", allEntries = true),
             @CacheEvict(value = "allFilms", allEntries = true),
             @CacheEvict(value = "film", key = "#film.id")})
     public boolean delete (Film film, ServletContext servletContext) {
+        /* Asumimos que el posible fallo al borrar una película sólo
+        puede darse al intentar borrar el archivo con la imagen del póster */
         try {
             uploadPoster.delete(film.getPoster(), servletContext);
         } catch (RuntimeException e) {
@@ -114,28 +139,18 @@ public class MyFilmService implements FilmService {
     }
 
     /**
-     * Actualizar película en BBDD.
-     * Necesario refrescar todas las cachés para que no contengan información
-     * desactualizada.
-     * @param film
+     * {@inheritDoc}
      */
     @Caching(evict = {
             @CacheEvict(value = "homePageFilms", allEntries = true),
             @CacheEvict(value = "allFilms", allEntries = true),
             @CacheEvict(value = "film", key = "#film.id")})
-    public void update(Film film) {
+    public void updateVotes(Film film) {
         filmRepo.save(film);
     }
 
     /**
-     * Actualizar película en BBDD.
-     * Este método se utiliza únicamente para actualizar la información acerca del
-     * número de reproducciones de la película ya que no es necesario refrescar la
-     * caché de resultados porque ellos no se da la opción de ordenar por número
-     * de reproducciones.
-     * Si utilizáramos el método update() en su lugar estaríamos eliminando datos
-     * de la caché de forma innecesaria.
-     * @param film
+     * {@inheritDoc}
      */
     @Caching(evict = {
             @CacheEvict(value = "homePageFilms", allEntries = true),
@@ -145,30 +160,31 @@ public class MyFilmService implements FilmService {
     }
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Busca películas que contengan un término dado. Realiza la búsqueda en los campos:
-     *   - Género
-     *   - Título
-     *   - Directores
-     *   - Actores (principales y secundarios)
-     *   - País
-     *   - Descripción
-     *   - Año
-     * Devuelve una página (Page) con el número preciso de resultados necesarios y
-     * ordenados para presentarlos en la página que muestra los resultados de la búsqueda.
+     * <ul>
+     * <li> Género
+     * <li> Título
+     * <li> Directores
+     * <li> Actores (principales y secundarios)
+     * <li> País
+     * <li> Descripción
+     * <li> Año
+     * </ul><p>
+     * Devuelve una página (Page) manualmente que contiene el número preciso de resultados
+     * necesarios, y ordenados para presentarlos en la página que muestra los resultados
+     * de la búsqueda.
+     * <p>
      * Como se hacen muchas consultas a BBDD, cacheamos los resultados para no tener que
-     * repetir las consultas si se realiza una búsqueda ya realizada con anterior
-     *
-     * @param term Término de búsqueda
-     * @param pageable Información sobre la página actual (nº página, resultados por
-     *                 página y modo de ordenación)
-     * @return Página con los resultados ordenados
+     * repetir las consultas si se realiza una búsqueda ya realizada con anterior.
      */
     @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> search(String term, Pageable pageable) {
-        // Separamos el término en palabras en caso de que sea una frase, para así poder
-        // buscar también por cada una de estas palabras (mínimo 4 letras por palabra)
+        /* Separamos el término en palabras en caso de que sea una frase, para así poder
+         buscar también por cada una de estas palabras (mínimo 4 letras por palabra)*/
         List<String> terms = getWords(term, 3);
-        Set<Film> result = null;
+        Set<Film> result;
 
         // Buscamos por género (término exacto)
         result = filmRepo.findByFilmGenres_NameIgnoreCase(term);
@@ -231,41 +247,61 @@ public class MyFilmService implements FilmService {
         // ... y devolvemos la porción necesaria de ella para la página en la que estemos
         int startIndex = pageable.getOffset();
         int endIndex = Math.min(pageable.getOffset() + pageable.getPageSize(), resultsList.size());
-        return new PageImpl<Film>(resultsList.subList(startIndex, endIndex),
+        return new PageImpl<>(resultsList.subList(startIndex, endIndex),
                 pageable, resultsList.size());
     }
 
-    // Si cacheo esto empiezan errores en hibernate
+    /**
+     * {@inheritDoc}
+     */
     @Cacheable(value = "film", key = "#id")
     public Film findOne(Long id) {
         return filmRepo.findOne(id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findAll(Pageable pageable) {
         return filmRepo.findAll(pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findByGenre(String genre, Pageable pageable) {
         return filmRepo.findByFilmGenres_NameIgnoreCase(genre, pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findByDirector(String director, Pageable pageable) {
         return filmRepo.findByFilmDirectors_NameIgnoreCase(director, pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findByActor(String actor, Pageable pageable) {
         return filmRepo.findDistinctByFilmStars_NameIgnoreCaseOrFilmSupportings_NameIgnoreCase(actor, actor, pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findByCountry(String country, Pageable pageable) {
         return filmRepo.findByFilmCountries_NameIgnoreCase(country, pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Caching(evict = {
             @CacheEvict(value = "homePageFilms", allEntries = true),
             @CacheEvict(value = "allFilms", allEntries = true),
@@ -285,18 +321,24 @@ public class MyFilmService implements FilmService {
         filmRepo.save(film);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Cacheable(value = "homePageFilms", keyGenerator = "filmsKey")
     public Set<String> getRandomGenres(int limit) {
-        Set<String> results = new HashSet<String>();
+        Set<String> results = new HashSet<>();
         List<Genre> genres = genreRepo.findAllByOrderByNameAsc();
         while (results.size() < limit && results.size() < genres.size())
             results.add(genres.get(ThreadLocalRandom.current().nextInt(genres.size())).getName());
         return results;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Cacheable(value = "homePageFilms", keyGenerator = "filmsKey")
     public Map<String, Collection<Film>> findHomePageFilms(int limit, Set<String> genres) {
-        Map<String, Collection<Film>> results = new HashMap<String, Collection<Film>>();
+        Map<String, Collection<Film>> results = new HashMap<>();
         Pageable pageable = new PageRequest(0, limit );
 
         Page<Film> lastFilms = filmRepo.findAll(new PageRequest(0, 6, Sort.Direction.DESC, "id"));
@@ -307,13 +349,13 @@ public class MyFilmService implements FilmService {
         results.put("vistas", vistas.getContent());
 
         // Recuperamos películas por género y las desordenamos antes de devolverlas
-        Iterator<String> it = genres.iterator();
-        while (it.hasNext()) {
-            String nextGenre = it.next();
-            Page<Film> genre = filmRepo.findByFilmGenres_NameIgnoreCase(nextGenre, pageable);
-            List<Film> films = genre.getContent();
-            List<Film> modificableFilms = new ArrayList<Film>(films);
+        for (String nextGenre : genres) {
+            Set<Film> films = filmRepo.findByFilmGenres_NameIgnoreCase(nextGenre);
+            List<Film> modificableFilms = new ArrayList<>(films);
+            // Desordenamos y dejamos la lista dentro del límite dado
             Collections.shuffle(modificableFilms, ThreadLocalRandom.current());
+            if (modificableFilms.size() > limit)
+                modificableFilms.subList(limit, modificableFilms.size()).clear();
             results.put(nextGenre, modificableFilms);
         }
 
@@ -321,15 +363,27 @@ public class MyFilmService implements FilmService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public Map<String, Film> getTopFilms() {
+        Map<String, Film> topFilms = new HashMap<>();
+        topFilms.put("masVista", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.DESC, "views")).getContent().get(0));
+        topFilms.put("menosVista", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.ASC, "views")).getContent().get(0));
+        topFilms.put("mejorValorada", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.DESC, "score")).getContent().get(0));
+        topFilms.put("peorValorada", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.ASC, "score")).getContent().get(0));
+        return topFilms;
+    }
+
+    /**
      * Genera una lista ordenada de películas según los criterios específicados a
      * partir de un conjunto no ordenado de películas.
      *
      * @param results Conjunto no ordenado de películas
-     * @param sort Criterios de ordenación
+     * @param sort    Criterios de ordenación
      * @return Lista ordenada de películas
      */
     private static List<Film> orderResultsList(Set<Film> results, Sort sort) {
-        List<Film> resultsList = new ArrayList<Film>(results);
+        List<Film> resultsList = new ArrayList<>(results);
         Sort.Order order = null;
         Iterator<Sort.Order> it = sort.iterator();
         // En principio no debería existir más de un Order en sort (a no ser que el usuario
@@ -338,6 +392,7 @@ public class MyFilmService implements FilmService {
         if (it.hasNext())
             order = it.next();
 
+        assert order != null;
         switch (order.getProperty()) {
             case "id":
                 Collections.sort(resultsList, new Film.ComparatorFilmId());
@@ -366,13 +421,13 @@ public class MyFilmService implements FilmService {
     /**
      * Convierte una cadena de texto en un array con cada palabra de la cadena de texto.
      * Seleccionamos sólo palabras de tamaño mayor que @min_size
-     * @param text
-     * @param min_size
-     * @return
+     * @param text     cadena de texto con (posiblemente) más de una palabra
+     * @param min_size tamaño mínimo de una palabra para ser incluída en la lista
+     * @return Lista de palabras
      */
     private static List<String> getWords(String text, int min_size) {
-        List<String> words = new ArrayList<String>();
-        String word = null;
+        List<String> words = new ArrayList<>();
+        String word;
         BreakIterator breakIterator = BreakIterator.getWordInstance();
         breakIterator.setText(text);
         int lastIndex = breakIterator.first();
@@ -386,14 +441,5 @@ public class MyFilmService implements FilmService {
             }
         }
         return words;
-    }
-
-    public Map<String, Film> getStats() {
-        Map<String, Film> filmStats = new HashMap<String, Film>();
-        filmStats.put("masVista", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.DESC, "views")).getContent().get(0));
-        filmStats.put("menosVista", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.ASC, "views")).getContent().get(0));
-        filmStats.put("mejorValorada", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.DESC, "score")).getContent().get(0));
-        filmStats.put("peorValorada", filmRepo.findAll(new PageRequest(0, 1, Sort.Direction.ASC, "score")).getContent().get(0));
-        return filmStats;
     }
 }

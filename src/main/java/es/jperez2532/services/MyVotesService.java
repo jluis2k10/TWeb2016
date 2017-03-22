@@ -22,22 +22,21 @@ public class MyVotesService implements VotesService {
     @Autowired private VoteRepo voteRepo;
     @Autowired private FilmService filmService;
 
+    /**
+     * {@inheritDoc}
+     */
     @CacheEvict(value = "filmVotes", key = "#vote.film.id")
     public void delete(Vote vote) {
         voteRepo.delete(vote);
     }
 
     /**
-     * Aseguramos que el voto recibido es válido.
-     *
+     * {@inheritDoc}
+     * <p>
      * Un voto es válido si la información enviada mediante la petición json (ID película,
      * ID usuario y puntuación) coincide con lo que se obtiene del propio contexto de la
      * petición (ID película desde la URL donde se hace la petición, ID usuario que hace
      * la petición).
-     * @param vote
-     * @param urlPath
-     * @param username
-     * @return
      */
     public boolean isValid(Vote vote, String urlPath, String username) {
         // Recuperar ID de la película según URL desde donde se ha hecho la petición
@@ -57,13 +56,7 @@ public class MyVotesService implements VotesService {
     }
 
     /**
-     * Recoge la película y el usuario a los que hace referencia la clave del
-     * voto.
-     *
-     * Necesario para vaciar la caché posteriormente en {@link MyVotesService#doVote(Vote)}
-     * y para persistir la entidad sin que hibernate se queje.
-     *
-     * @param vote
+     * {@inheritDoc}
      */
     public void populateVote(Vote vote) {
         if (vote.getFilm() == null && vote.getAccount() == null) {
@@ -73,13 +66,13 @@ public class MyVotesService implements VotesService {
     }
 
     /**
-     * Contabilizar el voto.
-     *
+     * {@inheritDoc}
+     * <p>
      * Comprobamos si el usuario ya había votado anteriormente la misma película
      * y actuamos en consecuencia para actualizar la puntuación total.
-     *
-     * @param newVote
-     * @return
+     * <p>
+     * La String JSON que se devuelve incluye la puntuación global de la Película
+     * tras contabilizar el Voto recién emitido, y el valor del propio Voto emitido.
      */
     @Caching(evict = {
             @CacheEvict(value = "film", key = "#newVote.film.id"),
@@ -105,7 +98,7 @@ public class MyVotesService implements VotesService {
             film.setNvotes(oldNvotes + 1);
         }
         BigDecimal scaled = film.getScore().setScale(0, BigDecimal.ROUND_HALF_UP);
-        filmService.update(film);
+        filmService.updateVotes(film);
         voteRepo.save(newVote);
 
         String response = "{\"myScore\": \"" + newVote.getScore() + "\", " +
@@ -113,11 +106,20 @@ public class MyVotesService implements VotesService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Cacheable(value = "filmVotes", key = "#filmID")
     public List<Vote> findFilmVotes(Long filmID) {
         return voteRepo.findByIdFilm(filmID);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Se debe recalcular la puntuación de cada Película a la que hacen referencia
+     * los Votos eliminados.
+     */
     public void deleteVotesFromAccount(Long accountID) {
         for (Vote vote: voteRepo.findByIdAccount(accountID)) {
             this.delete(vote);
@@ -125,6 +127,9 @@ public class MyVotesService implements VotesService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void deleteVotesFromFilm(Long filmID) {
         for (Vote vote: voteRepo.findByIdFilm(filmID))
             this.delete(vote);

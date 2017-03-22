@@ -16,36 +16,42 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+@Service
 public class MyUserService implements UserService {
 
-    @Autowired private AccountRepo accountRepo;
-    @Autowired private RoleRepo roleRepo;
+    @Autowired private FilmService filmService;
     @Autowired private VotesService votesService;
     @Autowired private UserDetailsService userDetailsService;
+    @Autowired private AccountRepo accountRepo;
+    @Autowired private RoleRepo roleRepo;
     @Autowired private SessionHandle sessionHandle;
     @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
-    @Autowired private FilmService filmService;
-
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Ojo no está cacheado
-     *
-     * @param accountId
-     * @return
      */
     public Account findOne(Long accountId) {
         return accountRepo.findOne(accountId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Cacheable(value = "account", key = "#userName")
     public Account findByUserName(String userName) {
         return accountRepo.findByUserName(userName);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @CacheEvict(value = "account", key = "#account.userName")
     public void save(Account account) {
         // Si el password está vacío viene de update() (sin modificar) y debemos mantener el anterior
@@ -59,20 +65,23 @@ public class MyUserService implements UserService {
         accountRepo.save(account);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Transactional(readOnly = true)
     public String getPrincipal() {
-        String userName = null;
+        String userName;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof UserDetails) {
+        if (principal instanceof UserDetails)
             userName = ((UserDetails) principal).getUsername();
-        }
-        else {
+        else
             userName = principal.toString();
-        }
         return userName;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @CacheEvict(value = "account", key = "#account.userName")
     public String update(Account account, String modify, String action) {
         String response = "";
@@ -105,27 +114,40 @@ public class MyUserService implements UserService {
         return response;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @CacheEvict(value = "account", key = "#account.userName")
     public void updateOwn(Account account, ChangePassword changePassword) {
         // Sólo si el nuevo password no está vacío
-        if (changePassword.getNewPassword() != "")
+        if (!changePassword.getNewPassword().equals(""))
             account.setPassword(changePassword.getNewPassword());
         if(account.getAccountRoles().isEmpty())
             account.setAccountRoles(accountRepo.findOne(account.getId()).getAccountRoles());
         this.save(account);
-        // Recargar contexto de seguridad con la info actualizada
+        /* Recargar contexto de seguridad con la info actualizada (en este caso no es necesario
+        exipirar la sesión del usuario), basta con regenerarla con la nueva info */
         UserDetails userDetails = userDetailsService.loadUserByUsername(account.getUserName());
         Authentication auth = new PreAuthenticatedAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Necesitamos eliminar de forma manual todas las asociaciones que se generan
+     * con otras entidades mediante las tablas "join", que en este caso son asociaciones
+     * con Roles y Películas. De este modo Hibernate eliminará las entradas correspondientes
+     * a estas asociaciones de forma automática.
+     * <p>
+     * También hay que acordarse de eliminar todos los posibles Votos emitidos por
+     * el usuario que se está borrando, y consecuentemente actualizar las puntuaciones
+     * de las Películas afectadas.
+     */
     @CacheEvict(value = "account", key = "#account.userName")
     public void delete(Account account) {
-        // TODO: no entiendo por qué tengo que hacer antes esto. Hibernate falla al intentar borrar
-        // una cuenta con roles (intenta borrar los roles asociados a la cuenta). Y lo mismo con la watchlist.
-        account.setAccountRoles(null);
-        account.setWatchlist(null);
-
+        account.getAccountRoles().clear();
+        account.getWatchlist().clear();
         // Borrar votos emitidos por este usuario
         votesService.deleteVotesFromAccount(account.getId());
         accountRepo.delete(account);
@@ -133,9 +155,9 @@ public class MyUserService implements UserService {
     }
 
     /**
+     * {@inheritDoc}
+     * <p>
      * No se permite eliminar la cuenta del usuario si es la única con el rol de administrador.
-     * @param account
-     * @return
      */
     @CacheEvict(value = "account", key = "#account.userName")
     public boolean deleteOwn(Account account) {
@@ -145,13 +167,18 @@ public class MyUserService implements UserService {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @CacheEvict(value = "account", key = "#account.userName")
-    public void clearCache(Account account) {
-        return;
-    }
+    public void clearCache(Account account) { }
 
-    // OJO: si no se elimina aquí la caché que almacena la película antes de
-    // insertarla en la watchlist surgen conflictos
+    /**
+     * {@inheritDoc}
+     * <p>
+     * OJO: si no se elimina aquí la caché que almacena la película antes de
+     * insertarla en la watchlist surgen conflictos
+     */
     @Caching(evict = {
             @CacheEvict(value = "film", key = "#filmId"),
             @CacheEvict(value = "account", key = "#username")})
@@ -161,12 +188,15 @@ public class MyUserService implements UserService {
         accountRepo.save(account);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @CacheEvict(value = "account", key = "#username")
     public void deleteFromWatchlist(String username, Long filmId) {
         Account account = this.findByUserName(username);
         Iterator<Film> it = account.getWatchlist().iterator();
         while (it.hasNext()) {
-            if (it.next().getId() == filmId) {
+            if (it.next().getId().equals(filmId)) {
                 it.remove();
                 break;
             }
@@ -174,17 +204,33 @@ public class MyUserService implements UserService {
         accountRepo.save(account);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, Long> getStats() {
+        Map<String, Long> stats = new HashMap<>();
+        stats.put("totalUsers", accountRepo.count());
+        stats.put("adminUsers", accountRepo.countByAccountRoles_RoleIgnoreCase("admin"));
+        stats.put("inactiveUsers", accountRepo.countByActive(false));
+        return stats;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Transactional
-    public Set<Long> makeWatchlistSet (Account account) {
-        Set<Long> watchlistSet = new HashSet<Long>();
-        for(Film film: account.getWatchlist()) {
+    public Set<Long> makeWatchlistSet (List<Film> watchlist) {
+        Set<Long> watchlistSet = new HashSet<>();
+        for(Film film: watchlist)
             watchlistSet.add(film.getId());
-        }
         return watchlistSet;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public LinkedList<String> getProvincias() {
-        LinkedList<String> provincias = new LinkedList<String>();
+        LinkedList<String> provincias = new LinkedList<>();
         provincias.add("Álava");
         provincias.add("Albacete");
         provincias.add("Alicante");
@@ -238,13 +284,5 @@ public class MyUserService implements UserService {
         provincias.add("Ceuta");
         provincias.add("Melilla");
         return provincias;
-    }
-
-    public Map<String, Long> getStats() {
-        Map<String, Long> stats = new HashMap<String, Long>();
-        stats.put("totalUsers", accountRepo.count());
-        stats.put("adminUsers", accountRepo.countByAccountRoles_RoleIgnoreCase("admin"));
-        stats.put("inactiveUsers", accountRepo.countByActive(false));
-        return stats;
     }
 }
