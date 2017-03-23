@@ -24,9 +24,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
 
-/**
- * Created by Jose Luis on 18/02/2017.
- */
 @Configuration
 @EnableJpaRepositories(basePackages = "es.jperez2532.repositories")
 @EnableTransactionManagement

@@ -20,11 +20,6 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by Jose Luis on 17/02/2017.
- *
- * Configurar recursos estáticos
- */
 @Configuration
 @EnableWebMvc
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
