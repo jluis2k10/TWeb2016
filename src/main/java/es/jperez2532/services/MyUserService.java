@@ -1,6 +1,5 @@
 package es.jperez2532.services;
 
-import es.jperez2532.components.ChangePassword;
 import es.jperez2532.components.SessionHandle;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
@@ -153,10 +152,10 @@ public class MyUserService implements UserService {
      * {@inheritDoc}
      */
     @CacheEvict(value = "account", key = "#account.userName")
-    public void updateOwn(Account account, ChangePassword changePassword) {
+    public void updateOwn(Account account) {
         // Sólo si el nuevo password no está vacío
-        if (!changePassword.getNewPassword().equals(""))
-            account.setPassword(changePassword.getNewPassword());
+        if (!account.getNewPassword().equals(""))
+            account.setPassword(account.getNewPassword());
         if(account.getAccountRoles().isEmpty())
             account.setAccountRoles(accountRepo.findOne(account.getId()).getAccountRoles());
         this.save(account);

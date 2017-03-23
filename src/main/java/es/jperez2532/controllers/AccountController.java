@@ -1,10 +1,8 @@
 package es.jperez2532.controllers;
 
-import es.jperez2532.components.ChangePassword;
 import es.jperez2532.entities.Account;
 import es.jperez2532.services.UserService;
 import es.jperez2532.validator.AccountValidator;
-import es.jperez2532.validator.EditPasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,20 +24,16 @@ public class AccountController extends MainController {
 
     private final UserService userService;
     private final AccountValidator accountValidator;
-    private final EditPasswordValidator editPasswordValidator;
 
     /**
      * Constructor de la clase con las inyecciones de dependencia necesarias.
      * @param userService           inyección {@link UserService}
      * @param accountValidator      inyección {@link AccountValidator}
-     * @param editPasswordValidator inyección {@link EditPasswordValidator}
      */
     @Autowired
-    public AccountController(UserService userService, AccountValidator accountValidator,
-            EditPasswordValidator editPasswordValidator) {
+    public AccountController(UserService userService, AccountValidator accountValidator) {
         this.userService = userService;
         this.accountValidator = accountValidator;
-        this.editPasswordValidator = editPasswordValidator;
     }
 
     /**
@@ -52,10 +46,8 @@ public class AccountController extends MainController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String edit(Model model, Principal principal) {
         Account currentAccount = userService.findByUserName(principal.getName());
-        ChangePassword changePassword = new ChangePassword();
         model.addAttribute("editarCuentaForm", currentAccount);
         model.addAttribute("provincias", userService.getProvincias());
-        model.addAttribute("changePasswordForm", changePassword);
         model.addAttribute("title", "Mi cuenta - PelisUNED");
         return("micuenta/editar");
     }
@@ -66,9 +58,6 @@ public class AccountController extends MainController {
      * @param accountForm           Contenedor de los datos introducidos en el formulario para
      *                              actualizar la cuenta
      * @param bindingResultCuenta   Errores en el formulario <code>accountForm</code>
-     * @param changePassword        Contenedor de los datos introducidos en el formulario para
-     *                              cambiar la contraseña
-     * @param bindingResultPassword Errores en el formulario <code>changePassword</code>
      * @param redirectAttributes    Interfaz/contenedor para pasar datos a una Redirección
      * @param model                 Interfaz/contenedor para pasar datos a la Vista
      * @return Vista a mostrar o redirección a efectuar
@@ -76,17 +65,14 @@ public class AccountController extends MainController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public String edit(@ModelAttribute("editarCuentaForm") Account accountForm,
                        BindingResult bindingResultCuenta,
-                       @ModelAttribute("changePasswordForm") ChangePassword changePassword,
-                       BindingResult bindingResultPassword,
                        RedirectAttributes redirectAttributes, Model model) {
-        editPasswordValidator.validate(changePassword, bindingResultPassword);
         accountValidator.validateUpdated(accountForm, bindingResultCuenta);
-        if(bindingResultCuenta.hasErrors() || bindingResultPassword.hasErrors()) {
+        if(bindingResultCuenta.hasErrors()) {
             model.addAttribute("provincias", userService.getProvincias());
             model.addAttribute("title", "Registro - PelisUNED");
             return "micuenta/editar";
         }
-        userService.updateOwn(accountForm, changePassword);
+        userService.updateOwn(accountForm);
         redirectAttributes.addFlashAttribute("infoMsg", "Cuenta actualizada correctamente.");
         return("redirect:/");
     }

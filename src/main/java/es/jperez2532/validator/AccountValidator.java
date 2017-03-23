@@ -3,6 +3,7 @@ package es.jperez2532.validator;
 import es.jperez2532.entities.Account;
 import es.jperez2532.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -17,14 +18,17 @@ import java.util.regex.Pattern;
 public class AccountValidator implements Validator {
 
     private final UserService userService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     /**
      * Constructor de la clase con las inyecciones de dependencia apropiadas.
-     * @param userService inyección {@link UserService}
+     * @param userService           inyección {@link UserService}
+     * @param bCryptPasswordEncoder inyección {@link BCryptPasswordEncoder}
      */
     @Autowired
-    public AccountValidator(UserService userService) {
+    public AccountValidator(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userService = userService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     /**
@@ -55,8 +59,7 @@ public class AccountValidator implements Validator {
      * Valida una edición sobre una cuenta ya existente.
      * <p>
      * Los campos que un usuario puede editar sobre su cuenta son el nombre de usuario,
-     * el email y la contraseña. Los dos primeros se validan en este método, mientras
-     * que la contraseña será validada en {@link EditPasswordValidator}.
+     * el email y la contraseña.
      * @param updatedAccount cuenta editada que se quiere validar
      * @param errors         errores encontrados durante la validación
      */
@@ -68,6 +71,9 @@ public class AccountValidator implements Validator {
         // Validar Dirección Email
         if(!currentAccount.getEmail().equals(updatedAccount.getEmail()))
             validateEmail(updatedAccount, errors);
+        // Validar cambio de contraseña
+        if(!updatedAccount.getNewPassword().isEmpty())
+            validateNewPassword(updatedAccount, errors);
     }
 
     /**
@@ -120,5 +126,24 @@ public class AccountValidator implements Validator {
     private void validateProvincia(Account account, Errors errors) {
         if (account.getProvincia() == null)
             errors.rejectValue("provincia", "Invalid.registroForm.provincia");
+    }
+
+    /**
+     * Valida la nueva contraseña.
+     * @param account Cuenta a validar
+     * @param errors  errores encontrados durante la validación
+     */
+    public void validateNewPassword(Account account, Errors errors) {
+        Account currentAccount = userService.findByUserName(userService.getPrincipal(), false);
+
+        // Primero comprobamos que el password nuevo es correcto
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newPassword", "NotEmpty");
+        if (account.getNewPassword().length() < 5 || account.getNewPassword().length() > 30)
+            errors.rejectValue("newPassword", "Size.registroForm.password");
+
+        // Segundo comprobamos que se ha introducido correctamente el password antiguo
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordConfirm", "NotEmpty");
+        if (!bCryptPasswordEncoder.matches(account.getPasswordConfirm(), currentAccount.getPassword()))
+            errors.rejectValue("passwordConfirm", "NoMatch.changePasswordForm.oldPassword");
     }
 }

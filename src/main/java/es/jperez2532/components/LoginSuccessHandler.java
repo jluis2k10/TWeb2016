@@ -1,7 +1,9 @@
 package es.jperez2532.components;
 
+import es.jperez2532.config.SecurityConfig;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.ui.Model;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,19 +17,34 @@ import java.io.IOException;
  */
 public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
+    /**
+     * Constructor de la clase.
+     * @param defaultTargetUrl establece la redirección por defecto ({@link SecurityConfig#successHandler()})
+     */
     public LoginSuccessHandler(String defaultTargetUrl) {
         setDefaultTargetUrl(defaultTargetUrl);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Establecemos la redirección a efectuar tras un login realizado con éxito en base al
+     * parámetro de sesión "<code>url_prior_login</code>", el cual se genera en
+     * {@link es.jperez2532.controllers.HomeController#login(HttpServletRequest, Model)} a
+     * partir de la página de la que se procede.
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         HttpSession session = request.getSession();
         if (session != null) {
             String redirectUrl = (String) session.getAttribute("url_prior_login");
+            // No redireccionar a login (saltaría "denegado"
+            if (redirectUrl.contains("/login"))
+                redirectUrl = null;
             if (redirectUrl != null) {
-                // we do not forget to clean this attribute from session
+                // Eliminar el atriuto de la sesión
                 session.removeAttribute("url_prior_login");
-                // then we redirect
+                // Redireccionar
                 try {
                     getRedirectStrategy().sendRedirect(request, response, redirectUrl);
                 } catch (IOException e) {

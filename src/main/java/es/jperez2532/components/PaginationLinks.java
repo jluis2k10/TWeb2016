@@ -15,7 +15,7 @@ public class PaginationLinks extends SimpleTagSupport {
 
     private String url;
     private int limit = 2;       // Número de enlaces a mostrar a cada lado de la página actual
-    private String sort = "";    // Orden de los elementos
+    private String sort = "";    // Orden de los elementos en la página
     private String prev = "Ant";
     private String next = "Sig";
     private String listItemsCssClass = "";
@@ -39,7 +39,7 @@ public class PaginationLinks extends SimpleTagSupport {
      *
      *  < 1 ... 16 17 18 19 20 >
      *
-     * @throws JspException
+     * @throws JspException en caso de producirse algún error
      */
     @Override
     public void doTag() throws JspException {
@@ -62,7 +62,7 @@ public class PaginationLinks extends SimpleTagSupport {
             if (page.hasPrevious())
                 out.write(doLink(currPage - 1, getPrev(), getListItemsCssClass(), false));
 
-            /**
+            /*
              *  CASO 1: El número total de páginas es menor o igual que el límite
              *  de enlaces que podemos mostrar.
              *  -> Mostramos los enlaces a todas las páginas
@@ -76,7 +76,7 @@ public class PaginationLinks extends SimpleTagSupport {
                         out.write(doLink(i, String.valueOf(i + 1), getListItemsCssClass(), false));
                 }
             }
-            /**
+            /*
              * CASO 2: Existen más páginas de las que podemos mostrar en los enlaces.
              * Estamos dentro de las primeras @limit*2+1 páginas.
              * -> Mostrar los enlaces a las páginas 1..@limit*2+1 (más el de la última página)
@@ -94,7 +94,7 @@ public class PaginationLinks extends SimpleTagSupport {
                     out.write(doLink(0, "...", "disabled", true));
                 out.write(doLink(page.getTotalPages()-1, String.valueOf(page.getTotalPages()), getListItemsCssClass(), false));
             }
-            /**
+            /*
              * CASO 3: Existen más páginas de las que podemos mostrar en los enlaces.
              * Estamos dentro de las últimas @limit*2+1 páginas.
              * -> Mostrar los enlaces a las últimas @limit*2+1 páginas (más el de la primera página)
@@ -112,7 +112,7 @@ public class PaginationLinks extends SimpleTagSupport {
                         out.write(doLink(i, String.valueOf(i+1), getListItemsCssClass(), false));
                 }
             }
-            /**
+            /*
              * CASO 4: Existen más páginas de las que podemos mostrar en los enlaces.
              * Estamos en una página intermedia, la cual tiene una distancia > @limit tanto de
              * la primera como de la última página.
@@ -151,7 +151,7 @@ public class PaginationLinks extends SimpleTagSupport {
     /**
      * Genera el hiperenlace de cada botón de la paginación.
      *
-     * @param page número de la página a enlazar
+     * @param page     número de la página a enlazar
      * @param linkText texto que aparece en el botón
      * @param cssClass clase css del botón
      * @param disabled true si el enlace no debe ser clicable
@@ -190,50 +190,98 @@ public class PaginationLinks extends SimpleTagSupport {
         return link.toString();
     }
 
+    /**
+     * Devuelve la url "base" de la paginación.
+     * @return la url "base" de la paginación
+     */
     public String getUrl() {
         return url;
     }
 
+    /**
+     * Establece la url "base" de la paginación.
+     * @param url la url "base" de la paginación
+     */
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+     * Devuelve la forma en la que están ordenados los elementos de la página.
+     * @return orden de los elementos de la página
+     */
     public String getSort() {
         return sort;
     }
 
+    /**
+     * Establece la forma en la que se ordenan los elementos en la página.
+     * @param sort forma en la que se deben ordenar los elementos en la página
+     */
     public void setSort(String sort) {
         this.sort = sort;
     }
 
+    /**
+     * Devuelve el texto para el enlace a la página anterior.
+     * @return texto para el enlace a la página anterior
+     */
     public String getPrev() {
         return prev;
     }
 
+    /**
+     * Establece el texto para el enlace a la página anterior.
+     * @param prev texto para el enlace a la página anterior
+     */
     public void setPrev(String prev) {
         this.prev = prev;
     }
 
+    /**
+     * Decuelve el texto para el enlace a la página siguiente.
+     * @return texto para el enlace a la página siguiente
+     */
     public String getNext() {
         return next;
     }
 
+    /**
+     * Establece el texto para el enlace a la página siguiente.
+     * @param next texto para el enlace a la página siguiente
+     */
     public void setNext(String next) {
         this.next = next;
     }
 
+    /**
+     * Devuelve el estilo css para los items (li) de la paginación.
+     * @return estilo css para los items (li) de la paginación
+     */
     public String getListItemsCssClass() {
         return listItemsCssClass;
     }
 
+    /**
+     * Establece el estilo css para los items (li) de la paginación.
+     * @param listItemsCssClass estilo css para los items (li) de la paginación
+     */
     public void setListItemsCssClass(String listItemsCssClass) {
         this.listItemsCssClass = listItemsCssClass;
     }
 
+    /**
+     * Devuelve la página ({@link Page}) actual.
+     * @return la página ({@link Page}) actual
+     */
     public Page getPage() {
         return page;
     }
 
+    /**
+     * Establece la página ({@link Page}) actual.
+     * @param page la página ({@link Page}) actual
+     */
     public void setPage(Page page) {
         this.page = page;
     }

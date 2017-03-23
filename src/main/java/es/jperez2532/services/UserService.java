@@ -1,6 +1,5 @@
 package es.jperez2532.services;
 
-import es.jperez2532.components.ChangePassword;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import org.springframework.data.domain.Page;
@@ -106,10 +105,9 @@ public interface UserService {
      * <p>
      * Sólo puede modificar los parámetros de la cuenta del propio usuario que hace
      * la solicitud.
-     * @param account        Cuenta con los datos modificados que se debe persistir
-     * @param changePassword Contraseña modificada (opcional)
+     * @param account Cuenta con los datos modificados que se debe persistir
      */
-    void updateOwn(Account account, ChangePassword changePassword);
+    void updateOwn(Account account);
 
     /**
      * Elimina una Cuenta de usuario.

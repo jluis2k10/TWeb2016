@@ -42,21 +42,20 @@
             <div class="section">
                 <h6>Cambiar contraseña</h6>
             </div>
-
                 <div class="input-field">
-                    <spring:bind path="changePasswordForm.newPassword">
+                    <spring:bind path="editarCuentaForm.newPassword">
                         <i class="material-icons prefix">lock_outline</i>
-                        <form:input path="changePasswordForm.newPassword" type="password" cssErrorClass="invalid"></form:input>
-                        <form:label path="changePasswordForm.newPassword">Nueva Contraseña</form:label>
-                        <form:errors path="changePasswordForm.newPassword" cssClass="red-text form-error"></form:errors>
+                        <form:input path="editarCuentaForm.newPassword" type="password" cssErrorClass="invalid"></form:input>
+                        <form:label path="editarCuentaForm.newPassword">Nueva Contraseña</form:label>
+                        <form:errors path="editarCuentaForm.newPassword" cssClass="red-text form-error"></form:errors>
                     </spring:bind>
                 </div>
                 <div class="input-field">
-                    <spring:bind path="changePasswordForm.oldPassword">
+                    <spring:bind path="editarCuentaForm.passwordConfirm">
                         <i class="material-icons prefix">lock_open</i>
-                        <form:input path="changePasswordForm.oldPassword" type="password" cssErrorClass="invalid"></form:input>
-                        <form:label path="changePasswordForm.oldPassword">Contraseña Actual</form:label>
-                        <form:errors path="changePasswordForm.oldPassword" cssClass="red-text form-error"></form:errors>
+                        <form:input path="editarCuentaForm.passwordConfirm" type="password" cssErrorClass="invalid"></form:input>
+                        <form:label path="editarCuentaForm.passwordConfirm">Contraseña Actual</form:label>
+                        <form:errors path="editarCuentaForm.passwordConfirm" cssClass="red-text form-error"></form:errors>
                     </spring:bind>
                 </div>
                 <div class="section"></div>

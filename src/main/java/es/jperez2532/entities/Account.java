@@ -43,9 +43,13 @@ public class Account {
             inverseJoinColumns = {@JoinColumn(name = "film_id", referencedColumnName = "id")})
     private List<Film> watchlist = new ArrayList<Film>();
 
-    // Sólo se utiliza a la hora de registrar una nueva cuenta
+    // Sólo se utiliza a la hora de registrar una nueva cuenta/cambiar una contraseña
     @Transient
     private String passwordConfirm;
+
+    // Sólo se utiliza a la hora de cambiar la contraseña de una cuenta ya creada
+    @Transient
+    private String newPassword;
 
     /**
      * ¿Cuenta de un usuario administrador?
@@ -177,7 +181,8 @@ public class Account {
      * Devuelve la confirmación de la contraseña.
      * <p>
      * Durante el registro de una nueva cuenta se necesita que este parámetro sea idéntico al
-     * introducido en <em>password</em>.
+     * introducido en <em>password</em>. Durante la edición de una cuenta se necesita que éste
+     * parámetro coincida con la antigua contraseña.
      * @return la confirmación de la contraseña
      */
     public String getPasswordConfirm() {
@@ -190,6 +195,25 @@ public class Account {
      */
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
+    }
+
+    /**
+     * Devuelve la nueva contraseña.
+     * <p>
+     * Cuando se edita una cuenta y se quiere cambiar la contraseña, la nueva
+     * contraseña se almacena en <code>newPassword</code> temporalmente.
+     * @return la nueva contraseña.
+     */
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    /**
+     * Establece la nueva contraseña cuando se quiere cambiarla.
+     * @param newPassword la nueva contraseña
+     */
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 
     /**
