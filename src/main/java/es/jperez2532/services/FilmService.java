@@ -81,6 +81,13 @@ public interface FilmService {
     Film findOne(Long id);
 
     /**
+     * Busca una Película por su título.
+     * @param title títuclo de la Película a buscar
+     * @return la Película que se haya encontrado
+     */
+    Film findByTitle(String title);
+
+    /**
      * Devuelve una página {@link Page} con un conjunto de Películas.
      * Busca entre todas las películas disponibles en la Base de Datos
      * sin hacer distinciones.
@@ -190,6 +197,13 @@ public interface FilmService {
      * @param genre Género a persistir
      */
     void saveGenre(Genre genre);
+
+    /**
+     * Busca un Género por su nombre.
+     * @param genrename el nombre del Género a buscar
+     * @return el Género encontrado
+     */
+    Genre findGenreByName(String genrename);
 
     /**
      * Devuelve una lista ordenada alfabéticamente de todos los Géneros disponibles.

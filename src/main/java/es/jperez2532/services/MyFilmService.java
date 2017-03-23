@@ -269,6 +269,13 @@ public class MyFilmService implements FilmService {
     /**
      * {@inheritDoc}
      */
+    public Film findByTitle(String title) {
+        return filmRepo.findByTitle(title);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findAll(Pageable pageable) {
         return filmRepo.findAll(pageable);
@@ -394,6 +401,14 @@ public class MyFilmService implements FilmService {
      */
     public void saveGenre(Genre genre) {
         genreRepo.save(genre);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Genre findGenreByName(String genrename) {
+        return genreRepo.findByName(genrename);
     }
 
     /**

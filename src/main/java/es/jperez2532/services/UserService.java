@@ -39,6 +39,15 @@ public interface UserService {
     Account findByUserName(String userName);
 
     /**
+     * Busca una cuenta de usuario por nombre. Puede cachear el resultado
+     * o no hacerlo en función de lo indicado en el parámetro <code>cacheable</code>.
+     * @param userName  nombre de usuario a buscar
+     * @param cacheable <code>false</code> para no cachear el resultado
+     * @return resultado encontrado
+     */
+    Account findByUserName(String userName, boolean cacheable);
+
+    /**
      * Devuelve una página ({@link Page}) con los usuarios filtrados por
      * nombre de usuario.
      * @param userName nombre de usuario a buscar
@@ -49,11 +58,18 @@ public interface UserService {
     Page<Account> findUsersByUserName(String userName, Pageable pageable);
 
     /**
-     * Busca una cuenta de usuario por ID
+     * Busca una cuenta de usuario por ID.
      * @param accountId ID de usuario a buscar
      * @return resultado encontrado
      */
     Account findOne(Long accountId);
+
+    /**
+     * Busca una cuenta de usuario por su dirección email.
+     * @param email email a buscar
+     * @return la Cuenta de usuario encontrada
+     */
+    Account findByEmail(String email);
 
     /**
      * Persiste una Cuenta de usuario.

@@ -50,8 +50,7 @@ public class AdminUsersController extends MainController {
     @RequestMapping(value = "/usuarios")
     public String users(Model model, Pageable pageable, Principal principal,
                         @RequestParam(value = "buscar", required = false) String buscar) {
-        Account loggedAccount = userService.findByUserName(principal.getName());
-        userService.clearCache(loggedAccount); // La caché no contendría la watchlist (por el lazy load) y habría conflictos en el frontend
+        Account loggedAccount = userService.findByUserName(principal.getName(), false);
         String url_params = "?";
         Page<Account> page;
 

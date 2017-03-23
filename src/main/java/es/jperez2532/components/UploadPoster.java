@@ -28,10 +28,6 @@ public class UploadPoster {
         if (posterFile.isEmpty())
             throw new RuntimeException("NotEmpty");
 
-        String contentType = posterFile.getContentType();
-        if (!(contentType.equals("image/jpeg") || contentType.equals("image/png") || contentType.equals("image/gif")))
-            throw new RuntimeException("ImagesOnly.FilmForm.poster");
-
         // Buscar extensión
         String ext = posterFile.getOriginalFilename().substring(
                 posterFile.getOriginalFilename().lastIndexOf('.'), posterFile.getOriginalFilename().length());

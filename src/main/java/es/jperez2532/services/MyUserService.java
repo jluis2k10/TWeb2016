@@ -64,8 +64,24 @@ public class MyUserService implements UserService {
     /**
      * {@inheritDoc}
      */
+    public Account findByUserName(String userName, boolean cacheable) {
+        if(cacheable)
+            return this.findByUserName(userName);
+        return accountRepo.findByUserName(userName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public Page<Account> findUsersByUserName(String userName, Pageable pageable) {
         return accountRepo.findByUserNameIgnoreCaseContaining(userName, pageable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Account findByEmail(String email) {
+        return accountRepo.findByEmail(email);
     }
 
     /**
