@@ -27,7 +27,7 @@
         <ul id="nav-mobile" class="main-menu hide-on-med-and-down">
             <li><a href="${path}/catalogo">Catálogo</a></li>
             <li><a class="dropdown-generos" href="#!" data-activates="dropdown-gen">Por Géneros<i class="material-icons right">arrow_drop_down</i></a></li>
-            <li><a href="collapsible.html">Informe PED</a></li>
+            <li><a href="${path}/informe">Informe PED</a></li>
         </ul>
         <!-- Dropdown Cuenta -->
         <sec:authorize access="isFullyAuthenticated()">

@@ -57,6 +57,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addResourceHandler("/img/**").addResourceLocations("/WEB-INF/resources/img/").setCachePeriod(31556926);
         registry.addResourceHandler("/js/**").addResourceLocations("/WEB-INF/resources/js/").setCachePeriod(31556926);
         registry.addResourceHandler("/fonts/**").addResourceLocations("/WEB-INF/resources/fonts/").setCachePeriod(31556926);
+        registry.addResourceHandler("/informe/**").addResourceLocations("/WEB-INF/resources/informe/").setCachePeriod(31556926).resourceChain(true);
     }
 
     // "Filtro" (argument resolver) para poder utilizar Pageable. Recoge automáticamente

@@ -100,6 +100,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().csrf()
                 .and().exceptionHandling()
                     .accessDeniedPage("/denegado");
+
+        /* Permitimos frames para poder visualizar javadoc y xref
+        OJO: en una aplicación para el "mundo real" esto supone un riesgo de seguridad. */
+        http.headers().frameOptions().sameOrigin();
     }
 
     // Configurar login persistente (recuérdame)

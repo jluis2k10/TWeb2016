@@ -181,7 +181,7 @@
         <artifactId>maven-jxr-plugin</artifactId>
         <configuration>
           <linkJavadoc>true</linkJavadoc>
-          <javadocDir>../apidocs</javadocDir>
+          <javadocDir>../jperez2532/informe/apidocs</javadocDir>
         </configuration>
       </plugin>
     </plugins>

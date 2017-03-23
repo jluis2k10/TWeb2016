@@ -32,7 +32,6 @@ public class HomeController extends MainController {
 
     /**
      * Constructor de la clase con las inyecciones de dependencia apropiadas.
-     *
      * @param userService      inyección {@link UserService}
      * @param filmService      inyección {@link FilmService}
      * @param accountValidator inyección {@link AccountValidator}
@@ -47,7 +46,6 @@ public class HomeController extends MainController {
 
     /**
      * Muestra la portada del sitio.
-     *
      * @param model     Interfaz/contenedor para pasar datos a la Vista
      * @param principal Token de autenticación del usuario
      * @return La Vista a mostrar
@@ -76,7 +74,6 @@ public class HomeController extends MainController {
 
     /**
      * Controlador para las peticiones de loguearse en el sitio.
-     *
      * @param request Información sobre la petición HTTP a éste controlador
      * @param model   Interfaz/contenedor para pasar datos a la Vista
      * @return La Vista a mostrar
@@ -91,7 +88,6 @@ public class HomeController extends MainController {
 
     /**
      * Muestra el formulario de registro de un nuevo usuario.
-     *
      * @param model Interfaz/contenedor para pasar datos a la Vista
      * @return La Vista a mostrar
      */
@@ -105,7 +101,6 @@ public class HomeController extends MainController {
 
     /**
      * Recoge el formulario (<code>POST</code>) de registro de nuevo usuario.
-     *
      * @param accountForm        Contenedor de los datos introducidos en el formulario recogido
      * @param bindingResult      Errores en el formulario <code>accountForm</code>
      * @param redirectAttributes Interfaz/contenedor para pasar datos a una Redirección
@@ -137,7 +132,6 @@ public class HomeController extends MainController {
      * <p>
      * Nota: para expirar una sesión de forma manual hay que llamar al componente#método
      * {@link es.jperez2532.components.SessionHandle#expireUserSessions(String)}.
-     *
      * @param redirectAttributes Interfaz/contenedor para pasar datos a una Redirección
      * @return La redirección a efectuar
      */
@@ -149,8 +143,17 @@ public class HomeController extends MainController {
     }
 
     /**
+     * Muestra la página con el informe de la práctica.
+     * @return La Vista a mostrar
+     */
+    @RequestMapping(value = "/informe", method = RequestMethod.GET)
+    public String informe(Model model) {
+        model.addAttribute("title", "Informe PED - PelisUNED");
+        return "informe";
+    }
+
+    /**
      * Muestra una página con información sobre algún error que se haya producido.
-     *
      * @return La Vista a mostrar
      */
     @RequestMapping(value = "/error", method = RequestMethod.GET)
