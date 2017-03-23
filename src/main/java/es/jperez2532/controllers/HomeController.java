@@ -26,9 +26,24 @@ import java.util.*;
 @Controller
 public class HomeController extends MainController {
 
-    @Autowired private UserService userService;
-    @Autowired private FilmService filmService;
-    @Autowired private AccountValidator accountValidator;
+    private final UserService userService;
+    private final FilmService filmService;
+    private final AccountValidator accountValidator;
+
+    /**
+     * Constructor de la clase con las inyecciones de dependencia apropiadas.
+     *
+     * @param userService      inyección {@link UserService}
+     * @param filmService      inyección {@link FilmService}
+     * @param accountValidator inyección {@link AccountValidator}
+     */
+    @Autowired
+    public HomeController(UserService userService, FilmService filmService,
+            AccountValidator accountValidator) {
+        this.userService = userService;
+        this.filmService = filmService;
+        this.accountValidator = accountValidator;
+    }
 
     /**
      * Muestra la portada del sitio.

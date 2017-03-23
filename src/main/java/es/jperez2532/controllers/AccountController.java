@@ -6,7 +6,6 @@ import es.jperez2532.services.UserService;
 import es.jperez2532.validator.AccountValidator;
 import es.jperez2532.validator.EditPasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,10 +24,23 @@ import java.security.Principal;
 @RequestMapping("/micuenta")
 public class AccountController extends MainController {
 
-    @Autowired private UserService userService;
-    @Autowired private UserDetailsService userDetailsService;
-    @Autowired private AccountValidator accountValidator;
-    @Autowired private EditPasswordValidator editPasswordValidator;
+    private final UserService userService;
+    private final AccountValidator accountValidator;
+    private final EditPasswordValidator editPasswordValidator;
+
+    /**
+     * Constructor de la clase con las inyecciones de dependencia necesarias.
+     * @param userService           inyección {@link UserService}
+     * @param accountValidator      inyección {@link AccountValidator}
+     * @param editPasswordValidator inyección {@link EditPasswordValidator}
+     */
+    @Autowired
+    public AccountController(UserService userService, AccountValidator accountValidator,
+            EditPasswordValidator editPasswordValidator) {
+        this.userService = userService;
+        this.accountValidator = accountValidator;
+        this.editPasswordValidator = editPasswordValidator;
+    }
 
     /**
      * Presenta el formulario para editar los datos y la contraseña del usuario.

@@ -1,6 +1,7 @@
 package es.jperez2532.services;
 
 import es.jperez2532.entities.Vote;
+import es.jperez2532.entities.VotePK;
 
 import java.util.List;
 
@@ -15,6 +16,13 @@ import java.util.List;
  * los Votos, son necesarios para manejar correctamente la caché del sistema.
  */
 public interface VotesService {
+    /**
+     * Encuentra un Voto por su identificador.
+      * @param id identificador del Voto a encontrar
+     * @return el Voto encontrado
+     */
+    Vote findOne(VotePK id);
+
     /**
      * Borra un Voto.
      * @param vote el Voto a borrar

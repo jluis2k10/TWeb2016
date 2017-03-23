@@ -64,7 +64,7 @@ public class MyUserService implements UserService {
     /**
      * {@inheritDoc}
      */
-    public Page<Account> findByUserName(String userName, Pageable pageable) {
+    public Page<Account> findUsersByUserName(String userName, Pageable pageable) {
         return accountRepo.findByUserNameIgnoreCaseContaining(userName, pageable);
     }
 

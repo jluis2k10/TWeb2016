@@ -3,6 +3,7 @@ package es.jperez2532.services;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.entities.Vote;
+import es.jperez2532.entities.VotePK;
 import es.jperez2532.repositories.VoteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -24,6 +25,13 @@ public class MyVotesService implements VotesService {
     @Autowired private UserService userService;
     @Autowired private VoteRepo voteRepo;
     @Autowired private FilmService filmService;
+
+    /**
+     * {@inheritDoc}
+     */
+    public Vote findOne(VotePK id) {
+        return voteRepo.findOne(id);
+    }
 
     /**
      * {@inheritDoc}

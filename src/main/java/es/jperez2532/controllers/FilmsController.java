@@ -4,9 +4,9 @@ import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.entities.Vote;
 import es.jperez2532.entities.VotePK;
-import es.jperez2532.repositories.VoteRepo;
 import es.jperez2532.services.FilmService;
 import es.jperez2532.services.UserService;
+import es.jperez2532.services.VotesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,9 +30,23 @@ import java.util.Set;
 @Controller
 public class FilmsController extends MainController {
 
-    @Autowired private UserService userService;
-    @Autowired private FilmService filmService;
-    @Autowired private VoteRepo voteRepo;
+    private final UserService userService;
+    private final FilmService filmService;
+    private final VotesService votesService;
+
+    /**
+     * Constructor de la clase con las inyecciones de dependencia apropiadas.
+     *
+     * @param userService  inyección {@link UserService}
+     * @param filmService  inyección {@link FilmService}
+     * @param votesService inyección {@link VotesService}
+     */
+    @Autowired
+    public FilmsController(UserService userService, FilmService filmService, VotesService votesService) {
+        this.userService = userService;
+        this.filmService = filmService;
+        this.votesService = votesService;
+    }
 
     /**
      * Muestra una película.
@@ -54,7 +68,7 @@ public class FilmsController extends MainController {
             Account account = userService.findByUserName(principal.getName());
             userWatchlist = userService.makeWatchlistSet(account.getWatchlist());
             userId = userService.findByUserName(principal.getName()).getId();
-            Vote vote = voteRepo.findOne(new VotePK(film.getId(), userId));
+            Vote vote = votesService.findOne(new VotePK(film.getId(), userId));
             if (vote != null)
                 myScore = vote.getScore();
         }

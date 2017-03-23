@@ -1,7 +1,6 @@
 package es.jperez2532.services;
 
-import es.jperez2532.entities.Film;
-import es.jperez2532.entities.Genre;
+import es.jperez2532.entities.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,9 +18,10 @@ import java.util.Set;
  * Operaciones para:
  * <p><ul>
  *     <li> Géneros ({@link Genre})
- *     <li>  ({@link Genre})
- * </ul>
- * <p>
+ *     <li> Directores ({@link Director})
+ *     <li> Actores ({@link Actor})
+ *     <li> Países ({@link Country})
+ * </ul><p>
  * Forma parte de la capa de servicio de la aplicación, es decir se encarga
  * de tratar los datos antes de enviarlos (o después de recibirlos) a la capa
  * de persistencia (interfaces en {@link es.jperez2532.repositories}.
@@ -196,4 +196,22 @@ public interface FilmService {
      * @return lista de Géneros ordenados alfabéticamente
      */
     List<Genre> findGenresAll();
+
+    /**
+     * Devuelve una lista ordenada alfabéticamente de todos los Directores disponibles.
+     * @return lista de Directores ordenados alfabéticamente
+     */
+    List<Director> findDirectorsAll();
+
+    /**
+     * Devuelve una lista ordenada alfabéticamente de todos los Actores disponibles.
+     * @return lista de Actores ordenados alfabéticamente
+     */
+    List<Actor> findActorsAll();
+
+    /**
+     * Devuelve una lista ordenada alfabéticamente de todos los Países disponibles.
+     * @return lista de Países ordenados alfabéticamente
+     */
+    List<Country> findCountriesAll();
 }

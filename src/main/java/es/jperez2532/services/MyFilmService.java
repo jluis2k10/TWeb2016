@@ -404,6 +404,30 @@ public class MyFilmService implements FilmService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Director> findDirectorsAll() {
+        return directorRepo.findAllByOrderByNameAsc();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Actor> findActorsAll() {
+        return actorRepo.findAllByOrderByNameAsc();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Country> findCountriesAll() {
+        return countryRepo.findAllByOrderByNameAsc();
+    }
+
+    /**
      * Genera una lista ordenada de películas según los criterios específicados a
      * partir de un conjunto no ordenado de películas.
      *

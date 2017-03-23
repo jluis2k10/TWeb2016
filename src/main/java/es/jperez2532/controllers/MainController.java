@@ -1,7 +1,7 @@
 package es.jperez2532.controllers;
 
 import es.jperez2532.entities.Genre;
-import es.jperez2532.repositories.GenreRepo;
+import es.jperez2532.services.FilmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,7 +18,7 @@ import java.util.List;
 @SessionAttributes(value = {"genresList"}, types = {Genre.class})
 public class MainController {
 
-    @Autowired private GenreRepo genreRepo;
+    @Autowired private FilmService filmService;
 
     /**
      * Genera una lista con todos los géneros disponibles y Spring se encarga de
@@ -35,7 +35,7 @@ public class MainController {
      */
     @ModelAttribute("genresList")
     public List<Genre> getGenres() {
-        return genreRepo.findAllByOrderByNameAsc();
+        return filmService.findGenresAll();
     }
 
 }

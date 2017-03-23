@@ -46,7 +46,7 @@ public interface UserService {
      *                 página y modo de ordenación)
      * @return la página con los usuarios encontrados
      */
-    Page<Account> findByUserName(String userName, Pageable pageable);
+    Page<Account> findUsersByUserName(String userName, Pageable pageable);
 
     /**
      * Busca una cuenta de usuario por ID

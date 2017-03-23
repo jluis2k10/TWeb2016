@@ -51,11 +51,12 @@ public class AdminUsersController extends MainController {
     public String users(Model model, Pageable pageable, Principal principal,
                         @RequestParam(value = "buscar", required = false) String buscar) {
         Account loggedAccount = userService.findByUserName(principal.getName());
+        userService.clearCache(loggedAccount); // La caché no contendría la watchlist (por el lazy load) y habría conflictos en el frontend
         String url_params = "?";
         Page<Account> page;
 
         if (buscar != null) {
-            page = userService.findByUserName(buscar, pageable);
+            page = userService.findUsersByUserName(buscar, pageable);
             url_params = "?buscar=" + buscar + "&";
             model.addAttribute("buscando", buscar);
         }
@@ -100,7 +101,7 @@ public class AdminUsersController extends MainController {
         // Aunque el checkbox aparece desactivado, comprobamos que el administrador no está tratando
         // de editarse a sí mismo (por seguridad, se podría cambiar el estado del checkbox manualmente)
         Account loggedAccount = userService.findByUserName(principal.getName());
-        if (loggedAccount.getId() == accountToEdit.getId()) {
+        if (loggedAccount.getId().equals(accountToEdit.getId())) {
             response.put("message", "Error: no puedes editar tu propio usuario!");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
@@ -127,7 +128,7 @@ public class AdminUsersController extends MainController {
 
         // Comprobamos que el administrador no está intentando borrarse a sí mismo
         Account loggedAccount = userService.findByUserName(principal.getName());
-        if (loggedAccount.getId() == accountToDelete.getId()) {
+        if (loggedAccount.getId().equals(accountToDelete.getId())) {
             response.put("message", "Error: no puedes borrar tu propia cuenta!");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }

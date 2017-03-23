@@ -2,9 +2,7 @@ package es.jperez2532.controllers;
 
 
 import es.jperez2532.entities.*;
-import es.jperez2532.repositories.ActorRepo;
-import es.jperez2532.repositories.CountryRepo;
-import es.jperez2532.repositories.DirectorRepo;
+import es.jperez2532.services.FilmService;
 import es.jperez2532.services.UserService;
 import es.jperez2532.services.VotesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +26,23 @@ import java.util.List;
 @RequestMapping(value = "/rest")
 public class RESTController {
 
-    @Autowired private VotesService votesService;
-    @Autowired private UserService userService;
-    @Autowired private ActorRepo actorRepo;
-    @Autowired private DirectorRepo directorRepo;
-    @Autowired private CountryRepo countryRepo;
+    private final FilmService filmService;
+    private final UserService userService;
+    private final VotesService votesService;
+
+    /**
+     * Constructor de la clase con las inyecciones de dependencia apropiadas.
+     *
+     * @param filmService  inyección {@link FilmService}
+     * @param userService  inyección {@link UserService}
+     * @param votesService inyección {@link VotesService}
+     */
+    @Autowired
+    public RESTController(FilmService filmService, UserService userService, VotesService votesService) {
+        this.filmService = filmService;
+        this.userService = userService;
+        this.votesService = votesService;
+    }
 
     /**
      * Resupuesta Ajax (json) a la acción de votar/calificar una película por parte de un usuario.
@@ -98,7 +108,7 @@ public class RESTController {
      */
     @RequestMapping(value = "/directoresJSON", method = RequestMethod.GET, produces = "text/plain")
     public String directorsInJSON() {
-        List<Director> directorsList = directorRepo.findAllByOrderByNameAsc();
+        List<Director> directorsList = filmService.findDirectorsAll();
         Iterator it = directorsList.iterator();
         return doJSON(it);
     }
@@ -111,7 +121,7 @@ public class RESTController {
      */
     @RequestMapping(value = "/actoresJSON", method = RequestMethod.GET, produces = "text/plain")
     public String actorsInJSON() {
-        List<Actor> actorsList = actorRepo.findAllByOrderByNameAsc();
+        List<Actor> actorsList = filmService.findActorsAll();
         Iterator it = actorsList.iterator();
         return doJSON(it);
     }
@@ -124,7 +134,7 @@ public class RESTController {
      */
     @RequestMapping(value = "/paisesJSON", method = RequestMethod.GET, produces = "text/plain")
     public String countriesInJSON() {
-        List<Country> countriesList = countryRepo.findAllByOrderByNameAsc();
+        List<Country> countriesList = filmService.findCountriesAll();
         Iterator it = countriesList.iterator();
         return doJSON(it);
     }
