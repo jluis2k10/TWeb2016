@@ -9,7 +9,6 @@ import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.repositories.VoteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
@@ -83,11 +82,8 @@ public class MyVotesService implements VotesService {
         Account account = accountRepo.findByUserName(username);
 
         // Comprobar que el voto coincide
-        if (vote.getId().getFilmId() != Long.parseLong(pathVariables.get("id")) ||
-                vote.getId().getAccountId() != account.getId())
-            return false;
-
-        return true;
+        return !(vote.getId().getFilmId() != Long.parseLong(pathVariables.get("id")) ||
+                vote.getId().getAccountId() != account.getId());
     }
 
     /**
@@ -135,8 +131,8 @@ public class MyVotesService implements VotesService {
         BigDecimal scaled = film.getScore().setScale(0, BigDecimal.ROUND_HALF_UP);
         voteRepo.save(newVote);
 
-        String response = "{\"myScore\": \"" + newVote.getScore() + "\", " +
+        return "{\"myScore\": \"" + newVote.getScore() + "\", " +
                 "\"globalScore\": \"" + scaled.intValueExact() + "\"}";
-        return response;
     }
+
 }

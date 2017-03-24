@@ -60,7 +60,7 @@ public class Film {
     @JoinTable(name = "Films_to_Genres",
                 joinColumns = {@JoinColumn(name = "film_id", referencedColumnName = "id")},
                 inverseJoinColumns = {@JoinColumn(name = "genre_id", referencedColumnName = "id")})
-    private List<Genre> filmGenres = new ArrayList<Genre>();
+    private List<Genre> filmGenres = new ArrayList<>();
 
     /*
     Directores de la Película. Asociación Uno-A-Muchos con la entidad Director. Se utiliza la
@@ -70,7 +70,7 @@ public class Film {
     @JoinTable(name = "Films_to_Directors",
             joinColumns = {@JoinColumn(name = "film_id")},
             inverseJoinColumns = {@JoinColumn(name = "director_id")})
-    private List<Director> filmDirectors = new ArrayList<Director>();
+    private List<Director> filmDirectors = new ArrayList<>();
 
     /*
     Actores principales/estrellas de la Película. Asociación Uno-A-Muchos con la entidad Actor.
@@ -80,7 +80,7 @@ public class Film {
     @JoinTable(name = "Films_to_Stars",
             joinColumns = {@JoinColumn(name = "film_id")},
             inverseJoinColumns = {@JoinColumn(name = "actor_id")})
-    private List<Actor> filmStars = new ArrayList<Actor>();
+    private List<Actor> filmStars = new ArrayList<>();
 
     /*
     Actores secundarios/reparto de la Película. Asociación Uno-A-Muchos con la entidad Actor.
@@ -90,7 +90,7 @@ public class Film {
     @JoinTable(name = "Films_to_Supportings",
             joinColumns = {@JoinColumn(name = "film_id")},
             inverseJoinColumns = {@JoinColumn(name = "actor_id")})
-    private List<Actor> filmSupportings = new ArrayList<Actor>();
+    private List<Actor> filmSupportings = new ArrayList<>();
 
     /*
     Países de la Película. Asociación Uno-A-Muchos con la entidad Country. Se utiliza la
@@ -100,7 +100,7 @@ public class Film {
     @JoinTable(name = "Films_to_Countries",
             joinColumns = {@JoinColumn(name = "film_id")},
             inverseJoinColumns = {@JoinColumn(name = "country_id")})
-    private List<Country> filmCountries = new ArrayList<Country>();
+    private List<Country> filmCountries = new ArrayList<>();
 
     /*
     Usuarios que tienen a esta película en su lista de reproducción. Asociación Uno-A-Muchos
@@ -110,7 +110,7 @@ public class Film {
     @JoinTable(name = "Watchlist",
             joinColumns = {@JoinColumn(name = "film_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "account_id", referencedColumnName = "id")})
-    private List<Account> listedIn = new ArrayList<Account>();
+    private List<Account> listedIn = new ArrayList<>();
 
     /**
      * Constructor de la clase.

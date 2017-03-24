@@ -23,7 +23,6 @@ public class CacheFilmsKeyGenerator implements KeyGenerator {
      */
     @Override
     public Object generate(Object target, Method method, Object... params) {
-        SimpleKey simpleKey = new SimpleKey(method.getName(), params);
-        return simpleKey;
+        return new SimpleKey(method.getName(), params);
     }
 }

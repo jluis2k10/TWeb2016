@@ -59,7 +59,7 @@ public class FilmsController extends MainController {
     @Transactional
     @RequestMapping(value = "/pelicula/{id}/*", method = RequestMethod.GET)
     public String pelicula(@PathVariable("id") Long id, Principal principal, Model model) {
-        Set<Long> userWatchlist = new HashSet<Long>();
+        Set<Long> userWatchlist = new HashSet<>();
         Film film = filmService.findOne(id);
         Long userId = null;
         int myScore = 0;
@@ -117,7 +117,7 @@ public class FilmsController extends MainController {
     @RequestMapping("/catalogo")
     public String catalogo(Model model, Pageable pageable, Principal principal,
                            @RequestParam(value = "buscar", required = false) String buscar) {
-        Set<Long> userWatchlist = new HashSet<Long>();
+        Set<Long> userWatchlist = new HashSet<>();
         Page<Film> page;
         String url_params = "/catalogo?";
 
@@ -167,7 +167,7 @@ public class FilmsController extends MainController {
     @RequestMapping("/buscar")
     public String buscar(Model model, Pageable pageable, Principal principal,
                          @RequestParam("ref") String ref, @RequestParam("buscar") String buscar) {
-        Set<Long> userWatchlist = new HashSet<Long>();
+        Set<Long> userWatchlist = new HashSet<>();
         String url_params = "/buscar?ref=" + ref + "&buscar=" + buscar + "&";
         Page<Film> page = null;
         List<Film> films = null;

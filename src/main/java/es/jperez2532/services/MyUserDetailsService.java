@@ -56,7 +56,7 @@ public class MyUserDetailsService implements UserDetailsService {
      * @return Lista con los roles de la cuenta
      */
     private List<GrantedAuthority> getGrantedAuthorities(Account account) {
-        List<GrantedAuthority> auths = new ArrayList<GrantedAuthority>();
+        List<GrantedAuthority> auths = new ArrayList<>();
         for(AccountRole accountRole : account.getAccountRoles())
             auths.add(new SimpleGrantedAuthority("ROLE_" + accountRole.getRole()));
         return auths;

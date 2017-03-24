@@ -133,7 +133,7 @@ public class AccountValidator implements Validator {
      * @param account Cuenta a validar
      * @param errors  errores encontrados durante la validación
      */
-    public void validateNewPassword(Account account, Errors errors) {
+    private void validateNewPassword(Account account, Errors errors) {
         Account currentAccount = userService.findByUserName(userService.getPrincipal(), false);
 
         // Primero comprobamos que el password nuevo es correcto

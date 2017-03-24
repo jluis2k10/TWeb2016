@@ -52,7 +52,7 @@ public class HomeController extends MainController {
      */
     @RequestMapping("/")
     public String home(Model model, Principal principal) {
-        Account account = null;
+        Account account;
         List<Film> watchlistFilms = null;
         Map<String, Collection<Film>> homePageFilms;
 

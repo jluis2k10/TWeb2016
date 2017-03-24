@@ -18,7 +18,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
-import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -29,7 +28,6 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class DBConfig {
 
-    @Autowired private ServletContext servletContext;
     @Value("classpath:scripts/*.sql")
     Resource[] sqlScripts;
 

@@ -18,11 +18,11 @@ public class VotePK implements Serializable {
 
     @Basic
     @Column(name = "film_id")
-    public long film;
+    private long film;
 
     @Basic
     @Column(name = "account_id")
-    public long account;
+    private long account;
 
     /**
      * Constructor de la clase.

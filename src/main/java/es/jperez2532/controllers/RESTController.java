@@ -110,8 +110,7 @@ public class RESTController {
     @RequestMapping(value = "/directoresJSON", method = RequestMethod.GET, produces = "text/plain")
     public String directorsInJSON() {
         List<Director> directorsList = filmService.findDirectorsAll();
-        Iterator it = directorsList.iterator();
-        return doJSON(it);
+        return doJSON(directorsList);
     }
 
     /**
@@ -123,8 +122,7 @@ public class RESTController {
     @RequestMapping(value = "/actoresJSON", method = RequestMethod.GET, produces = "text/plain")
     public String actorsInJSON() {
         List<Actor> actorsList = filmService.findActorsAll();
-        Iterator it = actorsList.iterator();
-        return doJSON(it);
+        return doJSON(actorsList);
     }
 
     /**
@@ -136,19 +134,19 @@ public class RESTController {
     @RequestMapping(value = "/paisesJSON", method = RequestMethod.GET, produces = "text/plain")
     public String countriesInJSON() {
         List<Country> countriesList = filmService.findCountriesAll();
-        Iterator it = countriesList.iterator();
-        return doJSON(it);
+        return doJSON(countriesList);
     }
 
     /**
      * Construir el string apropiado para poder aplicarlo directamente a los <code>chips</code>
      * de la vista.
      *
-     * @param it Objeto iterable de {@link AbstractEntity} a partir del cual se genera el String
+     * @param entityList Lista de entidades
      * @return String en formato JSON y adaptado a las necesidades de los <code>chips</code> de la Vista
      */
-    private String doJSON(Iterator<AbstractEntity> it) {
+    private String doJSON(List entityList) {
         String jsonString = "{ \"autocompleteData\": {";
+        Iterator<AbstractEntity> it = entityList.iterator();
         while (it.hasNext()) {
             jsonString += "\"" + it.next().getName() + "\": null";
             if (it.hasNext())

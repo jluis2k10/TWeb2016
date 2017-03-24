@@ -69,7 +69,7 @@ public class FilmValidator implements Validator {
     public void validateUpdate (Film film, Errors errors) {
         validateTitle(film, errors);
         Film foundFilm = filmService.findByTitle(film.getTitle());
-        if (foundFilm != null && foundFilm.getId() != film.getId())
+        if (foundFilm != null && !foundFilm.getId().equals(film.getId()))
             errors.rejectValue("title", "Duplicate.FilmForm.title");
 
         validateYear(film, errors);

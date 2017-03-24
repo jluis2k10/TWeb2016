@@ -37,7 +37,7 @@ public class SpringWebAppInitializer extends AbstractAnnotationConfigDispatcherS
 
     // 10 MB. Luego manejamos el tamaño máximo en el validator correspondiente.
     // Creo que es mejor así, una excepción por superar el tamaño máximo es difícil de manejar.
-    private int maxUploadSizeInMb = 10 * 1024 * 1024;
+    private final int maxUploadSizeInMb = 10 * 1024 * 1024;
     @Override
     protected void customizeRegistration(ServletRegistration.Dynamic registration) {
 

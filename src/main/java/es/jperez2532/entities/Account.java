@@ -35,13 +35,13 @@ public class Account {
     @JoinTable(name = "Accounts_to_Roles",
                 joinColumns = {@JoinColumn(name = "account_id", referencedColumnName = "id")},
                 inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
-    private List<AccountRole> accountRoles = new ArrayList<AccountRole>();
+    private List<AccountRole> accountRoles = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "Watchlist",
             joinColumns = {@JoinColumn(name = "account_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "film_id", referencedColumnName = "id")})
-    private List<Film> watchlist = new ArrayList<Film>();
+    private List<Film> watchlist = new ArrayList<>();
 
     // Sólo se utiliza a la hora de registrar una nueva cuenta/cambiar una contraseña
     @Transient
