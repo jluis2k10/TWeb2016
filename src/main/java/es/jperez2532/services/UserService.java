@@ -116,37 +116,18 @@ public interface UserService {
     void delete(Account account);
 
     /**
-     * Elimina la Cuenta propia del usuario desde donde se hace la llamada.
-     * @param account la Cuenta a eliminar
-     * @return <code>true</code> si la Cuenta se ha eliminado con éxito
-     */
-    boolean deleteOwn(Account account);
-
-    /**
-     * Borra la entrada de la caché correspondiente con la Cuenta señalada.
-     * <p>
-     * Al eliminar una Película de la Base de Datos debemos comprobar qué
-     * usuarios tienen dicha película en su lista de reproducción, ya que
-     * estas cuentas podrían estar cacheadas y si no las eliminamos de la caché
-     * se generan inconsistencias entre los datos disponibles en la Base de
-     * Datos y los contenidos en la caché.
-     * @param account Cuenta a eliminar de la caché
-     */
-    void clearCache(Account account);
-
-    /**
      * Añadir una Película a la lista de reproducción del usuario.
      * @param username nombre de usuario de la Cuenta
      * @param filmId   ID de la película a añadir a la lista de reproducción
      */
-    void addToWatchlist(String username, Long filmId);
+    void addFilmToWatchlist(String username, Long filmId);
 
     /**
      * Eliminar una Película de la lista de reproducción del usuario.
      * @param username nombre de usuario de la Cuenta
      * @param filmId   ID de la película a eliminar de la lista de reproducción
      */
-    void deleteFromWatchlist(String username, Long filmId);
+    void deleteFilmFromWatchlist(String username, Long filmId);
 
     /**
      * Obtiene estadísticas del conjunto de Cuentas de usuarios presentes en
@@ -171,7 +152,7 @@ public interface UserService {
     /**
      * Devuelve una lista enlazada con todas las provincias de España.
      * <p>
-     * {@// FIXME: 22/03/2017 Probablemente sea mejor hacer esto de otro modo, por}
+     * {@// FIXME: 22/03/2017 Probablemente sea mejor hacer esto de otro modo}
      * @return Lista con las provincias
      */
     LinkedList<String> getProvincias();

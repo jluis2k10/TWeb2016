@@ -45,6 +45,12 @@ public interface FilmService {
     boolean delete(Film film, ServletContext servletContext);
 
     /**
+     * Borra los Votos emitidos hacia una Película dada.
+     * @param filmID ID de la Película
+     */
+    void deleteVotesFromFilm(Long filmID);
+
+    /**
      * Persiste una Película que ya existía en la Base de Datos a la cual se
      * le han actualizado los votos.
      * <p>

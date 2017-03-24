@@ -1,7 +1,10 @@
 package es.jperez2532.controllers;
 
 import es.jperez2532.entities.Account;
+import es.jperez2532.entities.Vote;
+import es.jperez2532.services.FilmService;
 import es.jperez2532.services.UserService;
+import es.jperez2532.services.VotesService;
 import es.jperez2532.validator.AccountValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,17 +25,24 @@ import java.security.Principal;
 @RequestMapping("/micuenta")
 public class AccountController extends MainController {
 
+    private final FilmService filmService;
     private final UserService userService;
+    private final VotesService votesService;
     private final AccountValidator accountValidator;
 
     /**
      * Constructor de la clase con las inyecciones de dependencia necesarias.
-     * @param userService           inyección {@link UserService}
-     * @param accountValidator      inyección {@link AccountValidator}
+     * @param filmService      inyección {@link FilmService}
+     * @param userService      inyección {@link UserService}
+     * @param votesService     inyección {@link VotesService}
+     * @param accountValidator inyección {@link AccountValidator}
      */
     @Autowired
-    public AccountController(UserService userService, AccountValidator accountValidator) {
+    public AccountController(FilmService filmService, UserService userService,
+            VotesService votesService, AccountValidator accountValidator) {
+        this.filmService = filmService;
         this.userService = userService;
+        this.votesService = votesService;
         this.accountValidator = accountValidator;
     }
 
@@ -101,10 +111,17 @@ public class AccountController extends MainController {
     public String delete(Principal principal, RedirectAttributes redirectAttributes,
                          @RequestParam("confirm") String confirm) {
         if (confirm.equals("on")) {
-            Account account = userService.findByUserName(principal.getName());
-            if (!userService.deleteOwn(account)) {
+            Account account = userService.findByUserName(principal.getName(), false);
+            if (account.isAdmin()) {
                 redirectAttributes.addFlashAttribute("infoMsg",
                         "Eres el único usuario administrador, no es posibile eliminar tu cuenta.");
+            } else {
+                // Borrar votos emitidos por este usuario y recalcular la puntuación de las películas afectadas
+                for (Vote vote: votesService.findByAccount(account.getId())) {
+                    votesService.delete(vote);
+                    filmService.calcScore(vote.getFilm());
+                }
+                userService.delete(account);
             }
         }
         return "redirect:/";

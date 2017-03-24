@@ -68,6 +68,7 @@ public class RESTController {
         // Contabilizar el voto
         votesService.populateVote(vote);
         String jsonResponse = votesService.doVote(vote);
+        filmService.updateVotes(vote.getFilm());
 
         return ResponseEntity.ok(jsonResponse);
     }
@@ -82,7 +83,7 @@ public class RESTController {
      */
     @RequestMapping(value = "/milista/add", method = RequestMethod.GET)
     public ResponseEntity<String> addToWatchList(@RequestParam("film-id") Long filmId, Principal principal) {
-        userService.addToWatchlist(principal.getName(), filmId);
+        userService.addFilmToWatchlist(principal.getName(), filmId);
         return ResponseEntity.ok("{}");
     }
 
@@ -96,7 +97,7 @@ public class RESTController {
      */
     @RequestMapping(value = "/milista/delete", method = RequestMethod.GET)
     public ResponseEntity<String> deleteFromWatchList(@RequestParam("film-id") Long filmId, Principal principal) {
-        userService.deleteFromWatchlist(principal.getName(), filmId);
+        userService.deleteFilmFromWatchlist(principal.getName(), filmId);
         return ResponseEntity.ok("{}");
     }
 

@@ -35,14 +35,41 @@ import java.util.concurrent.ThreadLocalRandom;
 @Service
 public class MyFilmService implements FilmService {
 
-    @Autowired private UserService userService;
-    @Autowired private VotesService votesService;
-    @Autowired private FilmRepo filmRepo;
-    @Autowired private GenreRepo genreRepo;
-    @Autowired private DirectorRepo directorRepo;
-    @Autowired private ActorRepo actorRepo;
-    @Autowired private CountryRepo countryRepo;
-    @Autowired private UploadPoster uploadPoster;
+    private final FilmRepo filmRepo;
+    private final GenreRepo genreRepo;
+    private final DirectorRepo directorRepo;
+    private final ActorRepo actorRepo;
+    private final CountryRepo countryRepo;
+    private final UploadPoster uploadPoster;
+    private final VoteRepo voteRepo;
+
+    /**
+     * Constructor de la clase con las inyecciones de dependencia apropiadas.
+     * <p>
+     * En esta clase en concreto hay muchas dependencias pero son necesarias puesto
+     * que maneja todos los repositorios asociados con las Películas. Aunque pueda
+     * parecer lo contrario por el constructor, en realidad la única función de esta
+     * clase es dar servicio para la persistencia de la entidad {@link Film}.
+     * @param filmRepo     inyección de {@link FilmRepo}
+     * @param genreRepo    inyección de {@link GenreRepo}
+     * @param directorRepo inyección de {@link DirectorRepo}
+     * @param actorRepo    inyección de {@link ActorRepo}
+     * @param countryRepo  inyección de {@link CountryRepo}
+     * @param uploadPoster inyección de {@link UploadPoster}
+     * @param voteRepo     inyección de {@link VoteRepo}
+     */
+    @Autowired
+    public MyFilmService(FilmRepo filmRepo, GenreRepo genreRepo, DirectorRepo directorRepo,
+            ActorRepo actorRepo, CountryRepo countryRepo, UploadPoster uploadPoster,
+            VoteRepo voteRepo) {
+        this.filmRepo = filmRepo;
+        this.genreRepo = genreRepo;
+        this.directorRepo = directorRepo;
+        this.actorRepo = actorRepo;
+        this.countryRepo = countryRepo;
+        this.uploadPoster = uploadPoster;
+        this.voteRepo = voteRepo;
+    }
 
     /**
      * {@inheritDoc}
@@ -129,13 +156,18 @@ public class MyFilmService implements FilmService {
         } catch (RuntimeException e) {
            return false;
         } finally {
-            votesService.deleteVotesFromFilm(film.getId());
-            for(Account account: film.getListedIn())
-                userService.clearCache(account);
             film.getListedIn().clear();
             filmRepo.delete(film);
         }
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void deleteVotesFromFilm(Long filmID) {
+        for (Vote vote: voteRepo.findByIdFilm(filmID))
+            voteRepo.delete(vote);
     }
 
     /**
@@ -331,7 +363,7 @@ public class MyFilmService implements FilmService {
     public void calcScore(Film film) {
         int count = 0;
         BigDecimal fScore = new BigDecimal(0);
-        List<Vote> votes = votesService.findFilmVotes(film.getId());
+        List<Vote> votes = voteRepo.findByIdFilm(film.getId());
         for (Vote vote: votes) {
             fScore = fScore.add(new BigDecimal(vote.getScore()));
             count++;

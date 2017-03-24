@@ -1,7 +1,5 @@
 package es.jperez2532.config;
 
-import es.jperez2532.services.MyUserService;
-import es.jperez2532.services.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -35,10 +33,5 @@ public class ApplicationContextConfig {
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setUseCodeAsDefaultMessage(true);
         return messageSource;
-    }
-
-    @Bean
-    public UserService userService() {
-        return new MyUserService();
     }
 }

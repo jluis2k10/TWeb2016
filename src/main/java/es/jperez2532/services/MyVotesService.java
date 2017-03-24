@@ -4,6 +4,8 @@ import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.entities.Vote;
 import es.jperez2532.entities.VotePK;
+import es.jperez2532.repositories.AccountRepo;
+import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.repositories.VoteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -22,9 +24,22 @@ import java.util.Map;
 @Service
 public class MyVotesService implements VotesService {
 
-    @Autowired private UserService userService;
-    @Autowired private VoteRepo voteRepo;
-    @Autowired private FilmService filmService;
+    private final VoteRepo voteRepo;
+    private final AccountRepo accountRepo;
+    private final FilmRepo filmRepo;
+
+    /**
+     * Constructor de la clase con lsa inyecciones de dependencia apropiadas.
+     * @param voteRepo    inyección de {@link VoteRepo}
+     * @param accountRepo inyección de {@link AccountRepo}
+     * @param filmRepo    inyección de {@link FilmRepo}
+     */
+    @Autowired
+    public MyVotesService(VoteRepo voteRepo, AccountRepo accountRepo, FilmRepo filmRepo) {
+        this.voteRepo = voteRepo;
+        this.accountRepo = accountRepo;
+        this.filmRepo = filmRepo;
+    }
 
     /**
      * {@inheritDoc}
@@ -36,7 +51,16 @@ public class MyVotesService implements VotesService {
     /**
      * {@inheritDoc}
      */
-    @CacheEvict(value = "filmVotes", key = "#vote.film.id")
+    public List<Vote> findByAccount(Long accountID) {
+        return voteRepo.findByIdAccount(accountID);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Caching(evict = {
+            @CacheEvict(value = "filmVotes", key = "#vote.film.id")
+            /*@CacheEvict(value = "votes", key = "#vote.id")*/})
     public void delete(Vote vote) {
         voteRepo.delete(vote);
     }
@@ -56,7 +80,7 @@ public class MyVotesService implements VotesService {
         Map<String, String> pathVariables = antPathMatcher.extractUriTemplateVariables(pathFormat, urlPath);
 
         // Recuperar usuario que ha hecho la petición
-        Account account = userService.findByUserName(username);
+        Account account = accountRepo.findByUserName(username);
 
         // Comprobar que el voto coincide
         if (vote.getId().getFilmId() != Long.parseLong(pathVariables.get("id")) ||
@@ -71,8 +95,8 @@ public class MyVotesService implements VotesService {
      */
     public void populateVote(Vote vote) {
         if (vote.getFilm() == null && vote.getAccount() == null) {
-            vote.setFilm(filmService.findOne(vote.getId().getFilmId()));
-            vote.setAccount(userService.findOne(vote.getId().getAccountId()));
+            vote.setFilm(filmRepo.findOne(vote.getId().getFilmId()));
+            vote.setAccount(accountRepo.findOne(vote.getId().getAccountId()));
         }
     }
 
@@ -91,7 +115,7 @@ public class MyVotesService implements VotesService {
             @CacheEvict(value = "filmVotes", key = "#newVote.film.id")})
     public String doVote(Vote newVote) {
         Vote oldVote = voteRepo.findOne(newVote.getId());
-        Film film = filmService.findOne(newVote.getId().getFilmId());
+        Film film = filmRepo.findOne(newVote.getId().getFilmId());
         if (oldVote != null) {
             // Restamos el voto antiguo y sumamos el nuevo
             BigDecimal fScore = film.getScore().multiply(new BigDecimal(film.getNvotes()));
@@ -109,41 +133,10 @@ public class MyVotesService implements VotesService {
             film.setNvotes(oldNvotes + 1);
         }
         BigDecimal scaled = film.getScore().setScale(0, BigDecimal.ROUND_HALF_UP);
-        filmService.updateVotes(film);
         voteRepo.save(newVote);
 
         String response = "{\"myScore\": \"" + newVote.getScore() + "\", " +
                 "\"globalScore\": \"" + scaled.intValueExact() + "\"}";
         return response;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Cacheable(value = "filmVotes", key = "#filmID")
-    public List<Vote> findFilmVotes(Long filmID) {
-        return voteRepo.findByIdFilm(filmID);
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Se debe recalcular la puntuación de cada Película a la que hacen referencia
-     * los Votos eliminados.
-     */
-    public void deleteVotesFromAccount(Long accountID) {
-        for (Vote vote: voteRepo.findByIdAccount(accountID)) {
-            this.delete(vote);
-            filmService.calcScore(vote.getFilm());
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void deleteVotesFromFilm(Long filmID) {
-        for (Vote vote: voteRepo.findByIdFilm(filmID))
-            this.delete(vote);
-    }
-
 }

@@ -3,7 +3,10 @@ package es.jperez2532.controllers;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import es.jperez2532.entities.Account;
+import es.jperez2532.entities.Vote;
+import es.jperez2532.services.FilmService;
 import es.jperez2532.services.UserService;
+import es.jperez2532.services.VotesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,16 +28,22 @@ import java.util.List;
 @RequestMapping(value = "/admin")
 public class AdminUsersController extends MainController {
 
+    private final FilmService filmService;
     private final UserService userService;
+    private final VotesService votesService;
 
     /**
      * Constructor de la clase con las inyecciones de dependencia apropiadas.
      *
-     * @param userService inyección {@link UserService}
+     * @param filmService  inyección {@link FilmService}
+     * @param userService  inyección {@link UserService}
+     * @param votesService inyección {@link VotesService}
      */
     @Autowired
-    public AdminUsersController(UserService userService) {
+    public AdminUsersController(FilmService filmService, UserService userService, VotesService votesService) {
+        this.filmService = filmService;
         this.userService = userService;
+        this.votesService = votesService;
     }
 
     /**
@@ -132,6 +141,11 @@ public class AdminUsersController extends MainController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
+        // Borrar votos emitidos por este usuario y recalcular la puntuación de las películas afectadas
+        for (Vote vote: votesService.findByAccount(accountId)) {
+            votesService.delete(vote);
+            filmService.calcScore(vote.getFilm());
+        }
         userService.delete(accountToDelete);
         response.put("message", "Cuenta de " + accountToDelete.getUserName() + " eliminada.");
         return ResponseEntity.status(HttpStatus.OK).body(response);

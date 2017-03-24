@@ -4,6 +4,7 @@ import es.jperez2532.components.SessionHandle;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.repositories.AccountRepo;
+import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.repositories.RoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -28,13 +29,34 @@ import java.util.*;
 @Service
 public class MyUserService implements UserService {
 
-    @Autowired private FilmService filmService;
-    @Autowired private VotesService votesService;
-    @Autowired private UserDetailsService userDetailsService;
-    @Autowired private AccountRepo accountRepo;
-    @Autowired private RoleRepo roleRepo;
-    @Autowired private SessionHandle sessionHandle;
-    @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final FilmRepo filmRepo;
+    private final UserDetailsService userDetailsService;
+    private final AccountRepo accountRepo;
+    private final RoleRepo roleRepo;
+    private final SessionHandle sessionHandle;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+
+    /**
+     * Constructor de la clase con las inyecciones de dependencia apropiadas.
+     * @param filmRepo              inyección de {@link FilmRepo}
+     * @param userDetailsService    inyección de {@link UserDetailsService}
+     * @param accountRepo           inyección de {@link AccountRepo}
+     * @param roleRepo              inyección de {@link RoleRepo}
+     * @param sessionHandle         inyección de {@link SessionHandle}
+     * @param bCryptPasswordEncoder inyección de {@link BCryptPasswordEncoder}
+     */
+    @Autowired
+    public MyUserService(FilmRepo filmRepo, UserDetailsService userDetailsService,
+            AccountRepo accountRepo, RoleRepo roleRepo, SessionHandle sessionHandle,
+            BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.filmRepo = filmRepo;
+        this.userDetailsService = userDetailsService;
+        this.accountRepo = accountRepo;
+        this.roleRepo = roleRepo;
+        this.sessionHandle = sessionHandle;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     /**
      * {@inheritDoc}
@@ -182,30 +204,9 @@ public class MyUserService implements UserService {
     public void delete(Account account) {
         account.getAccountRoles().clear();
         account.getWatchlist().clear();
-        // Borrar votos emitidos por este usuario
-        votesService.deleteVotesFromAccount(account.getId());
         accountRepo.delete(account);
         sessionHandle.expireUserSessions(account.getUserName());
     }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * No se permite eliminar la cuenta del usuario si es la única con el rol de administrador.
-     */
-    @CacheEvict(value = "account", key = "#account.userName")
-    public boolean deleteOwn(Account account) {
-        if (account.isAdmin() && accountRepo.countByAccountRoles_RoleIgnoreCase("ADMIN") == 1)
-            return false;
-        this.delete(account);
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @CacheEvict(value = "account", key = "#account.userName")
-    public void clearCache(Account account) { }
 
     /**
      * {@inheritDoc}
@@ -216,9 +217,9 @@ public class MyUserService implements UserService {
     @Caching(evict = {
             @CacheEvict(value = "film", key = "#filmId"),
             @CacheEvict(value = "account", key = "#username")})
-    public void addToWatchlist(String username, Long filmId) {
+    public void addFilmToWatchlist(String username, Long filmId) {
         Account account = this.findByUserName(username);
-        account.getWatchlist().add(filmService.findOne(filmId));
+        account.getWatchlist().add(filmRepo.findOne(filmId));
         accountRepo.save(account);
     }
 
@@ -226,7 +227,7 @@ public class MyUserService implements UserService {
      * {@inheritDoc}
      */
     @CacheEvict(value = "account", key = "#username")
-    public void deleteFromWatchlist(String username, Long filmId) {
+    public void deleteFilmFromWatchlist(String username, Long filmId) {
         Account account = this.findByUserName(username);
         Iterator<Film> it = account.getWatchlist().iterator();
         while (it.hasNext()) {

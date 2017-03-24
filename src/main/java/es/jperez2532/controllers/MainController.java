@@ -18,7 +18,20 @@ import java.util.List;
 @SessionAttributes(value = {"genresList"}, types = {Genre.class})
 public class MainController {
 
-    @Autowired private FilmService filmService;
+    private FilmService filmService;
+
+    /**
+     * Inyecta la dependencia de {@link FilmService}
+     * <p>
+     * En este controlador no puede hacerse en el constructor puesto
+     * que lo extienden los demás controladores y se debería crear un
+     * constructor vacío aquí que no inyectaría la dependencia.
+     * @param filmService inyección de {@link FilmService}
+     */
+    @Autowired
+    public void setFilmService(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     /**
      * Genera una lista con todos los géneros disponibles y Spring se encarga de

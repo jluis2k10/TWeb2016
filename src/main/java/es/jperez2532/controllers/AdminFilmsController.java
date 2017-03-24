@@ -1,9 +1,11 @@
 package es.jperez2532.controllers;
 
 import es.jperez2532.components.UploadPoster;
+import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.entities.Genre;
 import es.jperez2532.services.FilmService;
+import es.jperez2532.services.UserService;
 import es.jperez2532.validator.FilmValidator;
 import es.jperez2532.validator.GenreValidator;
 import es.jperez2532.validator.UploadPosterValidator;
@@ -33,6 +35,7 @@ import java.util.List;
 public class AdminFilmsController extends MainController {
 
     private final FilmService filmService;
+    private final UserService userService;
     private final FilmValidator filmValidator;
     private final UploadPosterValidator uploadPosterValidator;
     private final GenreValidator genreValidator;
@@ -41,18 +44,19 @@ public class AdminFilmsController extends MainController {
 
     /**
      * Constructor de la clase con las inyecciones de dependencias apropiadas.
-     *
      * @param filmService           inyección {@link FilmService}
+     * @param userService           inyección {@link UserService}
      * @param filmValidator         inyección {@link FilmValidator}
      * @param uploadPosterValidator inyección {@link UploadPosterValidator}
      * @param genreValidator        inyección {@link GenreValidator}
      * @param servletContext        inyección {@link ServletContext}
      */
     @Autowired
-    public AdminFilmsController(FilmService filmService, FilmValidator filmValidator,
-            UploadPosterValidator uploadPosterValidator, GenreValidator genreValidator,
-            ServletContext servletContext) {
+    public AdminFilmsController(FilmService filmService, UserService userService,
+            FilmValidator filmValidator, UploadPosterValidator uploadPosterValidator,
+            GenreValidator genreValidator, ServletContext servletContext) {
         this.filmService = filmService;
+        this.userService = userService;
         this.filmValidator = filmValidator;
         this.uploadPosterValidator = uploadPosterValidator;
         this.genreValidator = genreValidator;
@@ -308,10 +312,16 @@ public class AdminFilmsController extends MainController {
                              RedirectAttributes redirectAttributes) {
         Film film = filmService.findOne(id);
         if (film != null) {
+            // Borramos votos asociados a la película
+            filmService.deleteVotesFromFilm(id);
+            // Eliminamos la película de las listas de reproducción de los usuarios
+            for (Account account: film.getListedIn())
+                userService.deleteFilmFromWatchlist(account.getUserName(), id);
+            // Eliminamos la película
             if (!filmService.delete(film, servletContext))
                 redirectAttributes.addFlashAttribute("infoMsg",
                         "Película eliminada con éxito: <strong>" + film.getTitle() + "</strong>.<br>" +
-                                "ATENCIÓN: no se pudo eliminar la imagen del poster en el servidor: " + film.getPoster());
+                        "ATENCIÓN: no se pudo eliminar la imagen del poster en el servidor: " + film.getPoster());
             else
                 redirectAttributes.addFlashAttribute("infoMsg",
                         "Película eliminada con éxito: <strong>" + film.getTitle() + "</strong>.");

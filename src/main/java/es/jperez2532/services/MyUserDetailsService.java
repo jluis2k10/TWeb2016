@@ -26,7 +26,16 @@ import java.util.List;
 @Service("myUserDetailsService")
 public class MyUserDetailsService implements UserDetailsService {
 
-    @Autowired private AccountRepo accountRepo;
+    private final AccountRepo accountRepo;
+
+    /**
+     * Constructor de la clase con las inyecciones de dependencia apropiadas.
+     * @param accountRepo inyección de {@link AccountRepo}
+     */
+    @Autowired
+    public MyUserDetailsService(AccountRepo accountRepo) {
+        this.accountRepo = accountRepo;
+    }
 
     /**
      * {@inheritDoc}

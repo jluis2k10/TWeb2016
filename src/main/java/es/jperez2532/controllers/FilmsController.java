@@ -56,7 +56,7 @@ public class FilmsController extends MainController {
      * @param model     Interfaz/contenedor para pasar datos a la Vista
      * @return La Vista a mostrar
      */
-    @Transactional // TODO: estudiar qué significa transctional para recuperar entity con lazy-loading
+    @Transactional
     @RequestMapping(value = "/pelicula/{id}/*", method = RequestMethod.GET)
     public String pelicula(@PathVariable("id") Long id, Principal principal, Model model) {
         Set<Long> userWatchlist = new HashSet<Long>();

@@ -24,6 +24,13 @@ public interface VotesService {
     Vote findOne(VotePK id);
 
     /**
+     * Encuentra los votos emitidos por una cuenta dada.
+     * @param accountID ID de la cuenta
+     * @return lista de los Votos encontrados
+     */
+    List<Vote> findByAccount(Long accountID);
+
+    /**
      * Borra un Voto.
      * @param vote el Voto a borrar
      */
@@ -58,23 +65,4 @@ public interface VotesService {
      * @return String con la respuesta en formato JSON
      */
     String doVote(Vote newVote);
-
-    /**
-     * Busca los Votos emitidos para una Película dada.
-     * @param filmID ID de la Película
-     * @return Lista con los Votos emitidos para la Película
-     */
-    List<Vote> findFilmVotes(Long filmID);
-
-    /**
-     * Borra todos los Votos emitidos por un usuario.
-     * @param accountID ID de la cuenta de usuario
-     */
-    void deleteVotesFromAccount(Long accountID);
-
-    /**
-     * Borra los Votos emitidos hacia una Película dada.
-     * @param filmID ID de la Película
-     */
-    void deleteVotesFromFilm(Long filmID);
 }
