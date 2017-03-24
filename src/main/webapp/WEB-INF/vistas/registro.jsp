@@ -56,6 +56,7 @@
                     </button>
                 </div>
             </div>
+            <form:hidden path="active"/>
         </form:form>
     </div>
 </div>

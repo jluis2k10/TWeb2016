@@ -151,8 +151,6 @@ public interface UserService {
 
     /**
      * Devuelve una lista enlazada con todas las provincias de España.
-     * <p>
-     * {@// FIXME: 22/03/2017 Probablemente sea mejor hacer esto de otro modo}
      * @return Lista con las provincias
      */
     LinkedList<String> getProvincias();

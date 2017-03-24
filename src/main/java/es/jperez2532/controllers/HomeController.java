@@ -93,7 +93,9 @@ public class HomeController extends MainController {
      */
     @RequestMapping(value = "/registro", method = RequestMethod.GET)
     public String register(Model model) {
-        model.addAttribute("registroForm", new Account());
+        Account formAccount = new Account();
+        formAccount.setActive(true);
+        model.addAttribute("registroForm", formAccount);
         model.addAttribute("provincias", userService.getProvincias());
         model.addAttribute("title", "Registro - PelisUNED");
         return "registro";

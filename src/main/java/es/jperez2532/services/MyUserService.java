@@ -110,12 +110,11 @@ public class MyUserService implements UserService {
      */
     @CacheEvict(value = "account", key = "#account.userName")
     public void save(Account account) {
-        // Si el password está vacío viene de update() (sin modificar) y debemos mantener el anterior
+        // Si el password está vacío viene de updateOwn() (sin modificar) y debemos mantener el anterior
         if (account.getPassword() == null)
             account.setPassword(accountRepo.findOne(account.getId()).getPassword());
         else
             account.setPassword(bCryptPasswordEncoder.encode(account.getPassword()));
-        account.setActive(true);
         if (account.getAccountRoles().isEmpty())
             account.getAccountRoles().add(roleRepo.findByRole("USER"));
         accountRepo.save(account);
@@ -173,13 +172,14 @@ public class MyUserService implements UserService {
     /**
      * {@inheritDoc}
      */
-    @CacheEvict(value = "account", key = "#account.userName")
     public void updateOwn(Account account) {
+        Account oldAccount = accountRepo.findOne(account.getId());
         // Sólo si el nuevo password no está vacío
         if (!account.getNewPassword().equals(""))
             account.setPassword(account.getNewPassword());
-        if(account.getAccountRoles().isEmpty())
-            account.setAccountRoles(accountRepo.findOne(account.getId()).getAccountRoles());
+        account.setAccountRoles(oldAccount.getAccountRoles());
+        account.setWatchlist(oldAccount.getWatchlist());
+        account.setActive(oldAccount.isActive());
         this.save(account);
         /* Recargar contexto de seguridad con la info actualizada (en este caso no es necesario
         exipirar la sesión del usuario), basta con regenerarla con la nueva info */
