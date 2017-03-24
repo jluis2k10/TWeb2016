@@ -15,9 +15,8 @@ import java.io.IOException;
  * Manejador global de excepciones. Es un "filtro" que indica qué hacer en caso de
  * producirse cierto tipo de excepciones.
  */
-@ControllerAdvice
+@ControllerAdvice("es.jperez2532.controllers")
 public class GlobalExceptionHandler {
-
     /**
      * Maneja excepciones del tipo MultipartException (errores al subir un archivo)
      * @param ex      excepción manejada
@@ -35,12 +34,12 @@ public class GlobalExceptionHandler {
                 FileUploadBase.FileSizeLimitExceededException flEx = (FileUploadBase.FileSizeLimitExceededException)mEx.getCause();
                 float permittedSize = flEx.getPermittedSize() / 1024;
                 String message = "El tamaño máximo permitido de un archivo es de " + permittedSize + ".";
-                flash.put("errors", message);
+                flash.put("exceptionMsg", message);
             } else {
-                flash.put("errors", "Error irrecuperable: " + ex.getMessage());
+                flash.put("exceptionMsg", "Error irrecuperable: " + ex.getMessage());
             }
         } else {
-            flash.put("errors", "Error irrecuperable: " + ex.getMessage());
+            flash.put("exceptionMsg", "Error irrecuperable: " + ex.getMessage());
         }
         return model;
     }
@@ -52,10 +51,10 @@ public class GlobalExceptionHandler {
      * @return parámetros de redirección
      */
     @ExceptionHandler(value = IOException.class)
-    public RedirectView handleIOException(Exception ex, HttpServletRequest request){
+    public RedirectView handleIOException(Exception ex, HttpServletRequest request) {
         RedirectView model = new RedirectView("/error", true);
         FlashMap flash = RequestContextUtils.getOutputFlashMap(request);
-        flash.put("errors", "Error irrecuperable: " + ex.getMessage());
+        flash.put("exceptionMsg", "Error irrecuperable: " + ex.getMessage());
         return model;
     }
 }

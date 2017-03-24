@@ -87,6 +87,14 @@ public interface FilmService {
     Film findOne(Long id);
 
     /**
+     * Busca una Película por su ID.
+     * @param id        ID de la Película a buscar
+     * @param cacheable <code>false</code> si no se quiere recuperar película cacheada
+     * @return la Película que se haya encontrado
+     */
+    Film findOne(Long id, boolean cacheable);
+
+    /**
      * Busca una Película por su título.
      * @param title títuclo de la Película a buscar
      * @return la Película que se haya encontrado

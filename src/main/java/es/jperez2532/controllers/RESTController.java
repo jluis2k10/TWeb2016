@@ -1,6 +1,8 @@
 package es.jperez2532.controllers;
 
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import es.jperez2532.entities.*;
 import es.jperez2532.services.FilmService;
 import es.jperez2532.services.UserService;
@@ -15,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Principal;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -102,57 +103,50 @@ public class RESTController {
     }
 
     /**
-     * Genera un string compatible con formato json que contiene una lista de todos
-     * los directores de la BBDD
-     *
-     * @return String JSON con la lista de todos los directores
+     * Genera un objeto JSON con la lista de todos los directores.
+     * @return Respuesta con el objeto JSON que contiene la lista de todos los directores
      */
-    @RequestMapping(value = "/directoresJSON", method = RequestMethod.GET, produces = "text/plain")
-    public String directorsInJSON() {
-        List<Director> directorsList = filmService.findDirectorsAll();
-        return doJSON(directorsList);
+    @RequestMapping(value = "/directoresJSON", method = RequestMethod.GET)
+    public ResponseEntity<ObjectNode> directorsInJSON() {
+        List<Director> directorList = filmService.findDirectorsAll();
+        ObjectNode response = this.doJSON(directorList);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     /**
-     * Genera un string compatible con formato json que contiene una lista de todos
-     * los actores de la BBDD
-     *
-     * @return String JSON con la lista de todos los actores
+     * Genera un objeto JSON con la lista de todos los actores.
+     * @return Respuesta con el objeto JSON que contiene la lista de todos los actores
      */
-    @RequestMapping(value = "/actoresJSON", method = RequestMethod.GET, produces = "text/plain")
-    public String actorsInJSON() {
+    @RequestMapping(value = "/actoresJSON", method = RequestMethod.GET)
+    public ResponseEntity<ObjectNode> actorsInJSON() {
         List<Actor> actorsList = filmService.findActorsAll();
-        return doJSON(actorsList);
+        ObjectNode response = this.doJSON(actorsList);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     /**
-     * Genera un string compatible con formato json que contiene una lista de todos
-     * los países (de las películas) de la BBDD
-     *
-     * @return String JSON con la lista de todos los países
+     * Genera un objeto JSON con la lista de todos los países.
+     * @return Respuesta con el objeto JSON que contiene la lista de todos los países
      */
-    @RequestMapping(value = "/paisesJSON", method = RequestMethod.GET, produces = "text/plain")
-    public String countriesInJSON() {
+    @RequestMapping(value = "/paisesJSON", method = RequestMethod.GET)
+    public ResponseEntity<ObjectNode> countriesInJSON() {
         List<Country> countriesList = filmService.findCountriesAll();
-        return doJSON(countriesList);
+        ObjectNode response = this.doJSON(countriesList);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     /**
-     * Construir el string apropiado para poder aplicarlo directamente a los <code>chips</code>
-     * de la vista.
-     *
+     * Construir el objeto JSON apropiado para poder aplicarlo directamente a los
+     * <code>chips</code> de la vista.
      * @param entityList Lista de entidades
-     * @return String en formato JSON y adaptado a las necesidades de los <code>chips</code> de la Vista
+     * @return Objeto compatible JSON con la lista de entidades
      */
-    private String doJSON(List entityList) {
-        String jsonString = "{ \"autocompleteData\": {";
-        Iterator<AbstractEntity> it = entityList.iterator();
-        while (it.hasNext()) {
-            jsonString += "\"" + it.next().getName() + "\": null";
-            if (it.hasNext())
-                jsonString += ", ";
-        }
-        jsonString += "}}";
-        return jsonString;
+    private ObjectNode doJSON(List entityList) {
+        ObjectNode response = JsonNodeFactory.instance.objectNode();
+        ObjectNode childNodes = JsonNodeFactory.instance.objectNode();
+        for (Object entity: entityList)
+            childNodes.put( ((AbstractEntity)entity).getName(), "null" );
+        response.set("autocompleteData", childNodes);
+        return response;
     }
 }

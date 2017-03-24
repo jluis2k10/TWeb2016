@@ -301,6 +301,15 @@ public class MyFilmService implements FilmService {
     /**
      * {@inheritDoc}
      */
+    public Film findOne(Long id, boolean cacheable) {
+        if (cacheable)
+            return this.findOne(id);
+        return filmRepo.findOne(id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public Film findByTitle(String title) {
         return filmRepo.findByTitle(title);
     }

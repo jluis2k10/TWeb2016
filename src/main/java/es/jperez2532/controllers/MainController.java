@@ -50,5 +50,4 @@ public class MainController {
     public List<Genre> getGenres() {
         return filmService.findGenresAll();
     }
-
 }

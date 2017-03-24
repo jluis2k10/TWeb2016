@@ -4,19 +4,23 @@
 
 <%@ include file="_header.jsp"%>
 
-<h1 class="center-align">Algo se ha roto</h1>
-<c:if test="${errors != null}">
-    <div class="row section">
-        <div class="col s10 offset-s1">
-            <div class="card-panel red lighten-4">
-                <span class="red-text text-darken-4">${errors}</span>
-            </div>
+<div class="section row">
+    <div class="col s10 offset-s1">
+        <h4 class="center-align">Algo se ha roto</h4>
+        <c:if test="${not empty errCode}">
+            <h1 class="center-align">error ${errCode}</h1>
+        </c:if>
+    </div>
+</div>
+<c:if test="${exceptionMsg != null}">
+<div class="row section">
+    <div class="col s10 offset-s1">
+        <div class="card-panel red lighten-4">
+            <span class="red-text text-darken-4">${exceptionMsg}</span>
         </div>
     </div>
-    <p>${errors}</p>
+</div>
 </c:if>
-
-<a href="${path}/pelicula/1/Logan" title="Logan">Logan</a>
 
 <%@ include file="_js.jsp"%>
 <%@ include file="_footer.jsp"%>

@@ -159,8 +159,16 @@ public class HomeController extends MainController {
      * @return La Vista a mostrar
      */
     @RequestMapping(value = "/error", method = RequestMethod.GET)
-    public String error() {
+    public String error(Model model, HttpServletRequest request) {
+        int errCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
+        model.addAttribute("errCode", errCode);
+        model.addAttribute("title", "Error " + (errCode != 0 ? errCode + " " : "") + "- PelisUNED");
         return "_errors";
     }
 
+    @RequestMapping(value = "/denegado", method = RequestMethod.GET)
+    public String denied(Model model) {
+        model.addAttribute("title", "Acceso denegado");
+        return "_denegado";
+    }
 }

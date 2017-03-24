@@ -199,13 +199,13 @@
         var supportingsInit = textToInitChip(supportings);
         var countries = '${mytags:escapeJS(countries)}';
         var countriesInit = textToInitChip(countries);
+
         /* Se recupera mediante JSON una lista con todos los directores que hay en la BBDD para
            el autocompletado. Se añade esta lista al objeto que inicializa los chips */
         $.getJSON('${path}/rest/directoresJSON', function(data){
             directorsInit.autocompleteData = data.autocompleteData;
             $('#chips-directors').material_chip(directorsInit);
         });
-
         /* Mismo proceder para los chips de los actores y de los paises. */
         $.getJSON('${path}/rest/actoresJSON', function(data){
             starsInit.autocompleteData = data.autocompleteData;

@@ -310,7 +310,7 @@ public class AdminFilmsController extends MainController {
     @RequestMapping(value = "/pelicula/borrar/{id}", method = RequestMethod.GET)
     public String deleteFilm(@PathVariable("id") Long id,
                              RedirectAttributes redirectAttributes) {
-        Film film = filmService.findOne(id);
+        Film film = filmService.findOne(id, false);
         if (film != null) {
             // Borramos votos asociados a la película
             filmService.deleteVotesFromFilm(id);
