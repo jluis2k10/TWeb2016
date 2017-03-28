@@ -101,6 +101,14 @@ public class MyUserService implements UserService {
     /**
      * {@inheritDoc}
      */
+    @Override
+    public Long countByRole(String role) {
+        return accountRepo.countByAccountRoles_RoleIgnoreCase(role);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public Account findByEmail(String email) {
         return accountRepo.findByEmail(email);
     }

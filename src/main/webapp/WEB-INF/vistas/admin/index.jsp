@@ -48,10 +48,11 @@
         <h5>Últimos usuarios</h5>
         <ul class="collection">
             <c:forEach items="${accounts}" var="account">
-                <li class="collection-item avatar grey darken-3">
-                    <span class="title">${account.userName}</span>
-                    <p>${account.provincia} - ${account.email}</p>
-                    <a href="${path}/admin/usuario/editar/${account.id}" class="secondary-content" title="Editar"><i class="material-icons white-text">mode_edit</i></a>
+                <li class="row collection-item grey darken-3">
+                    <div class="col s12">
+                        <h6 class="username">${account.userName}</h6>
+                        <p>${account.email}</p>
+                    </div>
                 </li>
             </c:forEach>
         </ul>

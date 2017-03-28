@@ -112,7 +112,7 @@ public class AccountController extends MainController {
                          @RequestParam("confirm") String confirm) {
         if (confirm.equals("on")) {
             Account account = userService.findByUserName(principal.getName(), false);
-            if (account.isAdmin()) {
+            if (account.isAdmin() && userService.countByRole("admin") == 1) {
                 redirectAttributes.addFlashAttribute("infoMsg",
                         "Eres el único usuario administrador, no es posibile eliminar tu cuenta.");
             } else {

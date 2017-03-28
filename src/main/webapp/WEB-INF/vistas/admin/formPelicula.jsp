@@ -189,7 +189,6 @@
         /*
             INICIALIZACIÓN DE LOS CHIPS
         */
-        $('.chips').material_chip();
 
         var directors = '${mytags:escapeJS(directors)}';
         var directorsInit = textToInitChip(directors);

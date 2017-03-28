@@ -14,6 +14,7 @@
 </head>
 
 <body class="grey darken-4">
+<header>
 <nav class="grey darken-3" role="navigation">
     <div class="nav-wrapper container">
         <a href="${path}/" class="left brand-logo"><img src="${path}/img/logo_pelis_uned.png"/></a>
@@ -66,14 +67,16 @@
         </form>
     </div>
 </nav>
+</header>
+<main>
 <div class="container">
     <c:if test="${infoMsg != null}">
-        <div class="section"></div>
-        <div class="row">
-            <div class="col s10 offset-s1">
-                <div class="card-panel light-blue lighten-4">
-                    <span class="blue-text text-darken-4">${infoMsg}</span>
-                </div>
+    <div class="section"></div>
+    <div class="row">
+        <div class="col s10 offset-s1">
+            <div class="card-panel light-blue lighten-4">
+                <span class="blue-text text-darken-4">${infoMsg}</span>
             </div>
         </div>
+    </div>
     </c:if>

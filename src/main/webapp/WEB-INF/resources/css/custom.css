@@ -4,6 +4,13 @@ html {
 
 body {
     color: #fff;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
 }
 
 ul > ul {
@@ -567,6 +574,20 @@ div.ply-bkg-cover {
     min-height: 500px;
     background-color: #000;
     opacity: .7;
+}
+
+.autocomplete-content li img {
+    display: none;
+}
+
+footer {
+    background: transparent !important;
+    font-size: .9rem;
+    font-weight: 300;
+}
+footer .footer-copyright .container {
+    padding-top: 10px;
+    border-top: 1px solid #656565;
 }
 
 @font-face {

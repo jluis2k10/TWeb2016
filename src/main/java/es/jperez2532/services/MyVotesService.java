@@ -9,6 +9,7 @@ import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.repositories.VoteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
@@ -43,6 +44,7 @@ public class MyVotesService implements VotesService {
     /**
      * {@inheritDoc}
      */
+    @Cacheable(value = "vote", key = "#id")
     public Vote findOne(VotePK id) {
         return voteRepo.findOne(id);
     }
@@ -57,9 +59,7 @@ public class MyVotesService implements VotesService {
     /**
      * {@inheritDoc}
      */
-    @Caching(evict = {
-            @CacheEvict(value = "filmVotes", key = "#vote.film.id")
-            /*@CacheEvict(value = "votes", key = "#vote.id")*/})
+   @CacheEvict(value = "vote", key = "#vote.id")
     public void delete(Vote vote) {
         voteRepo.delete(vote);
     }
@@ -89,6 +89,7 @@ public class MyVotesService implements VotesService {
     /**
      * {@inheritDoc}
      */
+    @CacheEvict(value = "vote", key = "#vote.id")
     public void populateVote(Vote vote) {
         if (vote.getFilm() == null && vote.getAccount() == null) {
             vote.setFilm(filmRepo.findOne(vote.getId().getFilmId()));
@@ -108,7 +109,7 @@ public class MyVotesService implements VotesService {
     @Caching(evict = {
             @CacheEvict(value = "film", key = "#newVote.film.id"),
             @CacheEvict(value = "account", key = "#newVote.account.userName"),
-            @CacheEvict(value = "filmVotes", key = "#newVote.film.id")})
+            @CacheEvict(value = "vote", key = "#newVote.id")})
     public String doVote(Vote newVote) {
         Vote oldVote = voteRepo.findOne(newVote.getId());
         Film film = filmRepo.findOne(newVote.getId().getFilmId());

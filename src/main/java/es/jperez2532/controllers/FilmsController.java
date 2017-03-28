@@ -61,14 +61,14 @@ public class FilmsController extends MainController {
     public String pelicula(@PathVariable("id") Long id, Principal principal, Model model) {
         Set<Long> userWatchlist = new HashSet<>();
         Film film = filmService.findOne(id);
-        Long userId = null;
+        Long userID = null;
         int myScore = 0;
 
         if (principal != null) {
             Account account = userService.findByUserName(principal.getName());
             userWatchlist = userService.makeWatchlistSet(account.getWatchlist());
-            userId = userService.findByUserName(principal.getName()).getId();
-            Vote vote = votesService.findOne(new VotePK(film.getId(), userId));
+            userID = account.getId();
+            Vote vote = votesService.findOne(new VotePK(film.getId(), userID));
             if (vote != null)
                 myScore = vote.getScore();
         }
@@ -77,7 +77,7 @@ public class FilmsController extends MainController {
         model.addAttribute("userWatchlist", userWatchlist);
         model.addAttribute("globalScore", film.getScore().setScale(0, BigDecimal.ROUND_HALF_UP).intValueExact());
         model.addAttribute("myScore", myScore);
-        model.addAttribute("userId", userId);
+        model.addAttribute("userId", userID);
         model.addAttribute("title", film.getTitle());
         return "pelicula/pelicula";
     }
@@ -202,6 +202,7 @@ public class FilmsController extends MainController {
         model.addAttribute("films", films);
         model.addAttribute("page", page);
         model.addAttribute("url_params", url_params);
+        model.addAttribute("title", "Búsqueda - PelisUNED");
         return "pelicula/catalogo";
     }
 }

@@ -10,6 +10,7 @@
 </head>
 
 <body class="grey darken-4">
+<header>
 <nav class="grey darken-3" role="navigation">
     <div class="nav-wrapper container">
         <a href="${path}/" class="left brand-logo"><img src="${path}/img/logo_pelis_uned.png"/></a>
@@ -44,6 +45,8 @@
         </ul>
     </div>
 </nav>
+</header>
+<main>
 <div class="container">
     <c:if test="${infoMsg != null}">
         <div class="section"></div>

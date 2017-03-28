@@ -71,6 +71,13 @@ public interface UserService {
     Account findByEmail(String email);
 
     /**
+     * Devuelve el número de usuarios existentes para el rol indicado.
+     * @param role rol a contar usuarios
+     * @return número de usuarios para un rol
+     */
+    Long countByRole(String role);
+
+    /**
      * Persiste una Cuenta de usuario.
      * @param account Cuenta a persistir
      */

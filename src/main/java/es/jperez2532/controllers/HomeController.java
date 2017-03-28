@@ -166,6 +166,11 @@ public class HomeController extends MainController {
         return "_errors";
     }
 
+    /**
+     * Muestra la página de acceso denegado.
+     * @param model Interfaz/contenedor para pasar datos a la Vista
+     * @return La Vista a Mostrar
+     */
     @RequestMapping(value = "/denegado", method = RequestMethod.GET)
     public String denied(Model model) {
         model.addAttribute("title", "Acceso denegado");
