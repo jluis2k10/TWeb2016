@@ -129,7 +129,7 @@ public class FilmsController extends MainController {
             page = filmService.search(buscar, pageable);
             url_params = "/catalogo?buscar=" + buscar + "&";
             model.addAttribute("headTitle", page.getTotalElements() + " resultado" +
-                    (page.getTotalElements() > 1 ? "s" : "") + " para: <em>" + buscar + "</em>");
+                    (page.getTotalElements() > 1 ? "s" : "") + " para: <span class=\"teal-text\">" + buscar + "</span> (búsqueda global)");
         } else {
             page = filmService.findAll(pageable);
         }
@@ -169,6 +169,7 @@ public class FilmsController extends MainController {
                          @RequestParam("ref") String ref, @RequestParam("buscar") String buscar) {
         Set<Long> userWatchlist = new HashSet<>();
         String url_params = "/buscar?ref=" + ref + "&buscar=" + buscar + "&";
+        String campo_busqueda = "";
         Page<Film> page = null;
         List<Film> films = null;
 
@@ -177,26 +178,44 @@ public class FilmsController extends MainController {
         model.addAttribute("userWatchlist", userWatchlist);
 
         switch (ref) {
+            case "titulo":
+                page = filmService.findByTitle(buscar, pageable);
+                campo_busqueda = "Título";
+                break;
             case "genero":
                 page = filmService.findByGenre(buscar, pageable);
+                campo_busqueda = "Género";
                 break;
             case "director":
                 page = filmService.findByDirector(buscar, pageable);
+                campo_busqueda = "Director";
                 break;
             case "actor":
                 page = filmService.findByActor(buscar, pageable);
+                campo_busqueda = "Actor";
                 break;
             case "pais":
                 page = filmService.findByCountry(buscar, pageable);
+                campo_busqueda = "País";
+                break;
+            case "fecha":
+                page = filmService.findByYear(buscar, pageable);
+                campo_busqueda = "Año";
+                break;
+            case "puntuacion":
+                page = filmService.findByScore(buscar, pageable);
+                campo_busqueda = "Puntuación";
                 break;
         }
 
         if (page.getTotalElements() != 0) {
             films = page.getContent();
             model.addAttribute("headTitle", page.getTotalElements() + " resultado" +
-                    (page.getTotalElements() > 1 ? "s" : "") + " para: <em>" + buscar + "</em>");
+                    (page.getTotalElements() > 1 ? "s" : "") + " para <span class=\"teal-text\">" + buscar + "</span>" +
+                     " (por " + campo_busqueda + ")");
         } else {
-            model.addAttribute("infoMsg", "Sin resultados para: <em>" + buscar + "</em>");
+            model.addAttribute("infoMsg", "Sin resultados para <strong>" + buscar + "</strong>" +
+                    " (por " + campo_busqueda + ")");
         }
 
         model.addAttribute("films", films);
@@ -204,5 +223,18 @@ public class FilmsController extends MainController {
         model.addAttribute("url_params", url_params);
         model.addAttribute("title", "Búsqueda - PelisUNED");
         return "pelicula/catalogo";
+    }
+
+    /**
+     * Muestra el pequeño formulario de búsqueda refinada, que permite buscar
+     * el término indicado en uno solo de los campos de las películas.
+     *
+     * @param model Interfaz/contenedor para pasar datos a la Vista
+     * @return La Vista a mostrar
+     */
+    @RequestMapping(value = "/catalogo/refinar_busqueda")
+    public String buscar(Model model) {
+        model.addAttribute("title", "Refinar búsqueda - PelisUNED");
+        return "pelicula/refinar_busqueda";
     }
 }

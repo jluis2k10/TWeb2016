@@ -162,6 +162,26 @@ public interface FilmService {
     Page<Film> findByCountry(String country, Pageable pageable);
 
     /**
+     * Busca Películas por año. Devuelve una página {@link Page} con un
+     * conjunto de Películas que se correspondan con el año indicado.
+     * @param year     Año de las Películas a buscar
+     * @param pageable información sobre la página actual (nº página, resultados por
+     *                 página y modo de ordenación)
+     * @return la página construida
+     */
+    Page<Film> findByYear(String year, Pageable pageable);
+
+    /**
+     * Busca Películas por puntuación. Devuelve una página {@link Page} con un
+     * conjunto de Películas que se corresponden con la puntuación indicada.
+     * @param score    Puntuación de las Películas a buscar
+     * @param pageable información sobre la página actual (nº página, resultados por
+     *                 página y modo de ordenación)
+     * @return la página construida
+     */
+    Page<Film> findByScore(String score, Pageable pageable);
+
+    /**
      * Busca Películas por un término dado. Devuelve una página {@link Page}
      * con un conjunto de Películas que se contengan al término indicado en
      * alguno de sus campos.

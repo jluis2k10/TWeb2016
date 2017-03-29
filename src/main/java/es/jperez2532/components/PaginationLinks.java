@@ -39,7 +39,7 @@ public class PaginationLinks extends SimpleTagSupport {
      *
      *  < 1 ... 16 17 18 19 20 >
      *
-     * @throws JspException en caso de producirse algún error
+     * @throws JspException en caso de producirse algún error escribiendo en el buffer de salida
      */
     @Override
     public void doTag() throws JspException {

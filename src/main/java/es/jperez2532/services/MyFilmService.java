@@ -335,7 +335,7 @@ public class MyFilmService implements FilmService {
      */
     @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findByGenre(String genre, Pageable pageable) {
-        return filmRepo.findByFilmGenres_NameIgnoreCase(genre, pageable);
+        return filmRepo.findDistinctByFilmGenres_NameIgnoreCaseContaining(genre, pageable);
     }
 
     /**
@@ -343,7 +343,7 @@ public class MyFilmService implements FilmService {
      */
     @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findByDirector(String director, Pageable pageable) {
-        return filmRepo.findByFilmDirectors_NameIgnoreCase(director, pageable);
+        return filmRepo.findDistinctByFilmDirectors_NameIgnoreCaseContaining(director, pageable);
     }
 
     /**
@@ -351,7 +351,7 @@ public class MyFilmService implements FilmService {
      */
     @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findByActor(String actor, Pageable pageable) {
-        return filmRepo.findDistinctByFilmStars_NameIgnoreCaseOrFilmSupportings_NameIgnoreCase(actor, actor, pageable);
+        return filmRepo.findDistinctByFilmStars_NameIgnoreCaseContainingOrFilmSupportings_NameIgnoreCaseContaining(actor, actor, pageable);
     }
 
     /**
@@ -359,7 +359,35 @@ public class MyFilmService implements FilmService {
      */
     @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
     public Page<Film> findByCountry(String country, Pageable pageable) {
-        return filmRepo.findByFilmCountries_NameIgnoreCase(country, pageable);
+        return filmRepo.findDistinctByFilmCountries_NameIgnoreCaseContaining(country, pageable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
+    public Page<Film> findByYear(String year, Pageable pageable) {
+        return filmRepo.findByYear(year, pageable);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Debemos buscar por rango, ya que la puntuación en la BBDD no es un
+     * número entero.
+     */
+    @Cacheable(value = "allFilms", keyGenerator = "filmsKey")
+    public Page<Film> findByScore(String score, Pageable pageable) {
+        BigDecimal selScore = new BigDecimal(score);
+        BigDecimal rangeStart = new BigDecimal(0);
+        BigDecimal rangeEnd = new BigDecimal(5);
+        if (selScore.compareTo(new BigDecimal(0)) != 0)
+            rangeStart = selScore.subtract(new BigDecimal(0.5));
+        if (selScore.compareTo(new BigDecimal(5)) != 0) {
+            rangeEnd = selScore.add(new BigDecimal(0.49));
+            rangeEnd = rangeEnd.setScale(2, BigDecimal.ROUND_HALF_UP);
+        }
+        return filmRepo.findByScoreBetween(rangeStart, rangeEnd, pageable);
     }
 
     /**

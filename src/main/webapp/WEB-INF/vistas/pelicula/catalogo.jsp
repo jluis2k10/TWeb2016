@@ -16,9 +16,12 @@
 
 <c:if test="${not empty films}">
     <!-- Opciones de resultados -->
+    <div class="section"></div>
     <div class="row section no-margin filter-catalog">
-        <c:set var="order" value="${fn:replace(page.sort, ': ', ',' )}"/>
-        <div class="input-field input-filter col s12">
+        <div class="col s4">
+            <a href="${path}/catalogo/refinar_busqueda" class="waves-effect waves-light btn"><i class="material-icons right">send</i>Refinar búsqueda</a>
+        </div>
+        <div class="input-field input-filter col s8">
             <a class="dropdown-filter btn waves-effect grey darken-4" href="#" data-activates="dropdown-filter">Ordenar<i class="material-icons right">arrow_drop_down</i></a>
             <select>
                 <option value="5" ${page.size == 5 ? 'selected' : ''}>5</option>
@@ -94,6 +97,7 @@
                     <div class="card-content">
                         <a href="${path}/pelicula/${film.id}/${film.title}"><h5>${film.title}</h5></a>
                         <div class="film-badges">
+                            <mytags:makeScoreBadge score="${film.score}"/>
                             <span class="badge">${film.year}</span>
                             <span class="badge">${film.duration} min</span>
                             <span class="badge">${film.rating}</span>
@@ -104,7 +108,7 @@
                         </p>
                     </div>
                     <div class="card-action">
-                        <sec:authorize access="isFullyAuthenticated()">
+                        <sec:authorize access="isAuthenticated()">
                             <a href="${path}/pelicula/ver/${film.id}/${film.title}" class="btn-floating btn waves-effect waves-light"><i class="material-icons">play_arrow</i></a>
                             <span>Reproducir</span>
                         </sec:authorize>
@@ -112,7 +116,7 @@
                             <a class="disabled btn-floating btn waves-effect waves-light"><i class="material-icons grey-text">play_arrow</i></a>
                             <span>Inicia sesión para reproducir</span>
                         </sec:authorize>
-                        <sec:authorize access="isFullyAuthenticated()">
+                        <sec:authorize access="isAuthenticated()">
                             <a data-film="${film.id}" data-action="${userWatchlist.contains(film.id) ? 'delete' : 'add'}" class="waves-effect btn grey darken-1 btn-watchlist">
                                 <i class="material-icons left">view_list</i>
                                 ${userWatchlist.contains(film.id) ? 'Eliminar de mi lista' : 'Ver más tarde'}
@@ -138,6 +142,7 @@
 
 <%@ include file="../_js.jsp"%>
 
+<c:set var="order" value="${fn:replace(page.sort, ': ', ',' )}"/>
 <script>
     $(document).ready(function() {
         $("select").material_select();
@@ -173,7 +178,7 @@
     });
 </script>
 
-<sec:authorize access="isFullyAuthenticated()">
+<sec:authorize access="isAuthenticated()">
 <script>
     $(document).ready(function () {
         $('.btn-watchlist').on('click', function () {

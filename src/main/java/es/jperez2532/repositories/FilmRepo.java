@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 /**
@@ -43,37 +44,37 @@ public interface FilmRepo extends JpaRepository<Film, Long> {
     Page<Film> findByTitleIgnoreCaseContaining(String title, Pageable pageable);
 
     /**
-     * Devuelve una página de entre todas las películas que sean del Género
-     * indicado.
+     * Devuelve una página de entre todas las películas que contengan en su
+     * género parte del término indicado.
      * @param genre    el nombre del Género a buscar
      * @param pageable información sobre la página que se tiene que generar
      * @return Página con las películas encontradas
      */
-    Page<Film> findByFilmGenres_NameIgnoreCase(String genre, Pageable pageable);
+    Page<Film> findDistinctByFilmGenres_NameIgnoreCaseContaining(String genre, Pageable pageable);
 
     /**
-     * Devuelve una página de entre todas las películas que contengan
-     * al Director indicado.
+     * Devuelve una página de entre todas las películas que contengan en su
+     * Director parte del término indicado.
      * @param director el nombre del Director a buscar
      * @param pageable información sobre la página que se tiene que generar
      * @return Página con las películas encontradas
      */
-    Page<Film> findByFilmDirectors_NameIgnoreCase(String director, Pageable pageable);
+    Page<Film> findDistinctByFilmDirectors_NameIgnoreCaseContaining(String director, Pageable pageable);
 
     /**
-     * Devuelve una página de entre todas las películas que sean del País
-     * indicado.
+     * Devuelve una página de entre todas las películas que contengan en su
+     * País parte del término indicado.
      * @param country el nombre del País a buscar
      * @param pageable información sobre la página que se tiene que generar
      * @return Página con las películas encontradas
      */
-    Page<Film> findByFilmCountries_NameIgnoreCase(String country, Pageable pageable);
+    Page<Film> findDistinctByFilmCountries_NameIgnoreCaseContaining(String country, Pageable pageable);
 
 
     /**
-     * Devuelve una página de entre todas las películas que contengan
-     * al Actor indicado. Busca en las dos relaciones de actores disponibles
-     * (FILMS_TO_STARS y FILMS_TO_SUPPORTINGS).
+     * Devuelve una página de entre todas las películas que contengan a alguno
+     * de sus actores con el término indicado. Busca en las dos relaciones de
+     * actores disponibles (FILMS_TO_STARS y FILMS_TO_SUPPORTINGS).
      * <p>
      * <code>Distinct</code> o repite resultados (por el left outer join que genera).
      * @param actor    el nombre del Actor a buscar (en FILMS_TO_STARS)
@@ -81,7 +82,25 @@ public interface FilmRepo extends JpaRepository<Film, Long> {
      * @param pageable información sobre la página que se tiene que generar
      * @return Página con las películas encontradas
      */
-    Page<Film> findDistinctByFilmStars_NameIgnoreCaseOrFilmSupportings_NameIgnoreCase(String actor, String actor2, Pageable pageable);
+    Page<Film> findDistinctByFilmStars_NameIgnoreCaseContainingOrFilmSupportings_NameIgnoreCaseContaining(String actor, String actor2, Pageable pageable);
+
+    /**
+     * Devuelve una página de entre todas las películas que sean del año indicado.
+     * @param year     el año a buscar
+     * @param pageable información sobre la página que se tiene que generar
+     * @return Página con las películas encontradas
+     */
+    Page<Film> findByYear(String year, Pageable pageable);
+
+    /**
+     * Devuelve una página de entre todas las películas con puntuación dentro
+     * del rango indicado.
+     * @param rangeStart puntuación mínima
+     * @param rangeEnd   puntuación máxima
+     * @param pageable   información sobre la página que se tiene que generar
+     * @return Página con las películas encontradas
+     */
+    Page<Film> findByScoreBetween(BigDecimal rangeStart, BigDecimal rangeEnd, Pageable pageable);
 
     /**
      * Devuelve un conjunto de películas que contienen el título indicado.

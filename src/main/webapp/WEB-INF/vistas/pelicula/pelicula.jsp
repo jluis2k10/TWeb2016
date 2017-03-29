@@ -22,7 +22,7 @@
                         <option value="4">4</option>
                         <option value="5">5</option>
                     </select>
-                    <sec:authorize access="isFullyAuthenticated()">
+                    <sec:authorize access="isAuthenticated()">
                         <span style="${myScore == 0 ? 'display: none;' : ''}">
                             <a href="#" id="mi-score" data-score="${myScore}">Mia</a> /
                             <a href="#" id="global-score" data-score="${globalScore}">Global</a>
@@ -84,7 +84,7 @@
             </div>
             <div class="col s12 reproducir">
                 <div class="section"></div>
-                <sec:authorize access="isFullyAuthenticated()">
+                <sec:authorize access="isAuthenticated()">
                     <a href="${path}/pelicula/ver/${film.id}/${film.title}" class="btn-floating btn-large waves-effect waves-light"><i class="material-icons">play_arrow</i></a>
                     <span>Reproducir</span>
                 </sec:authorize>
@@ -95,7 +95,7 @@
                 <c:if test="${not empty film.trailer}">
                     <a href="#trailer" class="waves-effect btn-large grey darken-3"><i class="material-icons left">theaters</i>Ver tráiler</a>
                 </c:if>
-                <sec:authorize access="isFullyAuthenticated()">
+                <sec:authorize access="isAuthenticated()">
                     <a data-film="${film.id}" data-action="${userWatchlist.contains(film.id) ? 'delete' : 'add'}" class="waves-effect btn-large grey darken-3 btn-watchlist">
                         <i class="material-icons left">view_list</i>
                             ${userWatchlist.contains(film.id) ? 'Eliminar de mi lista' : 'Ver más tarde'}
@@ -158,7 +158,7 @@
     });
 </script>
 <%-- JavaScript para usuarios identificados. --%>
-<sec:authorize access="isFullyAuthenticated()">
+<sec:authorize access="isAuthenticated()">
 <script>
     $( document ).ready(function() {
         /* Recuperar token csrf para e incluirlo como cabecera en cada envío ajax */

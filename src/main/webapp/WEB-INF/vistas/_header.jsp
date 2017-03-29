@@ -31,7 +31,7 @@
             <li><a href="${path}/informe">Informe PED</a></li>
         </ul>
         <!-- Dropdown Cuenta -->
-        <sec:authorize access="isFullyAuthenticated()">
+        <sec:authorize access="isAuthenticated()">
         <ul id="dropdown-acc" class="dropdown-content">
             <li><a href="${path}/micuenta">Mi cuenta</a></li>
             <li class="divider"></li>
@@ -54,7 +54,7 @@
                 <li><a href="${path}/login" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Administrador: admin/admin - Registrado: usuario/usuario"><i class="material-icons teal-text right">help_outline</i>Login</a></li>
                 <li><a href="${path}/registro">Crear cuenta</a></li>
             </sec:authorize>
-            <sec:authorize access="isFullyAuthenticated()">
+            <sec:authorize access="isAuthenticated()">
                 <li><a class="dropdown-account" href="#!" data-activates="dropdown-acc"><i class="material-icons account-icon">account_circle</i><i class="material-icons right arrow-down">arrow_drop_down</i></a></li>
             </sec:authorize>
         </ul>
