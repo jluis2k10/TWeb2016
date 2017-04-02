@@ -1,6 +1,6 @@
 package es.jperez2532.config;
 
-import es.jperez2532.components.LoginSuccessHandler;
+import es.jperez2532.handlers.LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;

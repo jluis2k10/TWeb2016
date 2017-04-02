@@ -11,7 +11,7 @@
 
     <tag>
         <name>paginate</name>
-        <tag-class>es.jperez2532.components.PaginationLinks</tag-class>
+        <tag-class>es.jperez2532.jsptags.PaginationLinks</tag-class>
         <body-content>empty</body-content>
 
         <attribute>
@@ -48,7 +48,7 @@
 
     <tag>
         <name>makeScoreBadge</name>
-        <tag-class>es.jperez2532.components.ScoreBadge</tag-class>
+        <tag-class>es.jperez2532.jsptags.ScoreBadge</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>score</name>

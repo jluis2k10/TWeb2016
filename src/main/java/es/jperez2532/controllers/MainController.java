@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Controller
 @SessionAttributes(value = {"genresList"}, types = {Genre.class})
-public class MainController {
+public abstract class MainController {
 
     private FilmService filmService;
 

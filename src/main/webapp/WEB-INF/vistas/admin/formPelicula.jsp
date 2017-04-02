@@ -161,6 +161,7 @@
             </div>
             <div class="file-path-wrapper">
                 <spring:bind path="peliculaForm.poster">
+                    <form:hidden path="peliculaForm.poster"/>
                     <input class="file-path ${errorPoster == 1 ? "invalid" : ""}" type="text" placeholder="Máximo 1 MB">
                     <form:errors path="peliculaForm.poster" cssClass="red-text form-error"></form:errors>
                 </spring:bind>

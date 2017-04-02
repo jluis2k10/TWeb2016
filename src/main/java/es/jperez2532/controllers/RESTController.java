@@ -84,7 +84,7 @@ public class RESTController {
      */
     @RequestMapping(value = "/milista/add", method = RequestMethod.GET)
     public ResponseEntity<String> addToWatchList(@RequestParam("film-id") Long filmId, Principal principal) {
-        userService.addFilmToWatchlist(principal.getName(), filmId);
+        userService.addFilmToWatchlist(principal.getName(), filmService.findOne(filmId, false));
         return ResponseEntity.ok("{}");
     }
 

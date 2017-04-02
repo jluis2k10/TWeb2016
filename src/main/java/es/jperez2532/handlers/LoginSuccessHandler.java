@@ -1,4 +1,4 @@
-package es.jperez2532.components;
+package es.jperez2532.handlers;
 
 import es.jperez2532.config.SecurityConfig;
 import org.springframework.security.core.Authentication;
@@ -12,8 +12,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Manejador para redirigir a la última página en la que se estuvo
- * antes de acceder al login.
+ * Manejador para decidir qué hacer tras una operación exitosa de login.
+ * <p>
+ * Redirige a la última página en la que se estuvo antes de acceder al login.
  */
 public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 

@@ -4,6 +4,7 @@ import es.jperez2532.components.UploadPoster;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.entities.Genre;
+import es.jperez2532.handlers.GlobalExceptionHandler;
 import es.jperez2532.services.FilmService;
 import es.jperez2532.services.UserService;
 import es.jperez2532.validator.FilmValidator;
@@ -125,7 +126,7 @@ public class AdminFilmsController extends MainController {
      * @param model                 Interfaz/contenedor para pasar datos a la Vista
      * @param redirectAttributes    Interfaz/contenedor para pasar datos a una Redirección
      * @return Vista a mostrar o redirección a efectuar
-     * @throws IOException Para informar de errores en la carga de la imagen mediante {@link es.jperez2532.components.GlobalExceptionHandler}
+     * @throws IOException Para informar de errores en la carga de la imagen mediante {@link GlobalExceptionHandler}
      */
     @RequestMapping(value = "/catalogo/nueva", method = RequestMethod.POST)
     public String addFilm(@ModelAttribute("peliculaForm") Film filmForm,
@@ -192,7 +193,7 @@ public class AdminFilmsController extends MainController {
      * @param model                 Interfaz/contenedor para pasar datos a la Vista
      * @param redirectAttributes    Interfaz/contenedor para pasar datos a una Redirección
      * @return Vista a mostrar o Redirección a efectuar
-     * @throws IOException Para informar de errores en la carga de la imagen mediante {@link es.jperez2532.components.GlobalExceptionHandler}
+     * @throws IOException Para informar de errores en la carga de la imagen mediante {@link GlobalExceptionHandler}
      */
     @RequestMapping(value = "/pelicula/editar/{id}", method = RequestMethod.POST)
     public String editFilm(@PathVariable("id") Long id,

@@ -6,7 +6,6 @@ import es.jperez2532.services.FilmService;
 import es.jperez2532.services.UserService;
 import es.jperez2532.validator.AccountValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -128,12 +127,6 @@ public class HomeController extends MainController {
     /**
      * Redirecciona a portada a los usuarios a los que se les ha expirado la sesión de
      * forma manual.
-     * <p>
-     * Se accede debido a la configuración de <code>http.sessionManagement()</code> que
-     * encontramos en {@link es.jperez2532.config.SecurityConfig#configure(HttpSecurity)}.
-     * <p>
-     * Nota: para expirar una sesión de forma manual hay que llamar al componente#método
-     * {@link es.jperez2532.components.SessionHandle#expireUserSessions(String)}.
      * @param redirectAttributes Interfaz/contenedor para pasar datos a una Redirección
      * @return La redirección a efectuar
      */

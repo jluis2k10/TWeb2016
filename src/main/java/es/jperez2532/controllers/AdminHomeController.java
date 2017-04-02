@@ -24,7 +24,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/admin")
-public class AdminMainController extends MainController {
+public class AdminHomeController extends MainController {
 
     private final FilmService filmService;
     private final UserService userService;
@@ -36,7 +36,7 @@ public class AdminMainController extends MainController {
      * @param userService inyección {@link UserService}
      */
     @Autowired
-    public AdminMainController(FilmService filmService, UserService userService) {
+    public AdminHomeController(FilmService filmService, UserService userService) {
         this.filmService = filmService;
         this.userService = userService;
     }

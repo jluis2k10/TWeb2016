@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping(value = "/admin")
-public class AdminUsersController extends MainController {
+public class AdminAccountsController extends MainController {
 
     private final FilmService filmService;
     private final UserService userService;
@@ -40,7 +40,7 @@ public class AdminUsersController extends MainController {
      * @param votesService inyección {@link VotesService}
      */
     @Autowired
-    public AdminUsersController(FilmService filmService, UserService userService, VotesService votesService) {
+    public AdminAccountsController(FilmService filmService, UserService userService, VotesService votesService) {
         this.filmService = filmService;
         this.userService = userService;
         this.votesService = votesService;

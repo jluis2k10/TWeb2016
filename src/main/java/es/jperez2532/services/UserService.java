@@ -125,9 +125,9 @@ public interface UserService {
     /**
      * Añadir una Película a la lista de reproducción del usuario.
      * @param username nombre de usuario de la Cuenta
-     * @param filmId   ID de la película a añadir a la lista de reproducción
+     * @param film     la película a añadir a la lista de reproducción
      */
-    void addFilmToWatchlist(String username, Long filmId);
+    void addFilmToWatchlist(String username, Film film);
 
     /**
      * Eliminar una Película de la lista de reproducción del usuario.

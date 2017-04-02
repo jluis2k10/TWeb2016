@@ -4,7 +4,6 @@ import es.jperez2532.components.SessionHandle;
 import es.jperez2532.entities.Account;
 import es.jperez2532.entities.Film;
 import es.jperez2532.repositories.AccountRepo;
-import es.jperez2532.repositories.FilmRepo;
 import es.jperez2532.repositories.RoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -29,7 +28,6 @@ import java.util.*;
 @Service
 public class MyUserService implements UserService {
 
-    private final FilmRepo filmRepo;
     private final UserDetailsService userDetailsService;
     private final AccountRepo accountRepo;
     private final RoleRepo roleRepo;
@@ -39,7 +37,6 @@ public class MyUserService implements UserService {
 
     /**
      * Constructor de la clase con las inyecciones de dependencia apropiadas.
-     * @param filmRepo              inyección de {@link FilmRepo}
      * @param userDetailsService    inyección de {@link UserDetailsService}
      * @param accountRepo           inyección de {@link AccountRepo}
      * @param roleRepo              inyección de {@link RoleRepo}
@@ -47,10 +44,9 @@ public class MyUserService implements UserService {
      * @param bCryptPasswordEncoder inyección de {@link BCryptPasswordEncoder}
      */
     @Autowired
-    public MyUserService(FilmRepo filmRepo, UserDetailsService userDetailsService,
-            AccountRepo accountRepo, RoleRepo roleRepo, SessionHandle sessionHandle,
+    public MyUserService(UserDetailsService userDetailsService, AccountRepo accountRepo,
+            RoleRepo roleRepo, SessionHandle sessionHandle,
             BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.filmRepo = filmRepo;
         this.userDetailsService = userDetailsService;
         this.accountRepo = accountRepo;
         this.roleRepo = roleRepo;
@@ -223,11 +219,11 @@ public class MyUserService implements UserService {
      * insertarla en la watchlist surgen conflictos
      */
     @Caching(evict = {
-            @CacheEvict(value = "film", key = "#filmId"),
+            @CacheEvict(value = "film", key = "#film.id"),
             @CacheEvict(value = "account", key = "#username")})
-    public void addFilmToWatchlist(String username, Long filmId) {
+    public void addFilmToWatchlist(String username, Film film) {
         Account account = this.findByUserName(username);
-        account.getWatchlist().add(filmRepo.findOne(filmId));
+        account.getWatchlist().add(film);
         accountRepo.save(account);
     }
 

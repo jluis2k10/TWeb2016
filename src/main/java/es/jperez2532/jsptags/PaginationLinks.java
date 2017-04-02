@@ -1,4 +1,4 @@
-package es.jperez2532.components;
+package es.jperez2532.jsptags;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;

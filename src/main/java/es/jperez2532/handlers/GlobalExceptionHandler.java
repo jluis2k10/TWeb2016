@@ -1,4 +1,4 @@
-package es.jperez2532.components;
+package es.jperez2532.handlers;
 
 import org.apache.commons.fileupload.FileUploadBase;
 import org.springframework.web.bind.annotation.ControllerAdvice;
