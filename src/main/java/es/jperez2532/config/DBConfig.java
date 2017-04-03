@@ -55,12 +55,12 @@ public class DBConfig {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Server h2WebServer() throws SQLException {
-        return Server.createWebServer("-web", "-webAllowOthers", "-webDaemon", "-webPort", "8082");
+        return Server.createWebServer("-web", "-webAllowOthers", "-webDaemon", "-webPort", "8182");
     }
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Server h2TCPServer() throws  SQLException {
-        return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092");
+        return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9192");
     }
 
     /**
