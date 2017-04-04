@@ -23,6 +23,9 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.sql.DataSource;
 
+/**
+ * Configuración de Spring Security.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -52,16 +55,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // Filtro para codificar a UTF8 los envíos de formularios
-        // Ver http://stackoverflow.com/questions/34404247/tomcat-spring-utf-8
-        // Tenía problemas al enviar caracteres con acentos desde los formularios
+        /* Filtro para codificar a UTF8 los envíos de formularios
+        Ver http://stackoverflow.com/questions/34404247/tomcat-spring-utf-8
+        Tenía problemas al enviar caracteres especiales desde los formularios */
         CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
         encodingFilter.setEncoding("UTF-8");
         encodingFilter.setForceEncoding(true);
         http.addFilterBefore(encodingFilter,CsrfFilter.class);
 
-        // Configuración sobre el manejo de sesiones. Necesitamos el bean sessionRegistry para
-        // poder acceder a las sesiones.
+        /* Configuración sobre el manejo de sesiones. Necesitamos el bean sessionRegistry para
+        poder acceder a las sesiones. */
         http.sessionManagement()
                 .maximumSessions(100)
                 .maxSessionsPreventsLogin(false)
@@ -82,9 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .usernameParameter("username")
                     .passwordParameter("password")
                     .successHandler(successHandler())
-                // Ver http://www.concretepage.com/spring-4/spring-4-mvc-security-custom-login-form-and-logout-example-with-csrf-protection-using-annotation-and-xml-configuration
-                // para recordar cómo funciona logout con csrf activado
-                .and().logout()
+                .and().logout()                     // logout con csrf activado
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/")
                     .invalidateHttpSession(true)
@@ -95,7 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .rememberMeParameter("rememberMe")
                     .tokenRepository(persistentTokenRepository())
                     .tokenValiditySeconds(86400)
-                .and().csrf()
+                .and().csrf()                       // activar protección contra CSRF
                 .and().exceptionHandling()
                     .accessDeniedPage("/denegado");
 

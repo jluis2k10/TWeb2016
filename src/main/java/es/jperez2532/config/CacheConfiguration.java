@@ -8,6 +8,9 @@ import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuración de la caché de la aplicación.
+ */
 @Configuration
 @EnableCaching
 public class CacheConfiguration {
@@ -17,6 +20,7 @@ public class CacheConfiguration {
         return new ConcurrentMapCacheManager();
     }
 
+    // Generador de claves para consultas a la tabla FILMS
     @Bean
     KeyGenerator filmsKey() {
         return new CacheFilmsKeyGenerator();

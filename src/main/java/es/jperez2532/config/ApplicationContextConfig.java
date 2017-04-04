@@ -8,6 +8,9 @@ import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+/**
+ * Configuración del contexto de la aplicación Spring.
+ */
 @Configuration
 @ComponentScan(value = "es.jperez2532.*")
 public class ApplicationContextConfig {

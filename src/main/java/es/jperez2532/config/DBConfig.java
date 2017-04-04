@@ -23,15 +23,19 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
 
+/**
+ * Configuración e inicialización de la base de datos.
+ */
 @Configuration
 @EnableJpaRepositories(basePackages = "es.jperez2532.repositories")
 @EnableTransactionManagement
 public class DBConfig {
 
+    // Recursos con scripts SQL para inicializar la BBDD
     @Value("classpath:scripts/*.sql")
     Resource[] sqlScripts;
 
-     // Base de Datos (in memory)
+    // Base de Datos (in memory)
     @Bean(name = "dataSource")
     public DataSource getDataSource() throws IOException {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
@@ -63,10 +67,8 @@ public class DBConfig {
         return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9192");
     }
 
-    /**
-     * Podemos acceder a sessionFactory de Hibernate mediante:
-     * Session session = entityManager.unwrap(Session.class);
-     */
+    /* Podemos acceder a sessionFactory de Hibernate mediante:
+       Session session = entityManager.unwrap(Session.class); */
     @Autowired
     @Bean(name = "entityManagerFactory")
     LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
@@ -77,24 +79,23 @@ public class DBConfig {
 
         Properties jpaProperties = new Properties();
 
-        //Configures the used database dialect. This allows Hibernate to create SQL
-        //that is optimized for the used database.
+        /* Configurar el dialecto utilizado por la BBDD. Esto permite que Hibernate cree
+        consultas SQL optimizadas para la BBDD utilizada. */
         jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
 
-        //Specifies the action that is invoked to the database when the Hibernate
-        //SessionFactory is created or closed.
+        /* Indica la acción que se invoca en la BBDD cuando al crear o cerrar SessionFactory
+        de Hibernate */
         jpaProperties.put("hibernate.hbm2ddl.auto", "update");
 
-        //Configures the naming strategy that is used when Hibernate creates
-        //new database objects and schema elements
+        /* Configura la estrategia que sigue Hibernate para crear los nombres de
+        las tablas de la BBDD */
         jpaProperties.put("hibernate.ejb.naming_strategy", "org.hibernate.cfg.ImprovedNamingStrategy");
 
-        //If the value of this property is true, Hibernate writes all SQL
-        //statements to the console.
+        /* Si el valor es true, Hibernate vuelca en la consola todas las SQL que
+         genera */
         jpaProperties.put("hibernate.show_sql", "true");
 
-        //If the value of this property is true, Hibernate will format the SQL
-        //that is written to the console.
+        /* Si el valor es true, Hibernate dará formato al SQL que vuelca en la consola */
         jpaProperties.put("hibernate.format_sql", "true");
 
         jpaProperties.put("current_session_context_class", "thread");
@@ -104,11 +105,7 @@ public class DBConfig {
         jpaProperties.put("hibernate.connection.characterEncoding", "utf8");
         jpaProperties.put("hibernate.connection.useUnicode", "true");
 
-        // Liberar conexión tras una transacción
-        //jpaProperties.put("hibernate.connection.release_mode", "after_transaction");
-
         entityManagerFactoryBean.setJpaProperties(jpaProperties);
-
         return entityManagerFactoryBean;
     }
 

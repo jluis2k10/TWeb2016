@@ -20,6 +20,9 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Configuración para Spring Web MVC.
+ */
 @Configuration
 @EnableWebMvc
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
@@ -33,9 +36,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         stringHttpMessageConverter.setSupportedMediaTypes(Arrays.asList(new MediaType("text", "plain", UTF8)));
         converters.add(stringHttpMessageConverter);
 
-        // Configurar Spring para que utilice Jackson (POJO <-> json) cuando se recibe una petición
-        // json con parámetros.
-        // Hero of the day: http://stackoverflow.com/a/21742818
+        /* Configurar Spring para que utilice Jackson (POJO <-> json) cuando se recibe una petición
+        json con parámetros.
+        Hero of the day: http://stackoverflow.com/a/21742818 */
         final MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -55,9 +58,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addResourceHandler("/informe/**").addResourceLocations("/WEB-INF/resources/informe/").setCachePeriod(31556926).resourceChain(true);
     }
 
-    // "Filtro" (argument resolver) para poder utilizar Pageable. Recoge automáticamente
-    // los argumentos de ciertos parámetros de la URL y los convierte a un objeto Pageable
-    // que puede ser utilizado por el repositorio para paginar los resultados.
+    /* "Filtro" (argument resolver) para poder utilizar Pageable. Recoge automáticamente
+    los argumentos de ciertos parámetros de la URL y los convierte a un objeto Pageable
+    que puede ser utilizado por el repositorio para paginar los resultados. */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         PageableHandlerMethodArgumentResolver pageableResolver = new PageableHandlerMethodArgumentResolver();

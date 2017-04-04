@@ -8,6 +8,9 @@ import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletRegistration;
 import java.io.File;
 
+/**
+ * Configuración para el contenedor de servlets.
+ */
 public class SpringWebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
@@ -24,10 +27,9 @@ public class SpringWebAppInitializer extends AbstractAnnotationConfigDispatcherS
         return new String[] { "/" };
     }
 
-    // TODO: estudiar cómo funciona este filtro
-    // Sirve para que las vistas tengan acceso a las variables obtenidas del repositorio que
-    // sean lazy-loading (se mantienen en la sesión durante la transacción completa, hasta que
-    // se genera la vista).
+    /* Sirve para que las vistas tengan acceso a las variables obtenidas de la entidad que
+    sean lazy-loading (se mantienen en la sesión durante la transacción completa, hasta que
+    se genera la vista). */
     @Override
     protected Filter[] getServletFilters() {
         return new Filter[]{
@@ -35,8 +37,8 @@ public class SpringWebAppInitializer extends AbstractAnnotationConfigDispatcherS
         };
     }
 
-    // 10 MB. Luego manejamos el tamaño máximo en el validator correspondiente.
-    // Creo que es mejor así, una excepción por superar el tamaño máximo es difícil de manejar.
+    /* 10 MB. Luego manejamos el tamaño máximo en el validator correspondiente.
+    Creo que es mejor así, una excepción por superar el tamaño máximo es difícil de manejar.*/
     private final int maxUploadSizeInMb = 10 * 1024 * 1024;
     @Override
     protected void customizeRegistration(ServletRegistration.Dynamic registration) {

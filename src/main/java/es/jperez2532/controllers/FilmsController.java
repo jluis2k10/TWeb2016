@@ -92,10 +92,9 @@ public class FilmsController extends MainController {
     @RequestMapping("/pelicula/ver/{id}/*")
     public String viewFilm(@PathVariable("id") Long id, Model model) {
         Film film = filmService.findOne(id);
-        film.setViews(film.getViews()+1);
         filmService.updateViews(film);
         model.addAttribute("film", film);
-        model.addAttribute("title", film.getTitle());
+        model.addAttribute("title", "Viendo: " + film.getTitle());
         return "pelicula/reproducir";
     }
 

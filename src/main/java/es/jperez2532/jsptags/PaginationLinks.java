@@ -18,7 +18,7 @@ public class PaginationLinks extends SimpleTagSupport {
     private String sort = "";    // Orden de los elementos en la página
     private String prev = "Ant";
     private String next = "Sig";
-    private String listItemsCssClass = "";
+    private String liCSS = "";   // Estilo CSS de los elementos de la lista
     private Page page;
 
     /**
@@ -60,7 +60,7 @@ public class PaginationLinks extends SimpleTagSupport {
 
             // Enlace "ir a página anterior"
             if (page.hasPrevious())
-                out.write(doLink(currPage - 1, getPrev(), getListItemsCssClass(), false));
+                out.write(doLink(currPage - 1, getPrev(), getLiCSS(), false));
 
             /*
              *  CASO 1: El número total de páginas es menor o igual que el límite
@@ -73,7 +73,7 @@ public class PaginationLinks extends SimpleTagSupport {
                     if (i == currPage)
                         out.write(doLink(i, String.valueOf(i + 1), "active disabled", true));
                     else
-                        out.write(doLink(i, String.valueOf(i + 1), getListItemsCssClass(), false));
+                        out.write(doLink(i, String.valueOf(i + 1), getLiCSS(), false));
                 }
             }
             /*
@@ -87,12 +87,12 @@ public class PaginationLinks extends SimpleTagSupport {
                     if (i == currPage)
                         out.write(doLink(i, String.valueOf(i+1), "active disabled", true));
                     else
-                        out.write(doLink(i, String.valueOf(i+1), getListItemsCssClass(), false));
+                        out.write(doLink(i, String.valueOf(i+1), getLiCSS(), false));
                 }
                 // Puntos y última página
                 if (page.getTotalPages()-1 != maxPages)
                     out.write(doLink(0, "...", "disabled", true));
-                out.write(doLink(page.getTotalPages()-1, String.valueOf(page.getTotalPages()), getListItemsCssClass(), false));
+                out.write(doLink(page.getTotalPages()-1, String.valueOf(page.getTotalPages()), getLiCSS(), false));
             }
             /*
              * CASO 3: Existen más páginas de las que podemos mostrar en los enlaces.
@@ -101,7 +101,7 @@ public class PaginationLinks extends SimpleTagSupport {
              */
             else if (page.getTotalPages() - currPage <= limit + 1) {
                 // Primera página y puntos
-                out.write(doLink(0, "1", getListItemsCssClass(), false));
+                out.write(doLink(0, "1", getLiCSS(), false));
                 if (page.getTotalPages()-1 != maxPages)
                     out.write(doLink(0, "...", "disabled", true));
                 // Páginas
@@ -109,7 +109,7 @@ public class PaginationLinks extends SimpleTagSupport {
                     if (i == currPage)
                         out.write(doLink(i, String.valueOf(i+1), "active disabled", true));
                     else
-                        out.write(doLink(i, String.valueOf(i+1), getListItemsCssClass(), false));
+                        out.write(doLink(i, String.valueOf(i+1), getLiCSS(), false));
                 }
             }
             /*
@@ -121,7 +121,7 @@ public class PaginationLinks extends SimpleTagSupport {
              */
             else {
                 // Primera página y puntos (si necesario)
-                out.write(doLink(0, "1", getListItemsCssClass(), false));
+                out.write(doLink(0, "1", getLiCSS(), false));
                 if (currPage-limit > 1)
                     out.write(doLink(0, "...", "disabled", true));
 
@@ -130,17 +130,17 @@ public class PaginationLinks extends SimpleTagSupport {
                     if (i == currPage)
                         out.write(doLink(i, String.valueOf(i+1), "active disabled", true));
                     else
-                        out.write(doLink(i, String.valueOf(i+1), getListItemsCssClass(), false));
+                        out.write(doLink(i, String.valueOf(i+1), getLiCSS(), false));
 
                 // Puntos (si necesario) y última página
                 if (currPage+limit < page.getTotalPages()-limit)
                     out.write(doLink(0, "...", "disabled", true));
-                out.write(doLink(page.getTotalPages()-1, String.valueOf(page.getTotalPages()), getListItemsCssClass(), false));
+                out.write(doLink(page.getTotalPages()-1, String.valueOf(page.getTotalPages()), getLiCSS(), false));
             }
 
             // Enlace "ir a página siguiente"
             if (page.hasNext())
-                out.write(doLink(currPage + 1, getNext(), getListItemsCssClass(), false));
+                out.write(doLink(currPage + 1, getNext(), getLiCSS(), false));
 
             out.write("</ul>");
         } catch (IOException e) {
@@ -258,16 +258,16 @@ public class PaginationLinks extends SimpleTagSupport {
      * Devuelve el estilo css para los items (li) de la paginación.
      * @return estilo css para los items (li) de la paginación
      */
-    public String getListItemsCssClass() {
-        return listItemsCssClass;
+    public String getLiCSS() {
+        return liCSS;
     }
 
     /**
      * Establece el estilo css para los items (li) de la paginación.
-     * @param listItemsCssClass estilo css para los items (li) de la paginación
+     * @param liCSS estilo css para los items (li) de la paginación
      */
-    public void setListItemsCssClass(String listItemsCssClass) {
-        this.listItemsCssClass = listItemsCssClass;
+    public void setLiCSS(String liCSS) {
+        this.liCSS = liCSS;
     }
 
     /**

@@ -97,7 +97,7 @@
                     <div class="card-content">
                         <a href="${path}/pelicula/${film.id}/${film.title}"><h5>${film.title}</h5></a>
                         <div class="film-badges">
-                            <mytags:makeScoreBadge score="${film.score}"/>
+                            <mytags:scoreBadge score="${film.score}"/>
                             <span class="badge">${film.year}</span>
                             <span class="badge">${film.duration} min</span>
                             <span class="badge">${film.rating}</span>
@@ -134,7 +134,7 @@
         <mytags:paginate url="${path}${url_params}" page="${page}"
                          next="<i class=\"material-icons\">chevron_right</i>"
                          prev="<i class=\"material-icons\">chevron_left</i>"
-                         listItemsCssClass="waves-effect z-depth-2"/>
+                         liCSS="waves-effect z-depth-2"/>
 
     </div><!-- /Paginación -->
     <div id="materialbox-overlay" class="filter-overlay"></div>

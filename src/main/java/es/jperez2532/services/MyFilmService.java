@@ -188,6 +188,7 @@ public class MyFilmService implements FilmService {
             @CacheEvict(value = "homePageFilms", allEntries = true),
             @CacheEvict(value = "film", key = "#film.id")})
     public void updateViews(Film film) {
+        film.setViews(film.getViews()+1);
         filmRepo.save(film);
     }
 

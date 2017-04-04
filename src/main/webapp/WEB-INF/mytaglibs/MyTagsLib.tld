@@ -40,14 +40,14 @@
             <type>org.springframework.data.domain.Page</type>
         </attribute>
         <attribute>
-            <name>listItemsCssClass</name>
+            <name>liCSS</name>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
     </tag>
 
     <tag>
-        <name>makeScoreBadge</name>
+        <name>scoreBadge</name>
         <tag-class>es.jperez2532.jsptags.ScoreBadge</tag-class>
         <body-content>empty</body-content>
         <attribute>

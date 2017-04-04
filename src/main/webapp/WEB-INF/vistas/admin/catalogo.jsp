@@ -110,7 +110,7 @@
     <mytags:paginate url="${path}/admin/catalogo${url_params}" page="${page}"
                          next="<i class=\"material-icons\">chevron_right</i>"
                          prev="<i class=\"material-icons\">chevron_left</i>"
-                         listItemsCssClass="waves-effect z-depth-2"/>
+                         liCSS="waves-effect z-depth-2"/>
 
 </div><!-- /Paginación -->
 <!-- Modal confirmación de borrado -->
