@@ -17,7 +17,76 @@
 <header>
 <nav class="grey darken-3" role="navigation">
     <div class="nav-wrapper container">
-        <a href="${path}/" class="left brand-logo"><img src="${path}/img/logo_pelis_uned.png"/></a>
+        <a href="${path}/" class="brand-logo"><img src="${path}/img/logo_pelis_uned.png"/></a>
+        <a href="#" data-activates="mobile-nav" class="button-collapse"><i class="material-icons">menu</i></a>
+        <ul id="nav-mobile" class="main-menu hide-on-med-and-down">
+            <li><a href="${path}/catalogo">Catálogo</a></li>
+            <li><a class="dropdown-generos" href="#!" data-activates="dropdown-gen">Por Géneros<i class="material-icons right">arrow_drop_down</i></a></li>
+            <li><a href="${path}/informe">Informe PED</a></li>
+        </ul>
+        <ul class="right hide-on-med-and-down">
+            <sec:authorize access="isAnonymous()">
+                <li><a href="${path}/login" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Administrador: admin/admin - Registrado: usuario/usuario"><i class="material-icons teal-text right">help_outline</i>Login</a></li>
+                <li><a href="${path}/registro">Crear cuenta</a></li>
+            </sec:authorize>
+            <sec:authorize access="isAuthenticated()">
+                <li><a class="dropdown-account" href="#!" data-activates="dropdown-acc"><i class="material-icons account-icon">account_circle</i><i class="material-icons right arrow-down">arrow_drop_down</i></a></li>
+            </sec:authorize>
+        </ul>
+        <!-- Form búsqueda -->
+        <form class="right hide-on-med-and-down" method="get" action="${path}/catalogo">
+            <div class="input-field">
+                <input id="search" type="search" required name="buscar" placeholder="buscar...">
+                <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                <i class="material-icons">close</i>
+            </div>
+        </form><!-- /Form búsqueda -->
+        <!-- Panel de menú para movil -->
+        <ul class="side-nav grey darken-3" id="mobile-nav">
+            <li><a href="${path}/catalogo">Catálogo</a></li>
+            <li class="no-padding">
+                <ul class="collapsible collapsible-accordion">
+                    <li>
+                        <a class="collapsible-header">Por Géneros<i class="material-icons right white-text">arrow_drop_down</i></a>
+                        <div class="collapsible-body grey darken-2">
+                            <ul>
+                                <c:forEach items="${genresList}" var="genre">
+                                    <li><a href="${path}/buscar?ref=genero&buscar=${genre.name}">${genre.name}</a></li>
+                                </c:forEach>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="${path}/informe">Informe PED</a></li>
+            <li class="divider"></li>
+            <sec:authorize access="isAnonymous()">
+                <li><a href="${path}/login" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Administrador: admin/admin - Registrado: usuario/usuario"><i class="material-icons teal-text right">help_outline</i>Login</a></li>
+                <li><a href="${path}/registro">Crear cuenta</a></li>
+            </sec:authorize>
+            <sec:authorize access="isAuthenticated()">
+                <li><a href="${path}/micuenta">Mi cuenta</a></li>
+                <li><a href="${path}/micuenta/milista">Mi Lista de reproducción</a></li>
+                <sec:authorize access="hasRole('ADMIN')">
+                    <li><a href="${path}/admin">Panel de administración</a></li>
+                </sec:authorize>
+                <li>
+                    <a href="#" onclick="document.getElementById('logout-form').submit()"">Cerrar sesión</a>
+                    <form action="${path}/logout" method="POST" id="logout-form">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </form>
+                </li>
+            </sec:authorize>
+            <li>
+                <form method="get" action="${path}/catalogo">
+                    <div class="input-field">
+                        <input id="search" type="search" required name="buscar" placeholder="buscar...">
+                        <label class="label-icon" for="search"><i class="material-icons">search</i></label>
+                        <i class="material-icons">close</i>
+                    </div>
+                </form>
+            </li>
+        </ul><!-- /Panel de menú para movil -->
         <!-- Dropdown Géneros -->
         <ul id="dropdown-gen" class="dropdown-content">
             <c:forEach items="${genresList}" var="genre" varStatus="loopStatus">
@@ -25,11 +94,13 @@
                 ${!loopStatus.last ? '<li class="divider"></li>' : ''}
             </c:forEach>
         </ul><!-- /Dropdown Géneros -->
-        <ul id="nav-mobile" class="main-menu hide-on-med-and-down">
-            <li><a href="${path}/catalogo">Catálogo</a></li>
-            <li><a class="dropdown-generos" href="#!" data-activates="dropdown-gen">Por Géneros<i class="material-icons right">arrow_drop_down</i></a></li>
-            <li><a href="${path}/informe">Informe PED</a></li>
-        </ul>
+        <!-- Dropdown Géneros Movil-->
+        <ul id="dropdown-gen-mobile" class="dropdown-content">
+            <c:forEach items="${genresList}" var="genre" varStatus="loopStatus">
+                <li><a href="${path}/buscar?ref=genero&buscar=${genre.name}">${genre.name}</a></li>
+                ${!loopStatus.last ? '<li class="divider"></li>' : ''}
+            </c:forEach>
+        </ul><!-- /Dropdown Géneros Movil -->
         <!-- Dropdown Cuenta -->
         <sec:authorize access="isAuthenticated()">
         <ul id="dropdown-acc" class="dropdown-content">
@@ -49,22 +120,6 @@
             </li>
         </ul><!-- /Dropdown cuenta -->
         </sec:authorize>
-        <ul class="right hide-on-med-and-down">
-            <sec:authorize access="isAnonymous()">
-                <li><a href="${path}/login" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Administrador: admin/admin - Registrado: usuario/usuario"><i class="material-icons teal-text right">help_outline</i>Login</a></li>
-                <li><a href="${path}/registro">Crear cuenta</a></li>
-            </sec:authorize>
-            <sec:authorize access="isAuthenticated()">
-                <li><a class="dropdown-account" href="#!" data-activates="dropdown-acc"><i class="material-icons account-icon">account_circle</i><i class="material-icons right arrow-down">arrow_drop_down</i></a></li>
-            </sec:authorize>
-        </ul>
-        <form class="right" method="get" action="${path}/catalogo">
-            <div class="input-field">
-                <input id="search" type="search" required name="buscar" placeholder="buscar...">
-                <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-                <i class="material-icons">close</i>
-            </div>
-        </form>
     </div>
 </nav>
 </header>

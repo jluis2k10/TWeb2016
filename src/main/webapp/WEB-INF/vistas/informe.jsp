@@ -7,10 +7,10 @@
 <div class="section row">
     <div class="col s12">
         <h3 class="center-align">Informe PED</h3>
-        <h5><a href="${path}/informe/informe.pdf">Descargar informe en PDF</a></h5>
+        <h5><a href="${path}/informe/Informe.pdf">Descargar informe en PDF</a></h5>
         <h6><a href="${path}/informe/apidocs/index.html">Javadoc del proyecto</a></h6>
         <h6><a href="${path}/informe/xref/index.html">Código fuente del proyecto</a> (navegable, sólo las clases Java)</h6>
-        <p><a href="">Descarga</a> del código fuente completo del proyecto, que incluye:</p>
+        <p><a href="${path}/informe/fuentes.zip">Descarga</a> del código fuente completo del proyecto, que incluye:</p>
             <ul class="browser-default">
                 <li>Archivo de configuración maven</li>
                 <li>Código de las vistas JSP</li>

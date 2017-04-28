@@ -5,6 +5,7 @@
 <script type="text/javascript" src="${path}/js/materialize.min.js"></script>
 <script>
     $( document ).ready(function() {
+        $(".button-collapse").sideNav();
         $(".dropdown-generos").dropdown({
             belowOrigin: true,
             constrainWidth: false

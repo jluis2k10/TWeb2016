@@ -51,6 +51,16 @@ nav ul a:hover {
     color: white;
 }
 
+#mobile-nav.side-nav a {
+    color: #FFFFFF;
+}
+#mobile-nav.side-nav div.collapsible-body {
+    padding: 0;
+}
+nav .nav-wrapper #mobile-nav i {
+    line-height: 50px;
+}
+
 div.row.no-margin {
     margin-bottom: 5px;
 }
@@ -241,8 +251,9 @@ div.col.actions a.secondary-content {
     background-color: #616161 !important;
     color: #fff !important;
 }
-.chips .input {
+form#new-film .chips .input {
     color: #fff !important;
+    width: 200px !important;
 }
 
 .pagination {

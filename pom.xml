@@ -171,6 +171,7 @@
             <link>http://docs.oracle.com/javase/7/docs/api/</link>
             <link>http://docs.spring.io/spring-data/commons/docs/1.12.x/api/</link>
             <link>http://docs.spring.io/spring-framework/docs/4.3.6.RELEASE/javadoc-api/</link>
+            <link>http://docs.spring.io/spring-data/jpa/docs/1.10.x/api/</link>
             <link>http://fasterxml.github.io/jackson-databind/javadoc/2.2.0/</link>
             <link>https://tomcat.apache.org/tomcat-8.0-doc/servletapi/</link>
           </links>

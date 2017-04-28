@@ -40,7 +40,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
         if (session != null) {
             String redirectUrl = (String) session.getAttribute("url_prior_login");
             // No redireccionar a login o a registro (saltaría "denegado")
-            if (redirectUrl.contains("/login") || redirectUrl.contains("/registro"))
+            if (redirectUrl != null && (redirectUrl.contains("/login") || redirectUrl.contains("/registro") ))
                 redirectUrl = null;
             if (redirectUrl != null) {
                 // Eliminar el atriuto de la sesión
